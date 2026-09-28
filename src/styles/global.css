@@ -100,27 +100,16 @@
   --dur-slow: 900ms;
 }
 
-/* Effra is licensed, not a Google font, so it is self-hosted. Drop the two
-   .woff2 files at these paths and headings pick it up automatically; until
-   then every rule falls through to Source Sans Pro. `font-display: swap`
-   means a missing file costs nothing but the fallback. */
-@font-face {
-  font-family: "Effra";
-  src: url("/fonts/effra-medium.woff2") format("woff2");
-  /* Literal, not var(--weight-ui): inside @font-face this is a descriptor,
-     not a property, and custom properties are invalid there. */
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
+/* Effra is licensed, not a Google font, so it would have to be self-hosted.
+   The licence has not been bought, so /fonts/effra-medium.woff2 and
+   effra-bold.woff2 do not exist — and @font-face rules pointing at missing
+   files cost two 404s and two console errors on every page load, which
+   Lighthouse flags. The rules are removed rather than left dangling; headings
+   fall through to Source Sans Pro, which is what actually ships today.
 
-@font-face {
-  font-family: "Effra";
-  src: url("/fonts/effra-bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
+   To switch Effra on: drop the two .woff2 files into public/fonts/ and restore
+   two @font-face blocks for family "Effra" at weights 500 and 700, each with
+   font-display: swap. --font-display in :root already lists Effra first. */
 
 *,
 *::before,
@@ -702,7 +691,7 @@ ul { margin: 0; padding: 0; list-style: none; }
   text-decoration: none;
   border-bottom: 1px solid transparent;
 }
-.card__details:hover { color: var(--epay); border-bottom-color: var(--epay); }
+.card__details:hover { color: var(--accent-deep); border-bottom-color: var(--accent-deep); }
 
 /* ---------- Scroll reveal ---------- */
 

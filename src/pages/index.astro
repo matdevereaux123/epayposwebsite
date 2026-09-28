@@ -400,5 +400,7 @@ const terminalPlan = planById(terminalCard.plan_id);
   .cta__grid { display: grid; gap: 2.5rem; align-items: start; }
   @media (min-width: 900px) { .cta__grid { grid-template-columns: 1fr 1fr; gap: 4rem; } }
   .cta__alt { font-size: var(--small); color: var(--text-muted); margin-top: 1.25rem; }
-  .cta__alt a { color: var(--epay); font-weight: var(--weight-ui); }
+  /* --accent-deep, not --epay: #00d0fa is 1.84:1 on white and the token is a
+     fill colour only. Lighthouse flagged this link at 1.84:1. */
+  .cta__alt a { color: var(--accent-deep); font-weight: var(--weight-ui); }
 </style>

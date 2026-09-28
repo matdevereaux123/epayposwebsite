@@ -86,7 +86,7 @@ const items = lm.items as any[];
       <p class="lm__ok" aria-hidden="true">✓</p>
       <p class="mono-label">{lm.unlock_note}</p>
       <h3 data-done-title></h3>
-      <a class="btn btn--primary" data-file download>Download now</a>
+      <button class="btn btn--primary" type="button" data-file>Download now</button>
     </div>
   </dialog>
 </section>
@@ -138,9 +138,17 @@ const items = lm.items as any[];
       stepForm.hidden = true;
       stepDone.hidden = false;
       root.querySelector("[data-done-title]").textContent = item.title;
-      const a = root.querySelector("[data-file]");
-      a.href = item.file;
-      a.setAttribute("download", item.file.split("/").pop());
+      // The control is a <button>, so the download runs through a throwaway
+      // anchor — `download` is only honoured on an <a>.
+      const btn = root.querySelector("[data-file]");
+      btn.onclick = () => {
+        const a = document.createElement("a");
+        a.href = item.file;
+        a.download = item.file.split("/").pop();
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      };
     }
 
     root.addEventListener("click", (e) => {
