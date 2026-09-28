@@ -1,0 +1,25 @@
+---
+import Base from "../layouts/Base.astro";
+import { headings } from "../lib/content";
+---
+<Base noindex title="Thanks — we got it | EPAY POS" description="Your message reached the EPAY POS team.">
+  <section class="band band--deck ty">
+    <div class="wrap">
+      <p class="mono-label">Received</p>
+      <h1>{headings.system.thank_you}</h1>
+      <p class="lede">
+        Someone from the team will reach out within one business day. If it's urgent,
+        call 947-228-7226 ext. 3 and ask for sales.
+      </p>
+      <div class="actions">
+        <a class="btn btn--primary" href="/">Back to the site</a>
+        <a class="btn btn--ghost" href="/pricing">See pricing</a>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .ty { padding-block: clamp(5rem, 12vw, 9rem); text-align: center; }
+  .ty .lede { margin-inline: auto; }
+  .ty .actions { justify-content: center; }
+</style>

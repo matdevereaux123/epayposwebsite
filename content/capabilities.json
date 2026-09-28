@@ -1,0 +1,71 @@
+{
+  "_instructions": "Deep capability write-ups, taken from the live epaypos.net feature pages. Rendered on feature pages and industry pages. `audience` controls where each one shows: restaurant, retail, or both.",
+  "capabilities": [
+    {
+      "id": "order-management",
+      "name": "Order Management",
+      "audience": "both",
+      "body": "Everything sits in one organized system. Track past orders, manage tabs, handle online orders, and control in-house table service with real-time syncing across devices. Your team stays on top of every detail at the counter, online, or tableside."
+    },
+    {
+      "id": "cash-management",
+      "name": "Cash Management",
+      "audience": "both",
+      "body": "Track drawer activity, monitor till counts, and record payouts accurately. Every transaction is logged in real time, which cuts down the discrepancies, and detailed reporting means you always know where your cash stands."
+    },
+    {
+      "id": "kitchen-firing",
+      "name": "Kitchen Firing",
+      "audience": "restaurant",
+      "body": "Orders route instantly to kitchen printers or digital displays. Customize firing by course, handle modifications, and keep the line updated in real time so nothing is cooked at the wrong moment."
+    },
+    {
+      "id": "employee-management",
+      "name": "Employee Management",
+      "audience": "both",
+      "body": "Set custom access levels, track hours with built-in time clocking, and manage schedules and permissions from one place. Employee profiles hold key details, and shift scheduling, break tracking and audit logs are all included."
+    },
+    {
+      "id": "loyalty",
+      "name": "Customer Management and Loyalty",
+      "audience": "both",
+      "body": "Create loyalty programs with points, rewards or discounts that apply automatically at checkout. Customer profiles store purchase history, preferences and contact details, so service and marketing can actually be personal."
+    },
+    {
+      "id": "reservations",
+      "name": "Reservations",
+      "audience": "restaurant",
+      "body": "In-house reservations, online bookings and walk-ins on a single screen. Real-time syncing means staff can check availability, assign guests instantly, and stop double bookings before they happen."
+    },
+    {
+      "id": "gift-cards",
+      "name": "Gift Cards",
+      "audience": "both",
+      "body": "Custom-branded gift cards built into the system. Sell, track and redeem digital or physical cards straight from the POS with no third-party setup, with real-time balance tracking across every location."
+    },
+    {
+      "id": "waitlist",
+      "name": "Waitlist",
+      "audience": "restaurant",
+      "body": "Add walk-ins, manage estimated wait times and notify guests when their table is ready, all from one screen. It syncs to reservations and table management, so staff can see seating and guest flow at a glance."
+    },
+    {
+      "id": "menu-buildout",
+      "name": "Menu and Catalog Buildout",
+      "audience": "both",
+      "body": "Our team organizes your products, categories and modifiers so everything is structured and priced before installation. Menus, drink lists or retail inventories — we handle the data entry and configuration so the system runs on day one."
+    },
+    {
+      "id": "access-control",
+      "name": "Access Control",
+      "audience": "both",
+      "body": "Role-based permissions so staff use only what they need. Sensitive actions — refunds, discounts, reporting, inventory changes — stay protected behind the roles you set."
+    },
+    {
+      "id": "inventory",
+      "name": "Inventory Across the Business",
+      "audience": "retail",
+      "body": "All-in-one inventory management with no additional fees. Add, edit and track products in real time, and manage stock across multiple locations from the same screen."
+    }
+  ]
+}

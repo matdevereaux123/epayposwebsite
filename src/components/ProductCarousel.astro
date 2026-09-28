@@ -1,0 +1,184 @@
+---
+// Product carousel — the quick visual browse at the top of /epay-products-1.
+//
+// design-system.md forbids the old autoplaying carousel because it "hides
+// content from both merchants and search engines". This one keeps the
+// browsing pattern without those failures:
+//   - never autoplays; it only moves when the visitor moves it
+//   - every card is real DOM at all times, so crawlers see the whole list
+//   - it is a scroll container first, so trackpad and touch swipe work with
+//     no JS at all; the arrows are an enhancement
+//   - arrows are real buttons with labels and are hidden from AT as
+//     redundant, since the region itself is keyboard-scrollable
+//
+// Shows the whole lineup, in products.json order. Heading copy comes from
+// products.json > carousel, so no copy lives in this file.
+
+import { products, money, enquiry } from "../lib/content";
+import ImageSlot from "./ImageSlot.astro";
+import productsData from "../../content/products.json";
+
+const items = products as any[];
+const { eyebrow, heading } = (productsData as any).carousel;
+---
+
+{items.length > 0 && (
+  <section class="band band--dark bs">
+    <div class="wrap">
+      <div class="bs__head">
+        <div>
+          <p class="mono-label">{eyebrow}</p>
+          <h2>{heading}</h2>
+        </div>
+        <div class="bs__nav">
+          <button type="button" class="bs__arrow" data-dir="-1" aria-label="Scroll to previous products">
+            <span aria-hidden="true">&larr;</span>
+          </button>
+          <button type="button" class="bs__arrow" data-dir="1" aria-label="Scroll to next products">
+            <span aria-hidden="true">&rarr;</span>
+          </button>
+        </div>
+      </div>
+
+      <ul class="bs__track" tabindex="0" role="group" aria-label={heading}>
+        {items.map((product) => (
+          <li class="bs__card card"
+              data-enquire-reason="equipment"
+              data-enquire={`product:${product.id}`}
+              data-enquire-label={`Carousel card — ${product.name}`}>
+            <div class="bs__media">
+              <ImageSlot name={product.name} file={product.image} ratio="4 / 3" />
+            </div>
+            <p class="mono-label">{product.kicker}</p>
+            <h3>{product.name}</h3>
+            <p class="bs__body">{product.summary}</p>
+            <p class="bs__price figure">
+              {product.purchase_price ? money(product.purchase_price) : "Ask us"}
+            </p>
+            <a class="btn btn--ghost bs__cta" href="#build" data-enquire-keep>Add to a build</a>
+            <button class="btn btn--primary bs__ask" type="button"
+                    data-enquire-reason="equipment"
+                    data-enquire={`product:${product.id}`}
+                    data-enquire-label={`Carousel ask — ${product.name}`}>{enquiry.trigger_label}</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+<script>
+  document.querySelectorAll(".bs").forEach((section) => {
+    const track = section.querySelector(".bs__track") as HTMLElement | null;
+    if (!track) return;
+
+    section.querySelectorAll(".bs__arrow").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const card = track.querySelector(".bs__card") as HTMLElement | null;
+        const step = card ? card.offsetWidth + 20 : track.clientWidth * 0.8;
+        const dir = Number((btn as HTMLElement).dataset.dir);
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        track.scrollBy({ left: step * dir, behavior: reduce ? "auto" : "smooth" });
+      });
+    });
+
+    // Disable an arrow when there is nowhere further to go.
+    const sync = () => {
+      const max = track.scrollWidth - track.clientWidth - 1;
+      section.querySelectorAll(".bs__arrow").forEach((btn) => {
+        const dir = Number((btn as HTMLElement).dataset.dir);
+        const atEnd = dir > 0 ? track.scrollLeft >= max : track.scrollLeft <= 0;
+        (btn as HTMLButtonElement).disabled = atEnd || max <= 0;
+      });
+    };
+    track.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+    sync();
+  });
+</script>
+
+<style>
+  .bs__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .bs__head h2 { margin-bottom: 0; }
+
+  .bs__nav { display: flex; gap: 0.5rem; }
+
+  .bs__arrow {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--rule-btn);
+    border-radius: 999px;
+    background: var(--canvas);
+    color: var(--accent-deep);
+    cursor: pointer;
+    font-size: 1rem;
+    transition:
+      border-color var(--dur-fast) var(--ease),
+      background var(--dur-fast) var(--ease),
+      opacity var(--dur-fast) var(--ease);
+  }
+  .bs__arrow:hover:not(:disabled) { border-color: var(--epay); background: var(--glass); }
+  .bs__arrow:disabled { opacity: 0.35; cursor: default; }
+
+  /* Scroll container first — swipe and trackpad work with zero JS. */
+  .bs__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(240px, 288px);
+    gap: 1.25rem;
+    margin-top: 2rem;
+    padding-block: 0.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    /* Full-bleed edges so cards run to the gutter, not a hard stop. */
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+  }
+
+  .bs__track::-webkit-scrollbar { height: 6px; }
+  .bs__track::-webkit-scrollbar-thumb { background: var(--rule-strong); border-radius: 999px; }
+
+  .bs__card {
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bs__media {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius);
+    background: var(--canvas);
+    display: grid;
+    place-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .bs__ph {
+    font-family: var(--font-data);
+    font-size: var(--mono-label);
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: center;
+    padding-inline: 1rem;
+  }
+
+  .bs__body { font-size: var(--small); color: var(--text-muted); }
+  .bs__price { font-size: 1.375rem; color: var(--text); margin: auto 0 0.75rem; }
+  .bs__cta { align-self: start; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bs__track { scroll-behavior: auto; }
+    .bs__arrow { transition: none; }
+  }
+  .bs__ask { margin-top: 0.5rem; width: 100%; }
+</style>

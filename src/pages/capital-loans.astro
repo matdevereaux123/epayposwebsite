@@ -1,0 +1,89 @@
+---
+// Capital loans.
+//
+// There are NO amounts, rates, terms or repayment mechanics on this page and
+// there must not be until Matt supplies them. Lending and merchant cash
+// advances are regulated products with mandatory disclosures, and the two are
+// legally different things. content/capital.json lists exactly what is
+// missing. The page captures interest and says plainly that terms come from a
+// person.
+
+import Base from "../layouts/Base.astro";
+import LeadForm from "../components/LeadForm.astro";
+import ImageSlot from "../components/ImageSlot.astro";
+import capital from "../../content/capital.json";
+import { site, headings, enquiry } from "../lib/content";
+
+const c = capital as any;
+---
+
+<Base
+  title={`Capital Loans for Merchants | ${site.brand.name}`}
+  description={c.lede}
+>
+  <section class="band band--deck hero">
+    <div class="wrap hero__grid">
+      <div>
+        <p class="mono-label">{c.eyebrow}</p>
+        <h1>{c.heading}</h1>
+        <p class="lede">{c.lede}</p>
+        <div class="actions">
+          <a class="btn btn--primary" href="#enquire">Ask what's available</a>
+          <a class="btn btn--ghost" href="/contact">Talk to someone</a>
+        </div>
+      </div>
+      <ImageSlot name="Capital loans" file={c.hero_image} ratio="4 / 3" />
+    </div>
+  </section>
+
+  <section class="band band--dark">
+    <div class="wrap">
+      <p class="mono-label">What merchants use it for</p>
+      <h2>{headings.capital.reasons}</h2>
+      <div class="grid grid--4 uses">
+        {c.uses.map((u: any) => (
+          <article class="card reveal">
+            <h3>{u.name}</h3>
+            <p>{u.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--dark" id="enquire">
+    <div class="wrap grid2">
+      <div>
+        <p class="mono-label">Enquire</p>
+        <h2>{headings.capital.form}</h2>
+        <p class="lede">
+          Amounts, terms and repayment depend on your processing history, so a person
+          works those out with you rather than a page quoting a number.
+        </p>
+        {c.disclosure_placeholder && (
+          <p class="cap__disclosure">
+            Terms, rates and eligibility are provided in writing before anything is signed.
+          </p>
+        )}
+      </div>
+      <LeadForm name={enquiry.form_name} submitLabel="Ask about funding" withUpload
+        reason="capital" source="Capital loans page" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding-block: clamp(3rem, 7vw, 5.5rem) clamp(1.5rem, 3vw, 2.5rem); }
+  .hero__grid { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 900px) { .hero__grid { grid-template-columns: 1.1fr 1fr; } }
+  .uses { margin-top: 2rem; }
+  .uses p { color: var(--text-muted); font-size: var(--small); }
+  .grid2 { display: grid; gap: 3rem; }
+  @media (min-width: 900px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+  .cap__disclosure {
+    margin-top: 1.5rem; padding: 0.85rem 1rem;
+    border-left: 3px solid var(--epay);
+    background: var(--glass);
+    font-size: var(--small); color: var(--text-muted);
+  }
+</style>

@@ -1,0 +1,154 @@
+---
+// The homepage client-spotlight video. Renders whichever of three states applies:
+//   mp4 present on disk  -> a silent video that plays on its own and loops forever
+//   embed_url set        -> a responsive iframe (fallback until the file lands)
+//   neither              -> a slot naming what it is waiting for
+//
+// The on-disk file wins over the embed: an iframe (Google Drive, YouTube)
+// cannot play without its own controls, and the owner wants this built into
+// the page with none.
+//
+// Owner-approved exception to design-system.md (2026-09-18): this video
+// autoplays, muted, looping, with no controls and no way to pause it. Browsers
+// only allow autoplay without sound, so it is always muted. Visitors whose
+// device asks to reduce motion get the still poster instead.
+
+import fs from "node:fs";
+import path from "node:path";
+import { site } from "../lib/content";
+
+const v = (site as any).home_video;
+
+function onDisk(file: string) {
+  try {
+    return fs.existsSync(path.join(process.cwd(), "public", file.replace(/^\//, "")));
+  } catch {
+    return false;
+  }
+}
+
+const hasFile = onDisk(v.file);
+const hasEmbed = !hasFile && Boolean(v.embed_url);
+const hasPoster = onDisk(v.poster);
+---
+
+<section class="band band--dark vid">
+  <div class="wrap vid__grid">
+    <div>
+      <p class="mono-label">{v.eyebrow}</p>
+      <h2>{v.heading}</h2>
+      <p class="lede">{v.body}</p>
+      <div class="actions">
+        <a class="btn btn--primary" href={site.cta.primary.href}>{site.cta.primary.label}</a>
+        <a class="btn btn--ghost" href="/epay-products-1">Shop hardware</a>
+      </div>
+    </div>
+
+    <div class="vid__frame">
+      {hasEmbed ? (
+        <iframe
+          src={v.embed_url}
+          title={`${v.heading} — ${v.merchant}`}
+          loading="lazy"
+          allowfullscreen
+          referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
+      ) : hasFile ? (
+        <video
+          class="vid__loop"
+          autoplay
+          muted
+          loop
+          playsinline
+          disablepictureinpicture
+          disableremoteplayback
+          preload="auto"
+          controlslist="nodownload nofullscreen noremoteplayback noplaybackrate"
+          tabindex="-1"
+          aria-label={`${v.heading}: ${v.body}`}
+          poster={hasPoster ? v.poster : undefined}
+          data-loop-video
+        >
+          <source src={v.file} type="video/mp4" />
+        </video>
+      ) : (
+        <span class="imgslot vid__slot">
+          <span class="imgslot__icon" aria-hidden="true">▶</span>
+          <span class="imgslot__name">{v.heading}</span>
+          <span class="imgslot__path">{v.file}</span>
+          <span class="vid__hint">plays on its own, silent and looping, once the mp4 is at this path</span>
+        </span>
+      )}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Keeps the spotlight video running: no pause, no menu, no controls.
+  const videos = document.querySelectorAll<HTMLVideoElement>("[data-loop-video]");
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+  videos.forEach((video) => {
+    video.muted = true;
+    video.addEventListener("contextmenu", (e) => e.preventDefault());
+    const keepPlaying = () => {
+      if (still.matches || document.visibilityState !== "visible") return;
+      // A rejected play() (e.g. iPhone Low Power Mode) leaves the poster showing.
+      video.play().catch(() => {});
+    };
+    const settle = () => {
+      if (still.matches) video.pause();
+      else keepPlaying();
+    };
+    video.addEventListener("pause", keepPlaying);
+    document.addEventListener("visibilitychange", keepPlaying);
+    still.addEventListener("change", settle);
+    settle();
+  });
+</script>
+
+<style>
+  .vid__grid { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 900px) { .vid__grid { grid-template-columns: 1fr auto; gap: 4rem; } }
+
+  /* Square frame. Portrait footage is cropped to the centre by object-fit
+     below, so a phone-shot clip still fills it without letterboxing. */
+  /* The clip is shot on a phone, so the frame is portrait and matches it —
+     a square box left the video small with empty space either side. */
+  .vid__frame {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    width: min(100%, 24rem);
+    justify-self: center;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  @media (min-width: 900px) {
+    /* Right margin pulls the frame in from the page edge, toward the copy. */
+    .vid__frame {
+      width: min(26rem, calc((100vh - 7rem) * 9 / 16));
+      margin-right: clamp(1rem, 4vw, 4rem);
+    }
+  }
+
+  .vid__frame iframe,
+  .vid__frame video {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    object-fit: cover;
+    background: var(--canvas);
+  }
+
+  /* Taps and clicks pass through, so nothing can pause or open the video. */
+  .vid__loop { pointer-events: none; user-select: none; }
+
+  .vid__slot { width: 100%; height: 100%; }
+
+  .vid__hint {
+    font-family: var(--font-data);
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    max-width: 34ch;
+  }
+</style>

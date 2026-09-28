@@ -1,0 +1,740 @@
+/* EPAY POS — global styles.
+   Light scheme, matching the existing site. Design tokens are the single
+   source of truth: never write a raw hex value in a component. */
+
+:root {
+  /* ---- Color ---- */
+  --canvas: #ffffff;      /* default page background */
+  --surface: #f4f8fb;     /* tinted band, image wells */
+  --epay: #00d0fa;        /* brand blue. 1.84:1 on white, so it is only ever a
+                             shape or a fill behind dark ink — never text and
+                             never a boundary. Dark ink on it is 9.99:1. */
+  --epay-bright: #2edcff; /* lighter step, for glows and gradients only. */
+  --accent-deep: #00778f; /* darker step of the same hue — button labels and
+                             eyebrows. 5.2:1 on white, 4.97:1 on the tint. */
+  --brand-band: #00d0fa;  /* the one designed band, dark type on it = 9.99:1 */
+
+  --text: #0a1520;
+  --text-muted: #4a5f70;
+  --text-on-brand: #0a1520;
+  --text-on-brand-muted: #2f5563;  /* 4.56:1 on the brighter --brand-band. #dbeefa
+                                      was 4.64 on the old band but only 4.37 on this one. */
+
+  --rule: #e4edf3;
+  --rule-strong: #cbdce7;
+
+  --glow: 0 0 0 3px rgba(0, 208, 250, 0.4);
+  --ring: 0 0 0 4px rgba(0, 208, 250, 0.38);
+
+  /* Ambient halo under the primary button — a coloured glow in the brand
+     blue, not a neutral drop shadow. */
+  --ambient: 0 4px 16px rgba(0, 208, 250, 0.48), 0 1px 3px rgba(0, 119, 143, 0.16);
+  --ambient-strong: 0 6px 26px rgba(0, 208, 250, 0.7), 0 2px 6px rgba(0, 119, 143, 0.22);
+  --ambient-on-brand: 0 4px 18px rgba(0, 0, 0, 0.1);
+
+  /* ---- Logo gradient ----
+     Sampled from the EPAY POS mark. The logo is cyan-to-electric-blue, a
+     different family from --epay. Used only as a hairline accent and on the
+     mark itself — never as a fill behind text. */
+  --logo-cyan: #10cfe6;
+  --logo-blue: #1b2fe0;
+  --logo-violet: #2a12e6;
+  --logo-sweep: linear-gradient(100deg, var(--logo-cyan), var(--logo-blue));
+
+  /* ---- The statement band ----
+     One solid band per page, in EPAY blue carrying white. There is no dark
+     navy register: white needs --accent-deep or darker to clear 4.5:1, and
+     #0e6fa0 gives 5.53:1, so the brand blue is the darkest this site goes. */
+  --brand-line: rgba(0, 0, 0, 0.09);
+
+  /* ---- Blue ----
+     Hue 190deg throughout, from the brand colour #00d0fa.
+       vs white       1.84:1 — far too light to be text or a boundary
+       dark ink on it 9.99:1 — so a solid brand fill is legible ink-side-up
+     Darker steps of the same hue carry the contrast:
+       --glass-line  #0099b8  3.36:1 on white  (control boundaries)
+       --accent-deep #00778f  5.2:1 on white, 4.97:1 on the tinted button */
+  --glass: rgba(0, 208, 250, 0.16);
+  --glass-hover: rgba(0, 208, 250, 0.3);
+  --glass-line: #0099b8;
+  --rule-btn: #6a90bb;
+  --glass-ink: rgba(255, 255, 255, 0.5);
+  --glass-ink-hover: rgba(255, 255, 255, 0.78);
+
+  /* ---- Type ----
+     Two families. Effra sets headings, Source Sans Pro does everything else,
+     including the figures and eyebrow labels that used to be monospace.
+     These are defaults; src/lib/fonts.ts overrides them at runtime and is
+     the file to edit. */
+  --font-display: "Effra", "Source Sans Pro", system-ui, sans-serif;
+  --font-body: "Source Sans Pro", system-ui, -apple-system, sans-serif;
+  --font-data: "Source Sans Pro", system-ui, sans-serif;
+
+  /* Source Sans Pro ships no 500 — asking for one gets a synthesised weight
+     or a silent fall to 400. 600 is the UI weight in this system. */
+  --weight-ui: 600;
+
+  --display-xl: clamp(2.25rem, 5vw, 3.75rem);
+  --display-lg: clamp(1.75rem, 3.2vw, 2.5rem);
+  --heading: clamp(1.125rem, 1.7vw, 1.375rem);
+  --body: 1.0625rem;
+  --small: 0.875rem;
+  --mono-label: 0.75rem;
+
+  --track-tight: -0.03em;
+  --track-label: 0.14em;
+
+  /* ---- Layout ---- */
+  --max-width: 1180px;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --section-y: clamp(3.5rem, 8vw, 6.5rem);
+
+  --radius-sm: 6px;
+  --radius: 12px;
+  --radius-lg: 16px;
+
+  /* ---- Motion ---- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 160ms;
+  --dur: 320ms;
+  --dur-slow: 900ms;
+}
+
+/* Effra is licensed, not a Google font, so it is self-hosted. Drop the two
+   .woff2 files at these paths and headings pick it up automatically; until
+   then every rule falls through to Source Sans Pro. `font-display: swap`
+   means a missing file costs nothing but the fallback. */
+@font-face {
+  font-family: "Effra";
+  src: url("/fonts/effra-medium.woff2") format("woff2");
+  /* Literal, not var(--weight-ui): inside @font-face this is a descriptor,
+     not a property, and custom properties are invalid there. */
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Effra";
+  src: url("/fonts/effra-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--body);
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--canvas);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: var(--track-tight);
+  line-height: 1.1;
+  margin: 0 0 0.5em;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--display-xl); }
+h2 { font-size: var(--display-lg); }
+h3 { font-size: var(--heading); line-height: 1.25; }
+
+p { margin: 0 0 1rem; text-wrap: pretty; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; height: auto; display: block; }
+ul { margin: 0; padding: 0; list-style: none; }
+
+/* Keyboard focus must always be visible. Do not remove. */
+:focus-visible {
+  outline: 2px solid var(--epay);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------- Layout ---------- */
+
+.wrap {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.band { padding-block: var(--section-y); }
+
+/* Bands alternate white and tinted down the page. The blue band is used
+   sparingly, for one deliberate break. */
+.band--light,
+.band--dark { background: var(--canvas); }
+.band--deck { background: var(--canvas); }
+
+/* Every content section is white. --surface survives for image wells and
+   other component-level backgrounds, but no full-width band uses it. The one
+   exception is .band--brand, which is a designed section carrying artwork. */
+.band--surface { background: var(--canvas); }
+
+/* With every band white, a hairline is the only thing separating sections.
+   The brand band brings its own edge, so it opts out on both sides. */
+.band + .band { border-top: 1px solid var(--rule); }
+.band--brand + .band,
+.band + .band--brand { border-top: 0; }
+
+/* ---------- Line art (owner-approved, 2026-09-18) ----------
+   Faint outline drawings of the EPAY mark (a triangle cut into parallel
+   bands), smaller echoes of it, light rays at the mark's 60° angle and a dot
+   grid. The logo colours and the fade-out are drawn into the SVG files
+   themselves, so this is a plain background image: no CSS masks, which Safari
+   rendered as a solid blue box. The only motion is a slow drift of a few
+   pixels, and it stops for reduce-motion visitors. Cards and photos stay solid
+   white on top. */
+:root {
+  --art-hero: 0.3;
+  --art-ribbon: 0.24;
+}
+
+.band:not(.band--brand) {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Every page's top banner: art on the right, fading out before the title. */
+.band--deck::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  width: min(64%, 980px);
+  height: 100%;
+  pointer-events: none;
+  background: url("/img/art/hero-art.svg") no-repeat right 0 top 0 / 900px auto;
+  opacity: var(--art-hero);
+}
+
+/* Every other section: a row of small marks along the bottom edge,
+   alternating sides so the page has a rhythm without getting busy. */
+.band:not(.band--deck):not(.band--brand):nth-of-type(even)::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  bottom: 0;
+  left: 0;
+  width: min(70%, 1000px);
+  height: 150px;
+  pointer-events: none;
+  background: url("/img/art/ribbon-art.svg") no-repeat left 0 bottom 0 / 1000px auto;
+  opacity: var(--art-ribbon);
+}
+
+.band:not(.band--deck):not(.band--brand):nth-of-type(4n)::before {
+  left: auto;
+  right: 0;
+  transform: scaleX(-1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .band--deck::before { animation: art-drift-hero 22s ease-in-out infinite alternate; }
+  .band:not(.band--deck):not(.band--brand):nth-of-type(even)::before {
+    animation: art-drift-ribbon 26s ease-in-out infinite alternate;
+  }
+}
+
+/* Drift moves the art inside its box, never the box itself, so nothing can
+   spill past the page edge. */
+@keyframes art-drift-hero {
+  from { background-position: right 0 top 0; }
+  to { background-position: right 36px top 20px; }
+}
+
+@keyframes art-drift-ribbon {
+  from { background-position: left 0 bottom 0; }
+  to { background-position: left 48px bottom 0; }
+}
+
+/* Phones: the banner art moves to the top edge so it never sits behind
+   the title and paragraph. */
+@media (max-width: 720px) {
+  .band--deck::before {
+    width: 100%;
+    height: 220px;
+    background-size: 560px auto;
+    opacity: 0.22;
+  }
+  .band:not(.band--deck):not(.band--brand):nth-of-type(even)::before { width: 100%; height: 100px; }
+}
+
+/* The one solid band per page. */
+.band--brand {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--brand-band);
+  color: var(--text-on-brand);
+}
+
+/* Faint technical grid, faded out toward the bottom. The whole "futuristic"
+   budget — no glows, no floating shapes, no parallax. */
+.band--brand::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(var(--brand-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--brand-line) 1px, transparent 1px);
+  background-size: 68px 68px;
+  opacity: 0.55;
+  -webkit-mask-image: radial-gradient(ellipse 78% 62% at 50% 0%, #000, transparent 76%);
+  mask-image: radial-gradient(ellipse 78% 62% at 50% 0%, #000, transparent 76%);
+  pointer-events: none;
+}
+
+/* Hairline in the logo gradient along the band's top edge. */
+.band--brand::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--logo-sweep);
+}
+
+.band--brand h2,
+.band--brand h3 { color: var(--text-on-brand); }
+.band--brand p { color: var(--text-on-brand-muted); }
+.band--brand .mono-label { color: var(--text-on-brand-muted); }
+
+.lede {
+  font-size: clamp(1.0625rem, 1.5vw, 1.1875rem);
+  max-width: 56ch;
+  color: var(--text-muted);
+}
+
+.band--brand .lede { color: var(--text-on-brand-muted); }
+
+/* ---------- Type utilities ---------- */
+
+/* Every number on the site is mono with tabular figures. */
+.figure,
+.price,
+.rate,
+.stat {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.mono-label {
+  font-family: var(--font-data);
+  font-size: var(--mono-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  margin: 0 0 0.6rem;
+}
+
+/* ---------- Buttons ---------- */
+
+/* Solid fills, no outline, no halo. The effect lives on the button itself:
+   the fill deepens on hover and the button presses down 1px.
+   The label sits in dark ink on the brand blue — #00d0fa is far too light to
+   carry white text (1.84:1) but gives 9.99:1 against near-black, so a solid
+   brand fill is only legible ink-side-up. */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.8rem 1.5rem;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-weight: var(--weight-ui);
+  font-size: var(--small);
+  letter-spacing: 0.005em;
+  border: 0;
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn--primary::after {
+  content: "\2192";
+  font-family: var(--font-data);
+  line-height: 1;
+  opacity: 0.55;
+  transform: translateX(-2px);
+  transition:
+    transform var(--dur-fast) var(--ease),
+    opacity var(--dur-fast) var(--ease);
+}
+
+.btn--primary:hover::after,
+.btn--primary:focus-visible::after {
+  transform: translateX(2px);
+  opacity: 1;
+}
+
+.btn--primary {
+  background: var(--epay);
+  color: var(--text);          /* 9.99:1 on the fill */
+}
+
+.btn--primary:hover { background: #00b7db; }   /* 7.71:1 with dark ink */
+
+/* Secondary is the same shape at a lighter weight — a soft tint, still no
+   outline, so the pair reads as one family. */
+.btn--ghost {
+  background: #d6f7fe;
+  color: var(--text);
+}
+
+.btn--ghost:hover { background: #b2f1fe; }
+
+/* On the light blue band a brand-blue fill would vanish, so the roles swap:
+   primary goes white, secondary goes translucent white. */
+.band--brand .btn--primary {
+  background: var(--canvas);
+  color: var(--text);
+}
+
+.band--brand .btn--primary:hover { background: rgba(255, 255, 255, 0.75); }
+
+.band--brand .btn--ghost {
+  background: rgba(255, 255, 255, 0.4);
+  color: var(--text);
+}
+
+.band--brand .btn--ghost:hover { background: rgba(255, 255, 255, 0.68); }
+
+/* Keyboard focus is NOT decoration and stays. This is the one ring left. */
+.btn:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+
+
+/* ---------- Blue accents ----------
+
+   The site is white throughout, so #00d0fa does the work that a tinted band
+   used to: it marks where the eye should land. At 1.84:1 on white it can
+   never be text or a boundary, so it stays a shape — a rule, a bar, a dot,
+   a fill behind dark ink. */
+
+/* Eyebrow labels get a short brand rule, so every section opens with blue. */
+.mono-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.mono-label::before {
+  content: "";
+  width: 22px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--epay);
+  flex: 0 0 auto;
+}
+
+/* Cards reveal a brand bar along the top edge on hover. */
+.card {
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--epay);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease);
+}
+
+.card:hover::before { transform: scaleX(1); }
+
+/* A whole card that is itself a link. The arrow is the affordance; the top
+   accent bar already reacts to hover. */
+.card--link {
+  cursor: pointer;
+  padding-bottom: 3rem;
+}
+
+.card__go {
+  position: absolute;
+  right: 1.4rem;
+  bottom: 1.15rem;
+  font-family: var(--font-data);
+  font-size: 1.125rem;
+  line-height: 1;
+  color: var(--accent-deep);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+
+.card--link:hover .card__go,
+.card--link:focus-visible .card__go {
+  opacity: 1;
+  transform: none;
+}
+
+.card--link:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card__go { transition: none; }
+}
+
+/* A card that is already the recommended one wears the bar permanently. */
+.card--accent::before,
+.plan--hl::before,
+.path--accent::before { transform: scaleX(1); }
+
+/* Figures — prices, rates, stats — sit on a brand underline. */
+.stat { position: relative; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card::before { transition: none; }
+}
+
+/* ---------- Image slots ----------
+
+   Every place the site expects artwork. While the file is missing the slot
+   shows what belongs there and where to put it; the moment the file exists
+   the component renders the real <img> instead. */
+.imgslot {
+  display: grid;
+  place-items: center;
+  gap: 0.4rem;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  border: 1px dashed var(--epay);
+  border-radius: var(--radius);
+  background: var(--canvas);
+  min-height: 96px;
+}
+
+.imgslot__icon {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--epay);
+  color: var(--text);
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+.imgslot__name {
+  font-family: var(--font-body);
+  font-weight: var(--weight-ui);
+  font-size: var(--small);
+  color: var(--text);
+}
+
+.imgslot__path {
+  font-family: var(--font-data);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
+/* ---------- Cards ---------- */
+
+/* Depth still comes from borders, never drop shadows. The hover ring is a
+   glow in the brand blue, not an elevation shadow. */
+.card {
+  background: var(--canvas);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 1.65rem;
+  transition:
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.card:hover {
+  border-color: var(--epay);
+  box-shadow: var(--ring);
+}
+
+.band--brand .card {
+  background: rgba(255, 255, 255, 0.45);
+  border-color: rgba(0, 0, 0, 0.14);
+}
+
+.grid { display: grid; gap: 1.25rem; }
+
+@media (min-width: 640px) {
+  .grid--2 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 900px) {
+  .grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .grid--4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Locked image ratio so card rows always align. This is the single biggest
+   visual problem on the current site — three product images at three
+   different crops in one row. */
+.media {
+  aspect-ratio: 16 / 10;
+  /* No hairline around photos (Matt, 2026-09-23): the picture defines its own
+     edge. Empty slots keep their dashed outline so a missing image still reads
+     as a placeholder. */
+  background: var(--canvas);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.media img { width: 100%; height: 100%; object-fit: cover; }
+
+
+/* ---------- Motion ----------
+
+   Restrained on purpose. design-system.md rules out parallax, floating
+   shapes and anything that moves while someone is reading, so the motion
+   here is entrance-only plus one slow ambient sweep on a divider — never on
+   a block of text. Everything is gated behind prefers-reduced-motion. */
+
+/* Hero entrance: each element rises a little later than the one above it. */
+.rise > * {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: rise 620ms var(--ease) forwards;
+}
+
+.rise > *:nth-child(1) { animation-delay: 60ms; }
+.rise > *:nth-child(2) { animation-delay: 140ms; }
+.rise > *:nth-child(3) { animation-delay: 220ms; }
+.rise > *:nth-child(4) { animation-delay: 300ms; }
+.rise > *:nth-child(5) { animation-delay: 380ms; }
+
+@keyframes rise {
+  to { opacity: 1; transform: none; }
+}
+
+/* The batch line's rule used to carry a travelling sweep; removed at Matt's
+   request (2026-09-18), it read as a line growing across the page. */
+.bl__rule {
+}
+
+
+/* Brand dot breathes once every few seconds. */
+.bl__dot { animation: breathe 4.5s var(--ease) infinite; }
+
+@keyframes breathe {
+  0%, 70%, 100% { transform: scale(1); opacity: 1; }
+  85%           { transform: scale(1.65); opacity: 0.65; }
+}
+
+/* Figures land with a brand underline that draws itself in on entry. */
+.bl__value { position: relative; }
+
+.bl__value::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--epay);
+  /* Static (2026-09-18): it used to draw itself in, which read as a growing line. */
+}
+
+.is-visible .bl__value::after,
+.bl:hover .bl__value::after { transform: scaleX(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .rise > * { opacity: 1; transform: none; animation: none; }
+  .bl__rule { animation: none; background-image: none; }
+  .bl__dot { animation: none; }
+  .bl__value::after { transition: none; }
+}
+
+/* A card whose body opens the enquiry form still needs a way through to the
+   page behind it. This is that way — quiet, but a real link. */
+.card__details {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-data);
+  font-size: var(--mono-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.card__details:hover { color: var(--epay); border-bottom-color: var(--epay); }
+
+/* ---------- Scroll reveal ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity var(--dur-slow) var(--ease),
+    transform var(--dur-slow) var(--ease);
+}
+
+.reveal.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal { opacity: 1; transform: none; }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

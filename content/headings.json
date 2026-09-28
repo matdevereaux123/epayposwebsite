@@ -1,0 +1,100 @@
+{
+  "_instructions": "Section headings that used to be hardcoded in page files. Title Case (Chicago style: short prepositions, articles and conjunctions lowercase unless first or last). Headings name the brand instead of 'we', 'our' or 'this'. Body copy stays plain and direct — only headings are formal. {name} and {list} are filled in by the page.",
+  "shared": {
+    "faq": "Frequently Asked Questions",
+    "included": "No Add-On Fees for the Basics",
+    "integrations": "Fits Right Into Your Existing Workflow",
+    "plans": "Four Systems. Four Options."
+  },
+  "home": {
+    "paths": "Two Pricing Options. Select One.",
+    "statement": "Improve Your Rates. Grow Your Business.",
+    "hardware": "Equipment Built For Busy",
+    "industries": "Configured To How Your Business Operates",
+    "perks": "What Makes EPAY Innovative?",
+    "demo": "Preview EPAY With Your Actual Menu",
+    "_note_on_plans": "The homepage has no software-plans section (removed at Matt's request, 2026-09-23). Plans live on /pricing, which uses shared.plans."
+  },
+  "industry": {
+    "_note_on_setup": "Keyed by industry category. An industry can override with its own `setup_heading` — the service pages do, because they are filed under retail.",
+    "solution_eyebrow": "Common problems",
+    "solution": "EPAY's Solution",
+    "problem_label": "Problem",
+    "solution_label": "Solution",
+    "built_for": "Built for {name}",
+    "setup": {
+      "restaurant": "EPAY Restaurant Setup",
+      "retail": "EPAY Retail Setup"
+    },
+    "systems": "3 Components, 1 System",
+    "capabilities": "Getting The Most With EPAY",
+    "gallery": "{name} Running EPAY",
+    "siblings": "Other Business Types EPAY Serves",
+    "demo": "See EPAY in Action Before You Switch"
+  },
+  "feature": {
+    "all": "All EPAY Features",
+    "hardware": "Compatible with the Full EPAY Lineup",
+    "capabilities": "Getting The Most With EPAY",
+    "siblings": "Also Included",
+    "demo": "See EPAY in Action Before You Switch"
+  },
+  "products": {
+    "builder": "Price Your EPAY System",
+    "store": "Supplies, Add-Ons and EPAY Gear",
+    "more": "Hardware Is One Part of EPAY"
+  },
+  "product": {
+    "built_for": "Built for {list}",
+    "specs": "Specifications",
+    "can_do": "What the {name} Can Do",
+    "gallery": "{name} in Action",
+    "lease": "Purchase or Lease. Your Choice.",
+    "others": "Other EPAY Hardware"
+  },
+  "pricing": {
+    "save": "Two Ways to Save"
+  },
+  "about": {
+    "approach": "Our Approach",
+    "location": "Troy, Michigan"
+  },
+  "software": {
+    "apps": "Applications That Run Off Your Own Data",
+    "contact": "Tell Us What You're Trying to Do"
+  },
+  "portal": {
+    "how": "Get Paid Without the Customer at the Counter",
+    "fit": "See How EPAY Payment Portal Fits Your Setup"
+  },
+  "capital": {
+    "reasons": "Common Reasons to Ask",
+    "form": "Tell Us What You Need Capital For"
+  },
+  "terminal": {
+    "does": "Everything It Does, and Nothing It Doesn't",
+    "fit": "EPAY Terminal or the Full EPAY POS?",
+    "good_fit": "A Good Fit",
+    "full_pos": "When You Need the Full EPAY POS",
+    "steps": "Key It In. Take the Card. Done.",
+    "demo": "Try the Keypad",
+    "closing": "Get EPAY Terminal Running"
+  },
+  "offers": {
+    "steps": "3 Steps, No Gap in Service",
+    "qualify": "Who Qualifies",
+    "hardware": "One Partner, Every Counter"
+  },
+  "third_party": {
+    "about": "Platform Overview",
+    "lodging": "Payments That Live Inside the PMS",
+    "software": "One Hardware Family, Several Software Lines",
+    "hardware": "Supported Hardware",
+    "contact": "Talk to Us About {name}",
+    "others": "Other Platforms"
+  },
+  "system": {
+    "not_found": "That Page Isn't Here",
+    "thank_you": "We Got It"
+  }
+}

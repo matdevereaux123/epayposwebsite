@@ -1,0 +1,172 @@
+---
+// The shop catalogue, used on /shop. Each card links to that item's own page.
+//
+// Everything comes from content/store.json. Items with no price render
+// "Ask us" rather than a number we invented — twelve of the branded items
+// have no price yet, and a merch price guessed on a payments site is a
+// number a merchant might hold you to.
+//
+// Filtering is CSS-only via the :has() selector on radio inputs, so the
+// whole grid stays in the DOM for crawlers and works with JS disabled.
+
+import ImageSlot from "./ImageSlot.astro";
+import storeData from "../../content/store.json";
+import { money, headings } from "../lib/content";
+
+interface Props {
+  /** The page supplies its own heading on /shop, so skip the intro there. */
+  showIntro?: boolean;
+}
+const { showIntro = true } = Astro.props;
+
+const { categories, items } = storeData as any;
+const priced = (items as any[]).filter((i) => i.price !== null).length;
+---
+
+<section class="band band--dark store" id="store">
+  <div class="wrap">
+    {showIntro && (
+      <>
+        <p class="mono-label">The shop</p>
+        <h2>{headings.products.store}</h2>
+        <p class="lede">
+          Paper, front-of-house supplies, hardware add-ons and branded kit. Everything
+          ships with your system or on its own.
+        </p>
+      </>
+    )}
+
+    <fieldset class="store__filter">
+      <legend class="visually-hidden">Filter the shop by category</legend>
+      <label class="store__chip">
+        <input type="radio" name="store-cat" value="all" checked />
+        <span>Everything</span>
+      </label>
+      {categories.map((cat: any) => (
+        <label class="store__chip">
+          <input type="radio" name="store-cat" value={cat.id} />
+          <span>{cat.name}</span>
+        </label>
+      ))}
+    </fieldset>
+
+    {categories.map((cat: any) => (
+      <div class="store__group" data-cat={cat.id}>
+        <div class="store__head">
+          <h3>{cat.name}</h3>
+          <p>{cat.body}</p>
+        </div>
+        <ul class="store__grid">
+          {items
+            .filter((item: any) => item.category === cat.id)
+            .map((item: any) => (
+              <li class="store__item card card--link"
+                  data-enquire-reason="shop"
+                  data-enquire={`shop:${item.id}`}
+                  data-enquire-label={`Shop grid — ${item.name}`}>
+                <a class="store__link" href={`/shop/${item.id}`} aria-label={`${item.name} — ask about it`}>
+                  <ImageSlot name={item.name} file={item.image} ratio="1 / 1" />
+                  <p class="store__name">{item.name}</p>
+                  {(item.spec || item.pack) && (
+                    <p class="store__spec">
+                      {[item.spec, item.pack].filter(Boolean).join(" · ")}
+                    </p>
+                  )}
+                  <p class="store__price figure">
+                    {item.price !== null ? money(item.price) : "Ask us"}
+                  </p>
+                  <span class="card__go" aria-hidden="true">→</span>
+                </a>
+                <a class="card__details" href={`/shop/${item.id}`} data-enquire-keep>
+                  Item details <span aria-hidden="true">→</span>
+                </a>
+              </li>
+            ))}
+        </ul>
+      </div>
+    ))}
+
+    <p class="store__note">
+      {items.length - priced} items are still being priced — ask us and we'll quote them.
+    </p>
+
+    <div class="actions">
+      <a class="btn btn--primary" href="/contact"
+         data-enquire-reason="shop"
+         data-enquire-label="The Shop — Ask about the shop">Ask about the shop</a>
+      <a class="btn btn--ghost" href="#build">Add supplies to a build</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .store__filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    border: 0;
+    padding: 0;
+    margin: 2rem 0 0;
+  }
+
+  .store__link { display: grid; gap: 0.35rem; color: inherit; text-decoration: none; height: 100%; align-content: start; }
+
+  .store__chip { position: relative; cursor: pointer; }
+  .store__chip input { position: absolute; opacity: 0; pointer-events: none; }
+
+  .store__chip span {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--rule-btn);
+    border-radius: 999px;
+    font-size: var(--small);
+    color: var(--text-muted);
+    transition:
+      background var(--dur-fast) var(--ease),
+      border-color var(--dur-fast) var(--ease),
+      color var(--dur-fast) var(--ease);
+  }
+
+  .store__chip input:checked + span {
+    background: var(--epay);
+    border-color: var(--epay);
+    color: var(--text);
+  }
+
+  .store__chip input:focus-visible + span {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+  }
+
+  .store__group { margin-top: 2.5rem; }
+
+  .store__head h3 { margin-bottom: 0.15rem; }
+  .store__head p { color: var(--text-muted); font-size: var(--small); }
+
+  .store__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  .store__item { padding: 1rem; }
+  .store__name { font-weight: var(--weight-ui); margin: 0.75rem 0 0.1rem; }
+  .store__spec { font-family: var(--font-data); font-size: 0.75rem; color: var(--text-muted); margin: 0 0 0.4rem; }
+  .store__price { font-size: 1.0625rem; color: var(--text); margin: 0; }
+
+  .store__note { margin-top: 2rem; font-size: var(--small); color: var(--text-muted); }
+
+  /* CSS-only filtering. Every card stays in the DOM either way, so the shop
+     is fully crawlable and works with JS off. */
+  .store__filter:has(input[value="paper"]:checked) ~ .store__group:not([data-cat="paper"]),
+  .store__filter:has(input[value="supplies"]:checked) ~ .store__group:not([data-cat="supplies"]),
+  .store__filter:has(input[value="hardware"]:checked) ~ .store__group:not([data-cat="hardware"]),
+  .store__filter:has(input[value="branded"]:checked) ~ .store__group:not([data-cat="branded"]) {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .store__chip span { transition: none; }
+  }
+</style>

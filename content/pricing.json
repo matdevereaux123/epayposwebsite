@@ -1,0 +1,384 @@
+{
+  "_instructions": "This is the only place pricing exists. Change a number here and it updates everywhere on the site. Never hardcode a price into a page.",
+  "plans": [
+    {
+      "id": "terminal",
+      "name": "Terminal",
+      "price": 17.99,
+      "interval": "mo",
+      "best_for": "Card-present businesses that just need to take payments",
+      "highlight": false,
+      "features": [
+        "Standalone payment terminal",
+        "EMV, tap, and swipe",
+        "Digital and printed receipts",
+        "Batch reporting",
+        "Next-day funding"
+      ]
+    },
+    {
+      "id": "lite",
+      "name": "EPAY Table Mobile",
+      "price": 39.99,
+      "interval": "mo",
+      "best_for": "Counter service, cafes, and small shops",
+      "highlight": false,
+      "features": [
+        "Full POS register",
+        "Catalog and inventory basics",
+        "Employee clock-in",
+        "Sales reporting",
+        "Customer-facing display support"
+      ]
+    },
+    {
+      "id": "table",
+      "name": "EPAY Table",
+      "price": 69.99,
+      "interval": "mo",
+      "best_for": "Full service restaurants and bars",
+      "highlight": true,
+      "badge": "MOST POPULAR",
+      "features": [
+        "Table and floor management",
+        "Course firing and kitchen routing",
+        "Server sections and tip handling",
+        "Split checks and seat-level ordering",
+        "Delivery app integrations",
+        "Online ordering"
+      ]
+    },
+    {
+      "id": "retail",
+      "name": "Retail",
+      "price": 74.99,
+      "interval": "mo",
+      "best_for": "Convenience, liquor, smoke shops, and grocery",
+      "highlight": false,
+      "features": [
+        "Deep inventory and SKU management",
+        "Age verification and ID scanning",
+        "Promotions, mix-and-match, and combos",
+        "Purchase orders and vendor tracking",
+        "Multi-location reporting",
+        "Scale and scanner support"
+      ]
+    }
+  ],
+  "processing": {
+    "flat_rate": {
+      "label": "Flat Rate",
+      "percent": 2.3,
+      "per_transaction_cents": 5,
+      "display": "2.3% + 5¢",
+      "body": "One flat rate on every card. No tiered surprises."
+    },
+    "cash_discount": {
+      "label": "Consumer Choice",
+      "display": "0%",
+      "body": "Our Consumer Choice program. Card-paying customers cover the processing cost.",
+      "program_name": "Consumer Choice",
+      "short": "0% processing"
+    }
+  },
+  "hardware": {
+    "_note": "Lease rates are per unit, per month. RESOLVED 2026-09-01: Matt confirmed $59.99 for large units, superseding the $49.99 shown on the live Wix products page. The Wix page is the stale one and needs updating before or at cutover, or the two sites will quote different lease prices. Purchase prices live on each product in products.json.",
+    "lease": {
+      "label": "Lease",
+      "small_monthly": 19.99,
+      "large_monthly": 59.99,
+      "body": "Per unit, per month, on top of your software plan."
+    },
+    "free_placement": {
+      "label": "Free Placement",
+      "body": "Hardware placed at no upfront cost and no monthly lease. Not an equipment lease.",
+      "qualifiers": [
+        {
+          "monthly_volume": 50000,
+          "program": "any",
+          "label": "$50K+ monthly processing"
+        },
+        {
+          "monthly_volume": 20000,
+          "program": "consumer_choice",
+          "label": "$20K+ monthly processing on the Consumer Choice program"
+        }
+      ]
+    },
+    "purchase": {
+      "available": true,
+      "label": "Buy Outright",
+      "body": "One-time cost per unit, plus tax. Software plan billed monthly on top.",
+      "tax_note": "Plus tax"
+    },
+    "callout": {
+      "_note": "Phrases for the savings line under each price on the homepage showcase. Kept here so the wording changes without touching a component.",
+      "lease_prefix": "or",
+      "lease_suffix": "/mo on a lease",
+      "free_with_lease": "Free with a system lease",
+      "placement": "$0 upfront with free placement",
+      "qualifier": "if you qualify"
+    }
+  },
+  "programs": [
+    {
+      "name": "Free Placement Program",
+      "body": "Qualifying merchants get POS hardware placed at no upfront cost. No lease, no equipment financing."
+    },
+    {
+      "name": "Statement Analysis",
+      "body": "Send us a recent processing statement and we'll break down every fee line by line, including the ones buried in the back page.",
+      "cta": {
+        "label": "Upload a statement",
+        "href": "/contact"
+      }
+    }
+  ],
+  "included_with_every_plan": [
+    "24/7 support",
+    "Free installation and staff training",
+    "Real-time reporting on the EPAY mobile app",
+    "Next-day funding",
+    "PCI compliance assistance",
+    "No long-term contract lock-in"
+  ],
+  "_note_on_lite": "The plan with id 'lite' is now displayed as 'EPAY Table Mobile'. Its id stays 'lite' so nothing that references it breaks. NOTE: its best_for still reads 'Counter service, cafes, and small shops', which describes a counter plan, not a mobile/handheld one — and the name now sits oddly beside the separate 'Table' plan. Reword best_for, or rethink the pair.",
+  "_note_on_consumer_choice": "The cash discount program is branded Consumer Choice — that is the name used in the Restaurant mega-menu offer, so the whole site now matches. `program_name` is the brand name, `short` is the plain-English version for tight spaces. Compliance note: cash discount / dual pricing carries card-brand and state disclosure requirements, so have someone check the wording of any '0%' or 'keep 100% of your fees' claim before launch.",
+  "choose": {
+    "_note": "The two processing options on /pricing, presented as a choice with a sign-up CTA on each. Copy comes from processing.flat_rate and processing.cash_discount — this block only adds what is specific to choosing between them.",
+    "eyebrow": "Choose how you pay for processing",
+    "heading": "Two Pricing Options. Select One.",
+    "cta_label": "Sign up for this option",
+    "cta_href": "/sign-up",
+    "options": [
+      {
+        "id": "consumer-choice",
+        "source": "cash_discount",
+        "best_for": "Merchants who want their processing cost to be zero",
+        "points": [
+          "Card-paying customers cover the processing cost",
+          "Compliant with or without shelf price changes",
+          "We handle the signage and receipt language"
+        ],
+        "learn_more": "/offers/consumer-choice",
+        "highlight": true
+      },
+      {
+        "id": "flat-rate",
+        "source": "flat_rate",
+        "best_for": "Merchants who want one predictable rate on every card",
+        "points": [
+          "The same rate on every card type",
+          "No tiered pricing",
+          "Next-day funding on every batch"
+        ],
+        "learn_more": "/offers/flat-rate",
+        "highlight": false
+      }
+    ]
+  },
+  "custom": {
+    "_note": "The landscape panel for large multi-unit builds. No prices — these are quoted.",
+    "eyebrow": "Larger operations",
+    "heading": "Custom-Built Plans for Bigger Floors",
+    "body": "Multiple stations, a full kitchen display setup, handhelds for every server, more than one location — past a certain size the plans stop being the right shape. We build the system around the operation and price it as one package.",
+    "points": [
+      "Any number of stations, handhelds and kitchen displays",
+      "Multi-location reporting rolled up across sites",
+      "Menu and catalog built out before install, at every site",
+      "A single package price rather than a per-unit stack"
+    ],
+    "cta": {
+      "label": "Talk about a custom build",
+      "href": "/contact"
+    },
+    "secondary": {
+      "label": "Price a system yourself",
+      "href": "/epay-products-1#build"
+    }
+  },
+  "subscriptions": {
+    "_note": "Add-on subscriptions, from Matt's spreadsheet. `price` is a monthly figure; where the terms are not a flat monthly number, `price` is null and `terms` carries the wording verbatim. Per-unit items say so in `unit`.",
+    "eyebrow": "Other subscriptions",
+    "heading": "Add-On Subscriptions",
+    "items": [
+      {
+        "name": "eComm",
+        "price": 65.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Online store tied to the same catalog and inventory."
+      },
+      {
+        "name": "Enterprise eComm",
+        "price": 15.0,
+        "interval": "mo",
+        "unit": "per user",
+        "terms": "$15 per user (up to 5 users); additional users $3 each",
+        "body": "Multi-user e-commerce for larger operations."
+      },
+      {
+        "name": "Enterprise",
+        "price": 60.0,
+        "interval": "mo",
+        "unit": "per store",
+        "terms": "$60 per store",
+        "body": "Multi-location management and rolled-up reporting."
+      },
+      {
+        "name": "Analytics add-on",
+        "price": 5.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Deeper sales and labor reporting."
+      },
+      {
+        "name": "Premium inventory module",
+        "price": 20.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Purchase orders, vendor costs and deeper stock control."
+      },
+      {
+        "name": "Super user",
+        "price": 5.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Elevated permissions for an additional manager."
+      },
+      {
+        "name": "Charge",
+        "price": 25.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "House accounts and charge tabs."
+      },
+      {
+        "name": "Caller ID",
+        "price": 15.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Match an inbound call to a customer record before you pick up."
+      },
+      {
+        "name": "Coupon marketing",
+        "price": 15.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Build and redeem coupons at the register."
+      },
+      {
+        "name": "Kitchen Display System",
+        "price": 15.0,
+        "interval": "mo",
+        "unit": "per screen",
+        "terms": "",
+        "body": "Software for the kitchen screen. Hardware is separate."
+      },
+      {
+        "name": "Digital signage",
+        "price": 5.0,
+        "interval": "mo",
+        "unit": "per TV",
+        "terms": "",
+        "body": "Menu boards and promo screens driven from the POS."
+      },
+      {
+        "name": "Loyalty and gift cards",
+        "price": 30.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Physical and digital cards, plus a loyalty program."
+      },
+      {
+        "name": "Table reservations",
+        "price": 10.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Reservations in the POS and online, synced to table management."
+      },
+      {
+        "name": "QuickBooks",
+        "price": 15.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Accounting export straight into QuickBooks."
+      },
+      {
+        "name": "DoorDash Drive",
+        "price": 15.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Your own delivery orders dispatched on DoorDash drivers."
+      },
+      {
+        "name": "Chowly — 1–2 delivery platforms",
+        "price": 88.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Delivery app integration through Chowly."
+      },
+      {
+        "name": "Chowly — 3–4 delivery platforms",
+        "price": 110.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Delivery app integration through Chowly."
+      },
+      {
+        "name": "Chowly — 5+ delivery platforms",
+        "price": 133.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Delivery app integration through Chowly."
+      },
+      {
+        "name": "Dedicated SMS number",
+        "price": 5.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "A number of your own for customer messaging."
+      },
+      {
+        "name": "SMS",
+        "price": null,
+        "interval": "",
+        "unit": "",
+        "terms": "$0.01 per message",
+        "body": "Billed per message sent."
+      },
+      {
+        "name": "MarginEdge",
+        "price": 30.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Invoice, inventory and food-cost integration."
+      },
+      {
+        "name": "7shifts",
+        "price": 30.0,
+        "interval": "mo",
+        "unit": "",
+        "terms": "",
+        "body": "Scheduling and labor management integration."
+      }
+    ],
+    "lede": "Monthly add-ons that bolt onto any plan. Add what you need, drop what you don't."
+  }
+}

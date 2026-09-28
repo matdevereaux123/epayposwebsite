@@ -1,0 +1,295 @@
+---
+// The full merchant application, field for field with the one in the EPAY CRM.
+//
+// WHY THIS DOES NOT USE NETLIFY FORMS: it collects a social security number,
+// date of birth, driver's licence and bank account. Netlify stores form
+// submissions as plain text in a dashboard. This posts straight to the CRM
+// instead, which encrypts those fields on arrival (encrypt_sensitive) and
+// keeps them out of its own plain-text audit record. Nothing sensitive is
+// stored by the website at any point.
+//
+// Fields, order, wording and the required rules come from
+// content/application.json, which mirrors APPLICATION_LINK_SECTIONS in the CRM.
+import appData from "../../content/application.json";
+
+const a = appData as any;
+const hasSlug = Boolean(a.crm.slug);
+---
+
+<!-- Netlify only learns a form's fields from static HTML at deploy time, so
+     this copy exists purely to register them. It is never shown or filled in
+     by hand; the script posts to it after the CRM accepts an application. -->
+<form name={a.alert.form_name} data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value={a.alert.form_name} />
+  <input name="bot-field" />
+  {a.alert.fields.map((f: string) => <input type="text" name={f} />)}
+</form>
+
+<form class="apf" id="applicationForm" novalidate data-slug={a.crm.slug} data-url={a.crm.url} data-key={a.crm.anon_key}>
+  {!hasSlug && (
+    <p class="apf__warn" role="status">{a.errors.no_slug}</p>
+  )}
+
+  <p class="apf__error" id="apfError" role="alert" hidden></p>
+
+  {a.sections.map((section: any) => (
+    <fieldset class="apf__set">
+      <legend class="mono-label">{section.title}</legend>
+      <div class="apf__grid">
+        {section.fields.map((f: any) => (
+          <div class={`apf__field ${f.textarea ? "apf__field--wide" : ""}`}>
+            <label for={`apf-${f.id}`}>
+              {f.label}
+              {!f.required && <span class="apf__opt"> (optional)</span>}
+            </label>
+            {f.textarea ? (
+              <textarea id={`apf-${f.id}`} name={f.id} rows="3" data-param={f.param}
+                data-label={f.label} data-required={f.required ? "1" : undefined}></textarea>
+            ) : (
+              <input id={`apf-${f.id}`} name={f.id} type={f.type ?? "text"} data-param={f.param}
+                data-label={f.label} data-required={f.required ? "1" : undefined}
+                autocomplete={f.sensitive ? "off" : f.autocomplete}
+                spellcheck={f.sensitive ? "false" : undefined} />
+            )}
+          </div>
+        ))}
+      </div>
+    </fieldset>
+  ))}
+
+  <fieldset class="apf__set">
+    <legend class="mono-label">{a.pricing.title}</legend>
+    <div class="apf__grid">
+      <div class="apf__field">
+        <label for="apf-pricing">{a.pricing.label}</label>
+        <select id="apf-pricing" name="pricing_plan">
+          <option value="">{a.pricing.placeholder}</option>
+          {a.pricing.options.map((opt: string) => <option value={opt}>{opt}</option>)}
+        </select>
+      </div>
+    </div>
+  </fieldset>
+
+  <label class="apf__terms">
+    <input type="checkbox" id="apf-terms" />
+    <span>
+      {a.terms.before}{" "}
+      <a href={a.terms.href} target="_blank" rel="noopener noreferrer">{a.terms.link_label}</a>{a.terms.after}
+    </span>
+  </label>
+
+  <button type="submit" class="btn btn--primary apf__submit" id="apfSubmit" disabled={!hasSlug}>
+    {a.submit_label}
+  </button>
+  <p class="apf__note">{a.privacy_note}</p>
+</form>
+
+<div class="apf__done" id="apfDone" hidden tabindex="-1">
+  <p class="apf__tick" aria-hidden="true">✓</p>
+  <p class="mono-label">{a.success.eyebrow}</p>
+  <h2>{a.success.heading}</h2>
+  <p class="lede">{a.success.body}</p>
+  <div class="actions">
+    <a class="btn btn--primary" href={a.success.primary.href}>{a.success.primary.label}</a>
+    <a class="btn btn--ghost" href={a.success.secondary.href}>{a.success.secondary.label}</a>
+  </div>
+</div>
+
+<script is:inline define:vars={{ copy: { errors: appData.errors, submitting: appData.submitting_label, terms_href: appData.terms.href, alert: appData.alert } }}>
+  (function () {
+    const form = document.getElementById("applicationForm");
+    if (!form) return;
+    const err = document.getElementById("apfError");
+    const btn = document.getElementById("apfSubmit");
+    const done = document.getElementById("apfDone");
+    const fields = [...form.querySelectorAll("[data-param]")];
+
+    function fail(message, focusEl) {
+      err.textContent = message;
+      err.hidden = false;
+      (focusEl || err).scrollIntoView({ block: "center", behavior: "smooth" });
+      if (focusEl && focusEl.focus) focusEl.focus({ preventScroll: true });
+    }
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      err.hidden = true;
+
+      // Same rules as the CRM: every required field, then pricing, then terms.
+      const missing = fields.filter((el) => el.dataset.required && !el.value.trim());
+      if (missing.length) {
+        fail(copy.errors.missing_prefix + missing.map((el) => el.dataset.label).join(", ") + ".", missing[0]);
+        return;
+      }
+      const pricing = document.getElementById("apf-pricing");
+      if (!pricing.value) {
+        fail(copy.errors.pricing, pricing);
+        return;
+      }
+      const terms = document.getElementById("apf-terms");
+      if (!terms.checked) {
+        fail(copy.errors.terms, terms);
+        return;
+      }
+
+      // A visitor who arrived on a partner's link applies through that
+      // partner's CRM link, so the application is attributed to them.
+      const partner = typeof window.epayPartner === "function" ? window.epayPartner() : null;
+      const slug = (partner && partner.application_slug) || form.dataset.slug;
+      if (!slug) {
+        fail(copy.errors.no_slug);
+        return;
+      }
+
+      const payload = { p_slug: slug };
+      fields.forEach((el) => { payload[el.dataset.param] = el.value.trim(); });
+      payload.p_pricing_plan = pricing.value;
+      payload.p_terms_accepted = true;
+      payload.p_terms_url = new URL(copy.terms_href, location.origin).href;
+
+      const label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = copy.submitting;
+
+      try {
+        const res = await fetch(form.dataset.url + "/rest/v1/rpc/public_submit_application", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: form.dataset.key,
+            Authorization: "Bearer " + form.dataset.key,
+          },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          let message = copy.errors.generic;
+          try { const body = await res.json(); if (body && body.message) message = body.message; } catch (e) {}
+          throw new Error(message);
+        }
+        // Tell the sales inbox. Sent only after the CRM accepted the
+        // application, and only the fields listed in content/application.json
+        // — never the SSN, date of birth, licence, tax ID or bank details.
+        // A partner's applications skip this: their team works the record in
+        // the CRM, and the alert would put it in the wrong inbox.
+        try {
+          if (partner && partner.application_slug) throw new Error("partner application");
+          const alertBody = new URLSearchParams({ "form-name": copy.alert.form_name });
+          copy.alert.fields.forEach((name) => {
+            const el = form.querySelector('[name="' + name + '"]');
+            if (el && el.value.trim()) alertBody.set(name, el.value.trim());
+          });
+          await fetch("/", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: alertBody.toString(),
+          });
+        } catch (e) {
+          // The application is already safely in the CRM; a failed alert
+          // must never tell the applicant their submission went wrong.
+        }
+
+        form.hidden = true;
+        done.hidden = false;
+        // Take them to the top of the section so the thank-you is the whole
+        // view, the way the thank-you page reads after any other form.
+        const top = done.closest("section") || done;
+        window.scrollTo({ top: top.offsetTop - 80, behavior: "smooth" });
+        done.focus({ preventScroll: true });
+      } catch (e) {
+        btn.disabled = false;
+        btn.textContent = label;
+        fail(e.message || copy.errors.generic);
+      }
+    });
+  })();
+</script>
+
+<style>
+  .apf { display: grid; gap: 0; }
+  /* `display` beats the hidden attribute, so say it explicitly — without
+     this the form stays on screen behind the thank-you. */
+  .apf[hidden] { display: none; }
+
+  /* Each block reads like a section of the site: small label, hairline rule,
+     then the fields. No boxes inside boxes. */
+  .apf__set {
+    border: 0;
+    border-top: 1px solid var(--rule);
+    padding: 2rem 0 0;
+    margin: 0 0 2rem;
+  }
+  .apf__set:first-of-type { border-top: 0; padding-top: 0; }
+  .apf__set legend { padding: 0; margin-bottom: 1.1rem; }
+
+  .apf__grid { display: grid; gap: 1.1rem 1.5rem; }
+  @media (min-width: 680px) { .apf__grid { grid-template-columns: 1fr 1fr; } }
+  .apf__field--wide { grid-column: 1 / -1; }
+
+  .apf__field { display: grid; gap: 0.4rem; }
+  .apf__field label { font-size: var(--small); font-weight: var(--weight-ui); }
+  .apf__opt { color: var(--text-muted); font-weight: 400; }
+
+  .apf input,
+  .apf textarea,
+  .apf select {
+    width: 100%;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    background: #fff;
+    font: inherit;
+    color: var(--text);
+    transition: border-color var(--dur-fast) var(--ease);
+  }
+  .apf input:hover,
+  .apf textarea:hover,
+  .apf select:hover { border-color: var(--glass-line); }
+  .apf textarea { resize: vertical; min-height: 6rem; }
+  .apf input:focus-visible,
+  .apf textarea:focus-visible,
+  .apf select:focus-visible {
+    outline: 2px solid var(--accent-deep);
+    outline-offset: 1px;
+    border-color: var(--accent-deep);
+  }
+
+  .apf__terms {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 1.25rem 0 0;
+    border-top: 1px solid var(--rule);
+    font-size: var(--small);
+    color: var(--text-muted);
+  }
+  .apf__terms input { width: 1.1rem; height: 1.1rem; flex: 0 0 auto; margin-top: 0.15rem; accent-color: var(--accent-deep); }
+  .apf__terms a { color: var(--accent-deep); text-decoration: underline; }
+
+  .apf__submit { width: 100%; margin-top: 1.5rem; }
+  .apf__submit[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+  .apf__note { font-size: var(--small); color: var(--text-muted); text-align: center; margin: 0.9rem 0 0; }
+
+  .apf__warn,
+  .apf__error {
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius);
+    font-size: var(--small);
+    margin: 0 0 1.75rem;
+  }
+  .apf__warn { background: var(--glass); border: 1px solid var(--glass-line); color: var(--text); }
+  .apf__error { background: #fdecec; border: 1px solid #f3c6c6; color: #a11b1b; }
+
+  /* Reads like /thank-you: centred, same buttons, same spacing. */
+  .apf__done { text-align: center; padding-block: clamp(2rem, 6vw, 4rem); }
+  .apf__done:focus { outline: none; }
+  .apf__done .lede { margin-inline: auto; }
+  /* .mono-label is a flex row (label + rule), so centre it explicitly. */
+  .apf__done .mono-label { justify-content: center; }
+  .apf__done .actions { justify-content: center; }
+  .apf__tick {
+    width: 3.25rem; height: 3.25rem; display: grid; place-items: center;
+    border-radius: 999px; background: var(--epay); color: var(--text);
+    font-size: 1.6rem; margin: 0 auto 1.25rem;
+  }
+</style>

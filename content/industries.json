@@ -1,0 +1,1420 @@
+{
+  "_instructions": "One entry per industry page. All of these render from a single template at src/pages/[slug].astro. To add an industry, copy an entry and change the values — do not create a new page file. Slugs must match the live site exactly.",
+  "industries": [
+    {
+      "slug": "full-service-restaurant",
+      "name": "Full Service Restaurant",
+      "category": "restaurant",
+      "meta_title": "Full Service Restaurant POS System | EPAY POS",
+      "meta_description": "A restaurant POS built for table service — floor management, course firing, split checks, and 2.3% flat processing. Free placement available.",
+      "headline": "Run The Floor Without Running In Circles",
+      "subhead": "Seating, courses, and checks all in one system your employees can learn in one shift.",
+      "pain_points": [
+        {
+          "problem": "Servers walking back to the terminal between every table",
+          "solution": "Handhelds fire orders from tableside straight to the kitchen."
+        },
+        {
+          "problem": "Split checks turning into a ten-minute math problem",
+          "solution": "Split by seat, item, or percentage at any point in the ticket."
+        },
+        {
+          "problem": "Food landing out of order",
+          "solution": "Course firing holds items until the table is ready for them."
+        }
+      ],
+      "feature_ids": [
+        "operations",
+        "kitchen",
+        "employees",
+        "analytics"
+      ],
+      "recommended_plan": "table",
+      "product_ids": [
+        "epay-table",
+        "epay-mini",
+        "kitchen-display"
+      ],
+      "hero_image": "/img/industries/full-service-restaurant-hero.jpg",
+      "gallery": [
+        {
+          "name": "Full Service Restaurant — floor / counter",
+          "file": "/img/industries/full-service-restaurant-1.jpg"
+        },
+        {
+          "name": "Full Service Restaurant — the system in use",
+          "file": "/img/industries/full-service-restaurant-2.jpg"
+        },
+        {
+          "name": "Full Service Restaurant — staff or detail shot",
+          "file": "/img/industries/full-service-restaurant-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to handle every detail of the dining room. Manage floor plans with customizable table management, route orders to kitchen printers or display screens, and keep service moving with split checks, tabs and modifier prompts."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Handheld terminals work with the main system, so staff take orders, process payments and print receipts tableside. Each device syncs in real time, so menus, modifiers and pricing are always current."
+        },
+        {
+          "name": "Kitchen Order Screen",
+          "body": "Replaces paper tickets with a digital display. Orders flow from the POS or a handheld straight to the kitchen in real time, which cuts mistakes and speeds up prep."
+        }
+      ],
+      "on_home": true
+    },
+    {
+      "slug": "bar-lounge",
+      "name": "Bar & Lounge",
+      "category": "restaurant",
+      "meta_title": "Bar & Nightclub POS System | EPAY POS",
+      "meta_description": "Fast bar POS with tab management, pre-auth, quick pours, and tip pooling. Flat 2.3% processing or 0% cash discount.",
+      "headline": "Built for the Speed of a Friday Night Rush",
+      "subhead": "Open tabs, pre-auth cards, ring a round in two taps, and close out without a line at the register.",
+      "pain_points": [
+        {
+          "problem": "Tabs walking out at close",
+          "solution": "Card pre-auth holds the tab open safely until it's settled."
+        },
+        {
+          "problem": "Bartenders slowed down by menu navigation",
+          "solution": "Custom quick-key layouts put your top 20 pours on one screen."
+        },
+        {
+          "problem": "Tip splitting arguments at end of shift",
+          "solution": "Tip pooling rules calculate automatically at close."
+        }
+      ],
+      "feature_ids": [
+        "operations",
+        "employees",
+        "payments",
+        "analytics"
+      ],
+      "recommended_plan": "table",
+      "product_ids": [
+        "epay-table",
+        "epay-mini"
+      ],
+      "hero_image": "/img/industries/bar-lounge-hero.jpg",
+      "gallery": [
+        {
+          "name": "Bar & Lounge — floor / counter",
+          "file": "/img/industries/bar-lounge-1.jpg"
+        },
+        {
+          "name": "Bar & Lounge — the system in use",
+          "file": "/img/industries/bar-lounge-2.jpg"
+        },
+        {
+          "name": "Bar & Lounge — staff or detail shot",
+          "file": "/img/industries/bar-lounge-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to handle every detail of the dining room. Manage floor plans with customizable table management, route orders to kitchen printers or display screens, and keep service moving with split checks, tabs and modifier prompts."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Handheld terminals work with the main system, so staff take orders, process payments and print receipts tableside. Each device syncs in real time, so menus, modifiers and pricing are always current."
+        },
+        {
+          "name": "Kitchen Order Screen",
+          "body": "Replaces paper tickets with a digital display. Orders flow from the POS or a handheld straight to the kitchen in real time, which cuts mistakes and speeds up prep."
+        }
+      ],
+      "on_home": true
+    },
+    {
+      "slug": "pizzeria-s",
+      "name": "Pizzerias",
+      "category": "restaurant",
+      "meta_title": "Pizzeria POS System with Delivery | EPAY POS",
+      "meta_description": "Pizza POS with half-and-half modifiers, delivery dispatch, and DoorDash, Uber Eats, and Grubhub built in.",
+      "headline": "Every Topping, Every Half, Every Delivery — Handled",
+      "subhead": "Modifier logic that understands pizza, plus delivery apps that land in the same ticket queue as your phone orders.",
+      "pain_points": [
+        {
+          "problem": "Half-and-half and specialty pricing entered wrong",
+          "solution": "Fractional topping pricing is built into the modifier engine."
+        },
+        {
+          "problem": "A tablet from every delivery app cluttering the counter",
+          "solution": "DoorDash, Uber Eats, and Grubhub route directly into the POS."
+        },
+        {
+          "problem": "Drivers leaving with the wrong order",
+          "solution": "Delivery dispatch groups tickets by route with driver assignment."
+        }
+      ],
+      "feature_ids": [
+        "kitchen",
+        "integrations",
+        "online",
+        "inventory"
+      ],
+      "recommended_plan": "table",
+      "product_ids": [
+        "epay-table",
+        "kitchen-display",
+        "epay-mini"
+      ],
+      "hero_image": "/img/industries/pizzeria-s-hero.jpg",
+      "gallery": [
+        {
+          "name": "Pizzerias — floor / counter",
+          "file": "/img/industries/pizzeria-s-1.jpg"
+        },
+        {
+          "name": "Pizzerias — the system in use",
+          "file": "/img/industries/pizzeria-s-2.jpg"
+        },
+        {
+          "name": "Pizzerias — staff or detail shot",
+          "file": "/img/industries/pizzeria-s-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to handle every detail of the dining room. Manage floor plans with customizable table management, route orders to kitchen printers or display screens, and keep service moving with split checks, tabs and modifier prompts."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Handheld terminals work with the main system, so staff take orders, process payments and print receipts tableside. Each device syncs in real time, so menus, modifiers and pricing are always current."
+        },
+        {
+          "name": "Kitchen Order Screen",
+          "body": "Replaces paper tickets with a digital display. Orders flow from the POS or a handheld straight to the kitchen in real time, which cuts mistakes and speeds up prep."
+        }
+      ],
+      "on_home": true
+    },
+    {
+      "slug": "cafe-bakery",
+      "name": "Cafe & Bakery",
+      "category": "restaurant",
+      "meta_title": "Cafe & Bakery POS System | EPAY POS",
+      "meta_description": "Counter-service POS for cafes and bakeries — fast modifiers, mobile ordering, and loyalty. Plans from $39.99/mo.",
+      "headline": "Keep the Morning Line Moving",
+      "subhead": "Drink modifiers, mobile orders, and a customer display that handles the tip prompt for you.",
+      "pain_points": [
+        {
+          "problem": "Complicated drink orders slowing the register",
+          "solution": "Nested modifiers ring a custom drink in three taps."
+        },
+        {
+          "problem": "Regulars waiting behind a twelve-item order",
+          "solution": "Online ordering lets them order ahead and skip the line."
+        },
+        {
+          "problem": "Day-old inventory guesswork",
+          "solution": "Sales-by-daypart reporting shows what to bake and when."
+        }
+      ],
+      "feature_ids": [
+        "operations",
+        "online",
+        "inventory",
+        "analytics"
+      ],
+      "recommended_plan": "lite",
+      "product_ids": [
+        "epay-retail",
+        "epay-mini"
+      ],
+      "hero_image": "/img/industries/cafe-bakery-hero.jpg",
+      "gallery": [
+        {
+          "name": "Cafe & Bakery — floor / counter",
+          "file": "/img/industries/cafe-bakery-1.jpg"
+        },
+        {
+          "name": "Cafe & Bakery — the system in use",
+          "file": "/img/industries/cafe-bakery-2.jpg"
+        },
+        {
+          "name": "Cafe & Bakery — staff or detail shot",
+          "file": "/img/industries/cafe-bakery-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to handle every detail of the dining room. Manage floor plans with customizable table management, route orders to kitchen printers or display screens, and keep service moving with split checks, tabs and modifier prompts."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Handheld terminals work with the main system, so staff take orders, process payments and print receipts tableside. Each device syncs in real time, so menus, modifiers and pricing are always current."
+        },
+        {
+          "name": "Kitchen Order Screen",
+          "body": "Replaces paper tickets with a digital display. Orders flow from the POS or a handheld straight to the kitchen in real time, which cuts mistakes and speeds up prep."
+        }
+      ],
+      "on_home": true
+    },
+    {
+      "slug": "hotel-dining",
+      "name": "Hotel Dining",
+      "category": "restaurant",
+      "meta_title": "Hotel Restaurant & Room Service POS | EPAY POS",
+      "meta_description": "POS for hotel dining — room charge posting, multiple outlets, and consolidated reporting across the property.",
+      "headline": "One System Across Every Outlet on the Property",
+      "subhead": "Restaurant, bar, room service, and poolside all report up to the same place, with room charge posting built in.",
+      "pain_points": [
+        {
+          "problem": "Room charges reconciled by hand at night audit",
+          "solution": "Charges post to the folio directly from the ticket."
+        },
+        {
+          "problem": "Each outlet reporting differently",
+          "solution": "Consolidated property reporting with per-outlet breakdown."
+        },
+        {
+          "problem": "Seasonal staff needing retraining every spring",
+          "solution": "An interface simple enough to learn during one shift."
+        }
+      ],
+      "feature_ids": [
+        "operations",
+        "employees",
+        "analytics",
+        "kitchen"
+      ],
+      "recommended_plan": "table",
+      "product_ids": [
+        "epay-table",
+        "epay-mini",
+        "kitchen-display"
+      ],
+      "hero_image": "/img/industries/hotel-dining-hero.jpg",
+      "gallery": [
+        {
+          "name": "Hotel Dining — floor / counter",
+          "file": "/img/industries/hotel-dining-1.jpg"
+        },
+        {
+          "name": "Hotel Dining — the system in use",
+          "file": "/img/industries/hotel-dining-2.jpg"
+        },
+        {
+          "name": "Hotel Dining — staff or detail shot",
+          "file": "/img/industries/hotel-dining-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to handle every detail of the dining room. Manage floor plans with customizable table management, route orders to kitchen printers or display screens, and keep service moving with split checks, tabs and modifier prompts."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Handheld terminals work with the main system, so staff take orders, process payments and print receipts tableside. Each device syncs in real time, so menus, modifiers and pricing are always current."
+        },
+        {
+          "name": "Kitchen Order Screen",
+          "body": "Replaces paper tickets with a digital display. Orders flow from the POS or a handheld straight to the kitchen in real time, which cuts mistakes and speeds up prep."
+        }
+      ],
+      "on_home": true
+    },
+    {
+      "slug": "enterprise-franchise",
+      "name": "Enterprise & Franchise",
+      "category": "restaurant",
+      "meta_title": "Multi-Location & Franchise POS System | EPAY POS",
+      "meta_description": "Franchise POS with centralized menu control, multi-location reporting, and consistent pricing across every store.",
+      "headline": "Push a Menu Change to Every Location at Once",
+      "subhead": "Central control over pricing, menus, and permissions, with reporting that compares stores side by side.",
+      "pain_points": [
+        {
+          "problem": "Price changes rolled out store by store",
+          "solution": "Push catalog and pricing updates to every location from one dashboard."
+        },
+        {
+          "problem": "No clean way to compare store performance",
+          "solution": "Multi-location rollup reporting with per-store drilldown."
+        },
+        {
+          "problem": "Inconsistent operations between franchisees",
+          "solution": "Locked templates keep the core setup identical everywhere."
+        }
+      ],
+      "feature_ids": [
+        "analytics",
+        "employees",
+        "inventory",
+        "integrations"
+      ],
+      "recommended_plan": "table",
+      "product_ids": [
+        "epay-table",
+        "epay-retail",
+        "kitchen-display"
+      ],
+      "hero_image": "/img/industries/enterprise-franchise-hero.jpg",
+      "gallery": [
+        {
+          "name": "Enterprise & Franchise — floor / counter",
+          "file": "/img/industries/enterprise-franchise-1.jpg"
+        },
+        {
+          "name": "Enterprise & Franchise — the system in use",
+          "file": "/img/industries/enterprise-franchise-2.jpg"
+        },
+        {
+          "name": "Enterprise & Franchise — staff or detail shot",
+          "file": "/img/industries/enterprise-franchise-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to handle every detail of the dining room. Manage floor plans with customizable table management, route orders to kitchen printers or display screens, and keep service moving with split checks, tabs and modifier prompts."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Handheld terminals work with the main system, so staff take orders, process payments and print receipts tableside. Each device syncs in real time, so menus, modifiers and pricing are always current."
+        },
+        {
+          "name": "Kitchen Order Screen",
+          "body": "Replaces paper tickets with a digital display. Orders flow from the POS or a handheld straight to the kitchen in real time, which cuts mistakes and speeds up prep."
+        }
+      ],
+      "on_home": true
+    },
+    {
+      "slug": "convenience-gas",
+      "name": "Convenience & Gas",
+      "category": "retail",
+      "meta_title": "Convenience Store & Gas Station POS | EPAY POS",
+      "meta_description": "C-store POS with age verification, fuel integration, high-SKU inventory, and 0% processing through cash discount.",
+      "headline": "High SKU Count, High Volume, High Functioning Register",
+      "subhead": "Scan, verify age, take payment, and move to the next customer. Inventory keeps itself honest in the background.",
+      "pain_points": [
+        {
+          "problem": "Manual age checks slowing the counter and risking fines",
+          "solution": "ID scanning prompts and logs verification automatically."
+        },
+        {
+          "problem": "Thousands of SKUs going stale in the system",
+          "solution": "Real-time inventory with low-stock alerts and vendor tracking."
+        },
+        {
+          "problem": "Processing fees eating thin margins",
+          "solution": "Cash discount takes your effective processing rate to 0%."
+        }
+      ],
+      "feature_ids": [
+        "inventory",
+        "payments",
+        "analytics",
+        "employees"
+      ],
+      "recommended_plan": "retail",
+      "product_ids": [
+        "epay-retail"
+      ],
+      "hero_image": "/img/industries/convenience-gas-hero.jpg",
+      "gallery": [
+        {
+          "name": "Convenience & Gas — floor / counter",
+          "file": "/img/industries/convenience-gas-1.jpg"
+        },
+        {
+          "name": "Convenience & Gas — the system in use",
+          "file": "/img/industries/convenience-gas-2.jpg"
+        },
+        {
+          "name": "Convenience & Gas — staff or detail shot",
+          "file": "/img/industries/convenience-gas-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to streamline every part of the store. Manage inventory, track sales in real time, apply discounts and promotions, and keep the line moving with barcode scanning, customer profiles and integrated payments."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Serve customers anywhere — the sales floor, curbside, the stockroom. Take payment and print receipts on the spot, and use the same device to add, update and track inventory in real time."
+        },
+        {
+          "name": "Customer Facing Display",
+          "body": "A transparent checkout. Customers see their order as it rings, watch prices and discounts apply, and complete payment securely on the screen."
+        }
+      ],
+      "on_home": true
+    },
+    {
+      "slug": "liqour-stores",
+      "name": "Liquor Stores",
+      "category": "retail",
+      "meta_title": "Liquor Store POS System | EPAY POS",
+      "meta_description": "Liquor store POS with case-break inventory, age verification, mix-and-match pricing, and flat 2.3% processing.",
+      "headline": "Case, Bottle, and Six-Pack — Counted Correctly",
+      "subhead": "Case-break inventory that actually reconciles, plus mix-and-match pricing and compliant age verification.",
+      "pain_points": [
+        {
+          "problem": "Breaking cases into singles wrecking inventory counts",
+          "solution": "Case-break rules deduct the right units automatically."
+        },
+        {
+          "problem": "Mix-and-match six-pack pricing done by hand",
+          "solution": "Build-your-own pricing rules apply at the register."
+        },
+        {
+          "problem": "Compliance risk on ID checks",
+          "solution": "Scanning is required before the item can ring, and it's logged."
+        }
+      ],
+      "feature_ids": [
+        "inventory",
+        "payments",
+        "analytics"
+      ],
+      "recommended_plan": "retail",
+      "product_ids": [
+        "epay-retail"
+      ],
+      "hero_image": "/img/industries/liqour-stores-hero.jpg",
+      "gallery": [
+        {
+          "name": "Liquor Stores — floor / counter",
+          "file": "/img/industries/liqour-stores-1.jpg"
+        },
+        {
+          "name": "Liquor Stores — the system in use",
+          "file": "/img/industries/liqour-stores-2.jpg"
+        },
+        {
+          "name": "Liquor Stores — staff or detail shot",
+          "file": "/img/industries/liqour-stores-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to streamline every part of the store. Manage inventory, track sales in real time, apply discounts and promotions, and keep the line moving with barcode scanning, customer profiles and integrated payments."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Serve customers anywhere — the sales floor, curbside, the stockroom. Take payment and print receipts on the spot, and use the same device to add, update and track inventory in real time."
+        },
+        {
+          "name": "Customer Facing Display",
+          "body": "A transparent checkout. Customers see their order as it rings, watch prices and discounts apply, and complete payment securely on the screen."
+        }
+      ],
+      "on_home": true
+    },
+    {
+      "slug": "smoke-shops",
+      "name": "Smoke Shops",
+      "category": "retail",
+      "meta_title": "Smoke Shop & Vape Store POS | EPAY POS",
+      "meta_description": "Smoke shop POS with age verification, variant-heavy inventory, and payment processing that won't drop you.",
+      "headline": "Processing That Won't Cut You Off in Month Three",
+      "subhead": "We understand the vertical. Age verification, variant-heavy catalogs, and a processing relationship that sticks.",
+      "pain_points": [
+        {
+          "problem": "Processors dropping the account without warning",
+          "solution": "We place these accounts knowingly, with underwriting that expects the category."
+        },
+        {
+          "problem": "Hundreds of flavor and nicotine-level variants",
+          "solution": "Variant matrices keep the catalog manageable."
+        },
+        {
+          "problem": "Age verification compliance",
+          "solution": "Required ID scan with a stored audit trail."
+        }
+      ],
+      "feature_ids": [
+        "inventory",
+        "payments",
+        "employees"
+      ],
+      "recommended_plan": "retail",
+      "product_ids": [
+        "epay-retail"
+      ],
+      "hero_image": "/img/industries/smoke-shops-hero.jpg",
+      "gallery": [
+        {
+          "name": "Smoke Shops — floor / counter",
+          "file": "/img/industries/smoke-shops-1.jpg"
+        },
+        {
+          "name": "Smoke Shops — the system in use",
+          "file": "/img/industries/smoke-shops-2.jpg"
+        },
+        {
+          "name": "Smoke Shops — staff or detail shot",
+          "file": "/img/industries/smoke-shops-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to streamline every part of the store. Manage inventory, track sales in real time, apply discounts and promotions, and keep the line moving with barcode scanning, customer profiles and integrated payments."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Serve customers anywhere — the sales floor, curbside, the stockroom. Take payment and print receipts on the spot, and use the same device to add, update and track inventory in real time."
+        },
+        {
+          "name": "Customer Facing Display",
+          "body": "A transparent checkout. Customers see their order as it rings, watch prices and discounts apply, and complete payment securely on the screen."
+        }
+      ],
+      "on_home": true
+    },
+    {
+      "slug": "grocery-store",
+      "name": "Grocery Store",
+      "category": "retail",
+      "meta_title": "Grocery Store POS System | EPAY POS",
+      "meta_description": "Grocery POS with scale integration, EBT, department reporting, and high-volume inventory management.",
+      "headline": "Scales, Departments, and a Checkout Line That Keeps Moving",
+      "subhead": "Weighted items, department-level reporting, and payment types your customers actually use — including EBT.",
+      "pain_points": [
+        {
+          "problem": "Weighed items rung in manually",
+          "solution": "Direct scale integration prices by weight at the register."
+        },
+        {
+          "problem": "No visibility into which departments carry the store",
+          "solution": "Department-level margin reporting."
+        },
+        {
+          "problem": "Payment types the register can't take",
+          "solution": "EBT, WIC where applicable, and every card and wallet."
+        }
+      ],
+      "feature_ids": [
+        "inventory",
+        "payments",
+        "analytics",
+        "employees"
+      ],
+      "recommended_plan": "retail",
+      "product_ids": [
+        "epay-retail"
+      ],
+      "hero_image": "/img/industries/grocery-store-hero.jpg",
+      "gallery": [
+        {
+          "name": "Grocery Store — floor / counter",
+          "file": "/img/industries/grocery-store-1.jpg"
+        },
+        {
+          "name": "Grocery Store — the system in use",
+          "file": "/img/industries/grocery-store-2.jpg"
+        },
+        {
+          "name": "Grocery Store — staff or detail shot",
+          "file": "/img/industries/grocery-store-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to streamline every part of the store. Manage inventory, track sales in real time, apply discounts and promotions, and keep the line moving with barcode scanning, customer profiles and integrated payments."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Serve customers anywhere — the sales floor, curbside, the stockroom. Take payment and print receipts on the spot, and use the same device to add, update and track inventory in real time."
+        },
+        {
+          "name": "Customer Facing Display",
+          "body": "A transparent checkout. Customers see their order as it rings, watch prices and discounts apply, and complete payment securely on the screen."
+        }
+      ],
+      "on_home": true
+    },
+    {
+      "slug": "misc-retail",
+      "name": "Specialty Retail",
+      "category": "retail",
+      "meta_title": "Retail POS System for Specialty Stores | EPAY POS",
+      "meta_description": "Retail POS for boutiques and specialty shops — inventory, promotions, e-commerce sync, and flat-rate processing.",
+      "headline": "One Catalog, Whether They Buy in Store or Online",
+      "subhead": "Inventory that stays in sync across your counter and your storefront, with promotions that run themselves.",
+      "pain_points": [
+        {
+          "problem": "Online and in-store inventory drifting apart",
+          "solution": "One catalog feeds both, counts update in real time."
+        },
+        {
+          "problem": "Promotions applied inconsistently by staff",
+          "solution": "Discount rules apply automatically at the register."
+        },
+        {
+          "problem": "No idea which products actually make money",
+          "solution": "Margin reporting by product, category, and vendor."
+        }
+      ],
+      "feature_ids": [
+        "inventory",
+        "online",
+        "analytics",
+        "payments"
+      ],
+      "recommended_plan": "retail",
+      "product_ids": [
+        "epay-retail",
+        "epay-mini"
+      ],
+      "hero_image": "/img/industries/misc-retail-hero.jpg",
+      "gallery": [
+        {
+          "name": "Specialty Retail — floor / counter",
+          "file": "/img/industries/misc-retail-1.jpg"
+        },
+        {
+          "name": "Specialty Retail — the system in use",
+          "file": "/img/industries/misc-retail-2.jpg"
+        },
+        {
+          "name": "Specialty Retail — staff or detail shot",
+          "file": "/img/industries/misc-retail-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to streamline every part of the store. Manage inventory, track sales in real time, apply discounts and promotions, and keep the line moving with barcode scanning, customer profiles and integrated payments."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Serve customers anywhere — the sales floor, curbside, the stockroom. Take payment and print receipts on the spot, and use the same device to add, update and track inventory in real time."
+        },
+        {
+          "name": "Customer Facing Display",
+          "body": "A transparent checkout. Customers see their order as it rings, watch prices and discounts apply, and complete payment securely on the screen."
+        }
+      ],
+      "on_home": true
+    },
+    {
+      "slug": "quick-service",
+      "name": "Quick Service",
+      "category": "restaurant",
+      "recommended_plan": "lite",
+      "meta_title": "Quick Service Restaurant POS System | EPAY POS",
+      "meta_description": "POS built for quick service and fast casual — fast tickets, counter throughput, and delivery orders in the same queue as walk-ins.",
+      "headline": "Move the Line Without Rushing the Order",
+      "subhead": "Counter service lives or dies on throughput. The register has to be quicker than the queue, and the kitchen has to see the ticket the moment it rings.",
+      "pain_points": [
+        {
+          "problem": "The line backs up at lunch and orders get rung wrong.",
+          "solution": "A layout built around your top sellers, with modifiers two taps deep instead of five."
+        },
+        {
+          "problem": "Delivery tablets pile up next to the register.",
+          "solution": "DoorDash, Uber Eats and Grubhub orders land in the same ticket queue as the counter."
+        },
+        {
+          "problem": "Nobody knows which items actually make money.",
+          "solution": "Sales by item and daypart on your phone, so you can cut the slow movers."
+        }
+      ],
+      "feature_ids": [
+        "operations",
+        "kitchen",
+        "integrations",
+        "analytics"
+      ],
+      "product_ids": [
+        "epay-mini",
+        "kitchen-display",
+        "epay-table"
+      ],
+      "hero_image": "/img/industries/quick-service-hero.jpg",
+      "gallery": [
+        {
+          "name": "Quick Service — floor / counter",
+          "file": "/img/industries/quick-service-1.jpg"
+        },
+        {
+          "name": "Quick Service — the system in use",
+          "file": "/img/industries/quick-service-2.jpg"
+        },
+        {
+          "name": "Quick Service — staff or detail shot",
+          "file": "/img/industries/quick-service-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to handle every detail of the dining room. Manage floor plans with customizable table management, route orders to kitchen printers or display screens, and keep service moving with split checks, tabs and modifier prompts."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Handheld terminals work with the main system, so staff take orders, process payments and print receipts tableside. Each device syncs in real time, so menus, modifiers and pricing are always current."
+        },
+        {
+          "name": "Kitchen Order Screen",
+          "body": "Replaces paper tickets with a digital display. Orders flow from the POS or a handheld straight to the kitchen in real time, which cuts mistakes and speeds up prep."
+        }
+      ],
+      "on_home": false
+    },
+    {
+      "slug": "food-truck",
+      "name": "Food Truck",
+      "category": "restaurant",
+      "recommended_plan": "lite",
+      "meta_title": "Food Truck POS System | EPAY POS",
+      "meta_description": "A handheld POS for food trucks and mobile kitchens — works on LTE, keeps taking orders when signal drops, and handles a cash-heavy day.",
+      "headline": "A Register That Fits in the Window",
+      "subhead": "You do not have counter space, a back office, or a guarantee of signal. The system has to be one device that works anywhere you park.",
+      "pain_points": [
+        {
+          "problem": "Signal drops mid-service and the card reader stops.",
+          "solution": "The handheld runs on Wi-Fi or LTE, so losing one does not stop the window."
+        },
+        {
+          "problem": "Cash and card totals never reconcile at the end of the night.",
+          "solution": "Drawer activity, till counts and payouts logged as they happen, not remembered afterwards."
+        },
+        {
+          "problem": "Every event has a different menu.",
+          "solution": "Swap menus per event without rebuilding the catalog each time."
+        }
+      ],
+      "feature_ids": [
+        "operations",
+        "payments",
+        "analytics"
+      ],
+      "product_ids": [
+        "epay-mini",
+        "epay-table"
+      ],
+      "hero_image": "/img/industries/food-truck-hero.jpg",
+      "gallery": [
+        {
+          "name": "Food Truck — floor / counter",
+          "file": "/img/industries/food-truck-1.jpg"
+        },
+        {
+          "name": "Food Truck — the system in use",
+          "file": "/img/industries/food-truck-2.jpg"
+        },
+        {
+          "name": "Food Truck — staff or detail shot",
+          "file": "/img/industries/food-truck-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to handle every detail of the dining room. Manage floor plans with customizable table management, route orders to kitchen printers or display screens, and keep service moving with split checks, tabs and modifier prompts."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Handheld terminals work with the main system, so staff take orders, process payments and print receipts tableside. Each device syncs in real time, so menus, modifiers and pricing are always current."
+        },
+        {
+          "name": "Kitchen Order Screen",
+          "body": "Replaces paper tickets with a digital display. Orders flow from the POS or a handheld straight to the kitchen in real time, which cuts mistakes and speeds up prep."
+        }
+      ],
+      "on_home": false
+    },
+    {
+      "slug": "fine-dining",
+      "name": "Fine Dining",
+      "category": "restaurant",
+      "recommended_plan": "table",
+      "meta_title": "Fine Dining POS System | EPAY POS",
+      "meta_description": "POS for fine dining — coursing, seat-level ordering, quiet handhelds and tableside payment that does not interrupt the room.",
+      "headline": "The Art Of Service, Perfected Behind The Scenes",
+      "subhead": "In a dining room where pacing is the product, the technology has to disappear. Coursing, seat numbers and payment at the table, without a terminal parked in the middle of the room.",
+      "pain_points": [
+        {
+          "problem": "Courses arrive at the wrong moment.",
+          "solution": "Hold and fire by course, so the kitchen sends when the table is actually ready."
+        },
+        {
+          "problem": "Splitting a check for eight takes ten minutes.",
+          "solution": "Split by seat, item or percentage without restarting the ticket."
+        },
+        {
+          "problem": "Guests wait for the check to be walked twice.",
+          "solution": "Payment at the table on a handheld, done in one trip."
+        }
+      ],
+      "feature_ids": [
+        "operations",
+        "kitchen",
+        "employees",
+        "analytics"
+      ],
+      "product_ids": [
+        "epay-table",
+        "epay-mini",
+        "kitchen-display"
+      ],
+      "hero_image": "/img/industries/fine-dining-hero.jpg",
+      "gallery": [
+        {
+          "name": "Fine Dining — floor / counter",
+          "file": "/img/industries/fine-dining-1.jpg"
+        },
+        {
+          "name": "Fine Dining — the system in use",
+          "file": "/img/industries/fine-dining-2.jpg"
+        },
+        {
+          "name": "Fine Dining — staff or detail shot",
+          "file": "/img/industries/fine-dining-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to handle every detail of the dining room. Manage floor plans with customizable table management, route orders to kitchen printers or display screens, and keep service moving with split checks, tabs and modifier prompts."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Handheld terminals work with the main system, so staff take orders, process payments and print receipts tableside. Each device syncs in real time, so menus, modifiers and pricing are always current."
+        },
+        {
+          "name": "Kitchen Order Screen",
+          "body": "Replaces paper tickets with a digital display. Orders flow from the POS or a handheld straight to the kitchen in real time, which cuts mistakes and speeds up prep."
+        }
+      ],
+      "on_home": false
+    },
+    {
+      "slug": "brewery-taproom",
+      "name": "Brewery & Taproom",
+      "category": "restaurant",
+      "recommended_plan": "table",
+      "meta_title": "Brewery & Taproom POS System | EPAY POS",
+      "meta_description": "POS for breweries and taprooms — tabs, pours by size, taplist changes mid-shift, and retail can sales on the same ticket.",
+      "headline": "Tabs, Pours and a Taplist That Changes Weekly",
+      "subhead": "A taproom is a bar, a retail counter and a production schedule at once. The catalog has to change as fast as the taplist.",
+      "pain_points": [
+        {
+          "problem": "The taplist changes and the menu is out of date by Friday.",
+          "solution": "Edit the catalog from anywhere; the change is live on every terminal at once."
+        },
+        {
+          "problem": "Pour sizes and flights are rung as one generic item.",
+          "solution": "Size-based pricing and flights as real items, so depletion actually tracks."
+        },
+        {
+          "problem": "Merch and to-go cans get rung on a separate system.",
+          "solution": "Retail inventory on the same ticket as the taproom."
+        }
+      ],
+      "feature_ids": [
+        "operations",
+        "inventory",
+        "payments",
+        "analytics"
+      ],
+      "product_ids": [
+        "epay-table",
+        "epay-mini",
+        "epay-retail"
+      ],
+      "hero_image": "/img/industries/brewery-taproom-hero.jpg",
+      "gallery": [
+        {
+          "name": "Brewery & Taproom — floor / counter",
+          "file": "/img/industries/brewery-taproom-1.jpg"
+        },
+        {
+          "name": "Brewery & Taproom — the system in use",
+          "file": "/img/industries/brewery-taproom-2.jpg"
+        },
+        {
+          "name": "Brewery & Taproom — staff or detail shot",
+          "file": "/img/industries/brewery-taproom-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to handle every detail of the dining room. Manage floor plans with customizable table management, route orders to kitchen printers or display screens, and keep service moving with split checks, tabs and modifier prompts."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Handheld terminals work with the main system, so staff take orders, process payments and print receipts tableside. Each device syncs in real time, so menus, modifiers and pricing are always current."
+        },
+        {
+          "name": "Kitchen Order Screen",
+          "body": "Replaces paper tickets with a digital display. Orders flow from the POS or a handheld straight to the kitchen in real time, which cuts mistakes and speeds up prep."
+        }
+      ],
+      "on_home": false
+    },
+    {
+      "slug": "pharmacy",
+      "name": "Pharmacy",
+      "category": "retail",
+      "recommended_plan": "retail",
+      "meta_title": "Pharmacy POS System | EPAY POS",
+      "meta_description": "POS for independent pharmacies — front-of-store retail, high SKU counts, age-restricted items and fast checkout beside the counter.",
+      "headline": "The Front of the Store, Run Properly",
+      "subhead": "The pharmacy counter has its own system. Everything in front of it — the aisles, the seasonal end caps, the age-restricted shelf — still needs a real retail POS.",
+      "pain_points": [
+        {
+          "problem": "Front-of-store inventory is counted by hand.",
+          "solution": "Real-time counts with low-stock alerts across every SKU in the aisles."
+        },
+        {
+          "problem": "Age-restricted items rely on staff remembering.",
+          "solution": "ID scanning and prompts at the register on the items that need it."
+        },
+        {
+          "problem": "Two registers hold two different prices.",
+          "solution": "One catalog, pushed to every terminal at once."
+        }
+      ],
+      "feature_ids": [
+        "inventory",
+        "payments",
+        "analytics",
+        "employees"
+      ],
+      "product_ids": [
+        "epay-retail",
+        "epay-mini"
+      ],
+      "hero_image": "/img/industries/pharmacy-hero.jpg",
+      "gallery": [
+        {
+          "name": "Pharmacy — floor / counter",
+          "file": "/img/industries/pharmacy-1.jpg"
+        },
+        {
+          "name": "Pharmacy — the system in use",
+          "file": "/img/industries/pharmacy-2.jpg"
+        },
+        {
+          "name": "Pharmacy — staff or detail shot",
+          "file": "/img/industries/pharmacy-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to streamline every part of the store. Manage inventory, track sales in real time, apply discounts and promotions, and keep the line moving with barcode scanning, customer profiles and integrated payments."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Serve customers anywhere — the sales floor, curbside, the stockroom. Take payment and print receipts on the spot, and use the same device to add, update and track inventory in real time."
+        },
+        {
+          "name": "Customer Facing Display",
+          "body": "A transparent checkout. Customers see their order as it rings, watch prices and discounts apply, and complete payment securely on the screen."
+        }
+      ],
+      "on_home": false
+    },
+    {
+      "slug": "boutique-apparel",
+      "name": "Boutique & Apparel",
+      "category": "retail",
+      "recommended_plan": "retail",
+      "meta_title": "Boutique & Apparel POS System | EPAY POS",
+      "meta_description": "POS for boutiques and apparel — size and color variants, one catalog across the shop floor and the online store, and inventory that stays honest.",
+      "headline": "Size, Color and One Honest Stock Count",
+      "subhead": "Apparel is the same product eight times over. The system has to know a medium in black is not a large in navy, on the shop floor and online at the same time.",
+      "pain_points": [
+        {
+          "problem": "Variants are rung as one item and stock goes wrong immediately.",
+          "solution": "Size and colour as real variants, each with its own count."
+        },
+        {
+          "problem": "The website sells something the shop already sold.",
+          "solution": "One catalog behind the counter and the storefront, so stock is shared."
+        },
+        {
+          "problem": "Seasonal markdowns are done with a calculator.",
+          "solution": "Promotions and mix-and-match pricing applied at the register automatically."
+        }
+      ],
+      "feature_ids": [
+        "inventory",
+        "online",
+        "payments",
+        "analytics"
+      ],
+      "product_ids": [
+        "epay-retail",
+        "epay-mini"
+      ],
+      "hero_image": "/img/industries/boutique-apparel-hero.jpg",
+      "gallery": [
+        {
+          "name": "Boutique & Apparel — floor / counter",
+          "file": "/img/industries/boutique-apparel-1.jpg"
+        },
+        {
+          "name": "Boutique & Apparel — the system in use",
+          "file": "/img/industries/boutique-apparel-2.jpg"
+        },
+        {
+          "name": "Boutique & Apparel — staff or detail shot",
+          "file": "/img/industries/boutique-apparel-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to streamline every part of the store. Manage inventory, track sales in real time, apply discounts and promotions, and keep the line moving with barcode scanning, customer profiles and integrated payments."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Serve customers anywhere — the sales floor, curbside, the stockroom. Take payment and print receipts on the spot, and use the same device to add, update and track inventory in real time."
+        },
+        {
+          "name": "Customer Facing Display",
+          "body": "A transparent checkout. Customers see their order as it rings, watch prices and discounts apply, and complete payment securely on the screen."
+        }
+      ],
+      "on_home": false
+    },
+    {
+      "slug": "pet-supply",
+      "name": "Pet Supply",
+      "category": "retail",
+      "recommended_plan": "retail",
+      "meta_title": "Pet Supply Store POS System | EPAY POS",
+      "meta_description": "POS for pet supply stores — bulk and weighted items, repeat customers on autoship, high SKU counts and vendor cost tracking.",
+      "headline": "Bulk, Brands and Customers Who Come Back Monthly",
+      "subhead": "Pet retail is heavy SKUs, heavy bags and regulars on a cycle. Knowing what a customer bought last month is worth more than a loyalty gimmick.",
+      "pain_points": [
+        {
+          "problem": "Bulk and weighted items get rung by eye.",
+          "solution": "Scale integration at the counter, priced by weight."
+        },
+        {
+          "problem": "Regulars reorder the same food and nobody remembers which.",
+          "solution": "Customer profiles with purchase history, so the reorder is one lookup."
+        },
+        {
+          "problem": "Vendor prices move and margins quietly slip.",
+          "solution": "Purchase orders and vendor cost tracking, so a cost change is visible."
+        }
+      ],
+      "feature_ids": [
+        "inventory",
+        "payments",
+        "analytics",
+        "online"
+      ],
+      "product_ids": [
+        "epay-retail",
+        "epay-mini"
+      ],
+      "hero_image": "/img/industries/pet-supply-hero.jpg",
+      "gallery": [
+        {
+          "name": "Pet Supply — floor / counter",
+          "file": "/img/industries/pet-supply-1.jpg"
+        },
+        {
+          "name": "Pet Supply — the system in use",
+          "file": "/img/industries/pet-supply-2.jpg"
+        },
+        {
+          "name": "Pet Supply — staff or detail shot",
+          "file": "/img/industries/pet-supply-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Built to streamline every part of the store. Manage inventory, track sales in real time, apply discounts and promotions, and keep the line moving with barcode scanning, customer profiles and integrated payments."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Serve customers anywhere — the sales floor, curbside, the stockroom. Take payment and print receipts on the spot, and use the same device to add, update and track inventory in real time."
+        },
+        {
+          "name": "Customer Facing Display",
+          "body": "A transparent checkout. Customers see their order as it rings, watch prices and discounts apply, and complete payment securely on the screen."
+        }
+      ],
+      "on_home": false
+    },
+    {
+      "slug": "salon-spa",
+      "name": "Salon & Spa",
+      "category": "retail",
+      "recommended_plan": "lite",
+      "coming_soon": true,
+      "meta_title": "Salon & Spa POS System | EPAY POS",
+      "meta_description": "A POS built for salons, nail bars and spas — appointments, services and retail on one ticket. Coming soon from EPAY POS.",
+      "headline": "Appointments, Services and Retail on One Ticket",
+      "subhead": "A chair is booked, a service is performed, product goes home with the client and someone gets tipped. That should be one transaction, not three systems.",
+      "pain_points": [
+        {
+          "problem": "Bookings live in one app and payment in another.",
+          "solution": "Appointments and checkout in the same place, so the ticket is already open when they walk to the desk."
+        },
+        {
+          "problem": "Tips across a team are a spreadsheet at the end of the week.",
+          "solution": "Tip handling and pooling on the system, per staff member, per shift."
+        },
+        {
+          "problem": "Retail product sales get lost against services.",
+          "solution": "Real inventory on retail lines, so you know what sells off the shelf."
+        }
+      ],
+      "feature_ids": [
+        "operations",
+        "employees",
+        "inventory",
+        "analytics"
+      ],
+      "product_ids": [
+        "epay-retail",
+        "epay-mini"
+      ],
+      "hero_image": "/img/industries/salon-spa-hero.jpg",
+      "gallery": [
+        {
+          "name": "Salon & Spa — on site",
+          "file": "/img/industries/salon-spa-1.jpg"
+        },
+        {
+          "name": "Salon & Spa — the system in use",
+          "file": "/img/industries/salon-spa-2.jpg"
+        },
+        {
+          "name": "Salon & Spa — detail shot",
+          "file": "/img/industries/salon-spa-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Ring services and products on the same ticket, take payment at the desk, and keep customer history in one place."
+        },
+        {
+          "name": "Invoicing and Payment Links",
+          "body": "Send a link and get paid without the customer in front of you — the payment lands in the same reporting as counter sales."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Take payment wherever the work happens — the bay, the chair, the customer's driveway."
+        }
+      ],
+      "on_home": false,
+      "setup_heading": "EPAY Salon & Spa Setup"
+    },
+    {
+      "slug": "auto-services",
+      "name": "Auto Services",
+      "category": "retail",
+      "recommended_plan": "retail",
+      "meta_title": "Auto Repair & Service Shop POS | EPAY POS",
+      "meta_description": "POS and payments for auto repair, tyre and service shops — invoice by job, send a payment link, and take payment at the bay.",
+      "headline": "Get Paid When the Job Is Done, Not When They Come Back",
+      "subhead": "Repair work is quoted, approved and finished at different moments. The payment should not be the part that waits for the customer to walk back in.",
+      "pain_points": [
+        {
+          "problem": "The car is ready and the customer is not.",
+          "solution": "Send a payment link by text. They pay from wherever they are and collect the keys."
+        },
+        {
+          "problem": "Parts and labour are invoiced on paper.",
+          "solution": "Line-item invoicing off the same catalog, with parts costs tracked."
+        },
+        {
+          "problem": "Card payments happen at a desk nobody is standing at.",
+          "solution": "A handheld at the bay, so payment happens where the work does."
+        }
+      ],
+      "feature_ids": [
+        "online",
+        "payments",
+        "inventory",
+        "analytics"
+      ],
+      "product_ids": [
+        "epay-mini",
+        "epay-retail"
+      ],
+      "hero_image": "/img/industries/auto-services-hero.jpg",
+      "gallery": [
+        {
+          "name": "Auto Services — on site",
+          "file": "/img/industries/auto-services-1.jpg"
+        },
+        {
+          "name": "Auto Services — the system in use",
+          "file": "/img/industries/auto-services-2.jpg"
+        },
+        {
+          "name": "Auto Services — detail shot",
+          "file": "/img/industries/auto-services-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Ring services and products on the same ticket, take payment at the desk, and keep customer history in one place."
+        },
+        {
+          "name": "Invoicing and Payment Links",
+          "body": "Send a link and get paid without the customer in front of you — the payment lands in the same reporting as counter sales."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Take payment wherever the work happens — the bay, the chair, the customer's driveway."
+        }
+      ],
+      "on_home": false,
+      "setup_heading": "EPAY Service Business Setup"
+    },
+    {
+      "slug": "home-services",
+      "name": "Home Services",
+      "category": "retail",
+      "recommended_plan": "terminal",
+      "meta_title": "Home Services & Contractor Payments | EPAY POS",
+      "meta_description": "Payments for HVAC, plumbing, electrical and contracting — invoice on site, send payment links, and take cards at the door.",
+      "headline": "Take the Payment at the Door, Not Three Weeks Later",
+      "subhead": "You finish the job in someone's kitchen. Chasing that invoice for a month is the worst part of the week, it does not have to be.",
+      "pain_points": [
+        {
+          "problem": "Invoices go out and sit unpaid.",
+          "solution": "Send a payment link the moment the job is signed off, while you are still standing there."
+        },
+        {
+          "problem": "Card payments mean carrying a terminal that needs Wi-Fi.",
+          "solution": "A terminal that runs on LTE, so it works in a basement or a new build."
+        },
+        {
+          "problem": "Deposits and final balances are tracked by memory.",
+          "solution": "Both on the same customer record, so what is outstanding is never a guess."
+        }
+      ],
+      "feature_ids": [
+        "online",
+        "payments",
+        "analytics"
+      ],
+      "product_ids": [
+        "epay-mini"
+      ],
+      "hero_image": "/img/industries/home-services-hero.jpg",
+      "gallery": [
+        {
+          "name": "Home Services — on site",
+          "file": "/img/industries/home-services-1.jpg"
+        },
+        {
+          "name": "Home Services — the system in use",
+          "file": "/img/industries/home-services-2.jpg"
+        },
+        {
+          "name": "Home Services — detail shot",
+          "file": "/img/industries/home-services-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Ring services and products on the same ticket, take payment at the desk, and keep customer history in one place."
+        },
+        {
+          "name": "Invoicing and Payment Links",
+          "body": "Send a link and get paid without the customer in front of you — the payment lands in the same reporting as counter sales."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Take payment wherever the work happens — the bay, the chair, the customer's driveway."
+        }
+      ],
+      "on_home": false,
+      "setup_heading": "EPAY Service Business Setup"
+    },
+    {
+      "slug": "professional-services",
+      "name": "Professional Services",
+      "category": "retail",
+      "recommended_plan": "terminal",
+      "meta_title": "Professional Services Payments & Invoicing | EPAY POS",
+      "meta_description": "Invoicing and card payments for professional and appointment-based businesses — payment links, recurring billing and next-day funding.",
+      "headline": "Billing That Does Not Need a Bookkeeper",
+      "subhead": "If the work is billed rather than rung up, the system has to be an invoice and a payment link before it is a register.",
+      "pain_points": [
+        {
+          "problem": "Clients pay by cheque, weeks late.",
+          "solution": "A payment link on the invoice. Most people pay the day they get it."
+        },
+        {
+          "problem": "Card payments are taken over the phone on paper.",
+          "solution": "Take it properly on a terminal or a link, so nothing is written down that should not be."
+        },
+        {
+          "problem": "Nobody knows what is outstanding without opening the spreadsheet.",
+          "solution": "Open and paid invoices in the same reporting as everything else."
+        }
+      ],
+      "feature_ids": [
+        "online",
+        "payments",
+        "analytics"
+      ],
+      "product_ids": [
+        "epay-mini"
+      ],
+      "hero_image": "/img/industries/professional-services-hero.jpg",
+      "gallery": [
+        {
+          "name": "Professional Services — on site",
+          "file": "/img/industries/professional-services-1.jpg"
+        },
+        {
+          "name": "Professional Services — the system in use",
+          "file": "/img/industries/professional-services-2.jpg"
+        },
+        {
+          "name": "Professional Services — detail shot",
+          "file": "/img/industries/professional-services-3.jpg"
+        }
+      ],
+      "systems": [
+        {
+          "name": "Full EPAY POS",
+          "body": "Ring services and products on the same ticket, take payment at the desk, and keep customer history in one place."
+        },
+        {
+          "name": "Invoicing and Payment Links",
+          "body": "Send a link and get paid without the customer in front of you — the payment lands in the same reporting as counter sales."
+        },
+        {
+          "name": "Handheld Systems",
+          "body": "Take payment wherever the work happens — the bay, the chair, the customer's driveway."
+        }
+      ],
+      "on_home": false,
+      "setup_heading": "EPAY Service Business Setup"
+    }
+  ],
+  "_note_on_images": "Every industry page expects one hero image and three gallery shots. Drop the files at the paths in hero_image / gallery and each slot renders the real photo automatically. Until then the slot shows the filename it wants. Real photography only — no stock shots of people shaking hands, per design-system.md.",
+  "_note_on_systems": "The three system blocks per industry, worded from the live epaypos.net restaurant and retail pages. Restaurant gets the kitchen order screen; retail gets the customer facing display.",
+  "_note_on_new_verticals": "Quick Service, Food Truck, Fine Dining, Brewery & Taproom, Salon & Spa, Pharmacy, Boutique & Apparel and Pet Supply were added in this build. Their copy is written from how those businesses operate — no statistics, no named customers, no case studies. Salon & Spa is filed under retail because the site has two categories; it is the natural home for the nail-salon POS.",
+  "_note_on_home": "`on_home` controls the 'Built per business type' list on the homepage — the original 11 verticals only. The eight added later still have full pages and still appear in the Restaurant and Retail mega-menus; they are just not on that homepage list. Flip on_home to show one.",
+  "_note_on_salon": "Salon & Spa was removed — that vertical is being built out later, alongside the nail-salon POS. Nothing else referenced it, so removing the entry removed the page.",
+  "_note_on_services": "Auto, home and professional services sit under retail because the site has two categories — they are service businesses whose hook is invoicing and payment links, not a register. Salon & Spa carries coming_soon: true, which renders a banner and softens the CTAs on that page only."
+}

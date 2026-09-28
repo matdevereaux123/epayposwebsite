@@ -1,0 +1,7 @@
+# EPAY POS — epaypos.net
+User-agent: *
+Allow: /
+Disallow: /thank-you
+Disallow: /blog/drafts
+
+Sitemap: https://www.epaypos.net/sitemap-index.xml

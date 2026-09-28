@@ -1,0 +1,53 @@
+{
+  "_instructions": "The software EPAY builds on top of the POS. Content from the EPAY App Store material on epaypos.net. Do not list anything here we do not actually ship.",
+  "eyebrow": "EPAY Software",
+  "heading": "Software EPAY Builds on Top of the POS",
+  "lede": "The App Store turns the register into a platform. These are the tools we build and support ourselves, and they run off the same catalog, customers and reporting as everything else.",
+  "hero_image": "/img/pages/applications-hero.jpg",
+  "apps": [
+    {
+      "id": "terminal-mode",
+      "name": "EPAY Terminal",
+      "body": "A plain keypad for taking payments, running on the EPAY Mini. Type the amount, tap or insert the card, print the receipt — no catalog to build and nothing for staff to learn. Turn it on when a register is more than the job needs.",
+      "image": "/img/apps/terminal-mode.jpg"
+    },
+    {
+      "id": "loyalty",
+      "name": "Loyalty",
+      "body": "Points, rewards or discounts that apply automatically at checkout, tied to customer profiles with purchase history.",
+      "image": "/img/apps/loyalty.jpg"
+    },
+    {
+      "id": "ecommerce",
+      "name": "E-Commerce Storefront",
+      "body": "A fully integrated online store launched from the system, running off the same catalog and inventory as the counter.",
+      "image": "/img/apps/ecommerce.jpg"
+    },
+    {
+      "id": "online-ordering",
+      "name": "Online Ordering",
+      "body": "Your own ordering page. Orders land directly in the POS alongside everything else.",
+      "image": "/img/apps/online-ordering.jpg"
+    },
+    {
+      "id": "reservations",
+      "name": "Reservations and Waitlist",
+      "body": "In-house bookings, online reservations and walk-ins on one screen, synced to table management.",
+      "image": "/img/apps/reservations.jpg"
+    },
+    {
+      "id": "gift-cards",
+      "name": "Gift Cards",
+      "body": "Custom-branded digital and physical cards sold, tracked and redeemed from the POS with no third-party setup.",
+      "image": "/img/apps/gift-cards.jpg"
+    },
+    {
+      "id": "reporting",
+      "name": "Advanced Reporting",
+      "body": "Sales, labor and top items by daypart, category, employee or location, on the desk or on your phone.",
+      "image": "/img/apps/reporting.jpg"
+    }
+  ],
+  "_note_on_rename": "Renamed from 'EPAY Applications' to 'EPAY Software' and the slug moved from /epay-applications to /epay-software. Safe to rename because the page was created in this build and has never been published — it has no ranking history. Do NOT rename any slug that was on the Wix site.",
+  "_note_on_terminal": "EPAY Terminal is software, not a device — it runs on the EPAY Mini. It pairs with the $17.99 Terminal plan in pricing.json."
+}

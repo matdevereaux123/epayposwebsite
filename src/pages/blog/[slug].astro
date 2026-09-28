@@ -1,0 +1,118 @@
+---
+// One blog post. Published posts always build; drafts only build in the
+// local preview (BLOG_SHOW_DRAFTS=1) and are marked noindex with a banner.
+
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import LeadForm from "../../components/LeadForm.astro";
+import { site, enquiry } from "../../lib/content";
+import { publishedPosts, draftPosts, showDrafts, readingMinutes, formatDate, relatedLinks, type Post } from "../../lib/blog";
+
+export async function getStaticPaths() {
+  const posts = [...(await publishedPosts()), ...(showDrafts ? await draftPosts() : [])];
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: Post };
+const { Content } = await render(post);
+const d = post.data;
+const b = (site as any).blog;
+const url = new URL(`/blog/${post.id}`, site.brand.domain).href;
+const related = relatedLinks(d.related);
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: d.title,
+  description: d.description,
+  datePublished: d.published.toISOString(),
+  dateModified: (d.updated ?? d.published).toISOString(),
+  keywords: [d.keyword, ...d.tags].join(", "),
+  author: { "@type": "Organization", name: d.author },
+  publisher: { "@type": "Organization", name: site.brand.name, logo: { "@type": "ImageObject", url: new URL(site.brand.logo, site.brand.domain).href } },
+  image: new URL(site.brand.share_image, site.brand.domain).href,
+  mainEntityOfPage: { "@type": "WebPage", "@id": url },
+};
+---
+
+<Base
+  title={`${d.title} | ${site.brand.name}`.length <= 60 ? `${d.title} | ${site.brand.name}` : d.title}
+  description={d.description}
+  ogType="article"
+  published={d.published.toISOString()}
+  modified={(d.updated ?? d.published).toISOString()}
+  noindex={d.draft}
+  crumbs={[{ name: "Home", href: "/" }, { name: "Blog", href: "/blog" }, { name: d.title, href: `/blog/${post.id}` }]}
+  schema={articleSchema}
+>
+  {d.draft && (
+    <div class="bp-draft" role="note">
+      <div class="wrap">DRAFT: only visible in your local preview. Not published.</div>
+    </div>
+  )}
+
+  <article>
+    <header class="band band--deck bp-head">
+      <div class="wrap bp-narrow rise">
+        <p class="mono-label">
+          <a href="/blog">Blog</a>{" · "}
+          <time datetime={d.published.toISOString()}>{formatDate(d.published)}</time>
+          {" · "}{readingMinutes(post)} min read
+        </p>
+        <h1>{d.title}</h1>
+        <p class="lede">{d.description}</p>
+      </div>
+    </header>
+
+    <div class="band band--dark">
+      <div class="wrap bp-narrow bp-body">
+        <Content />
+
+        {related.length > 0 && (
+          <aside class="bp-related">
+            <p class="mono-label">Related on EPAY POS</p>
+            <ul>{related.map((r) => <li><a href={r.href}>{r.name} <span aria-hidden="true">→</span></a></li>)}</ul>
+          </aside>
+        )}
+      </div>
+    </div>
+  </article>
+
+  <section class="band band--dark">
+    <div class="wrap bp-cta">
+      <div>
+        <h2>{b.cta_heading}</h2>
+        <p class="lede">{b.cta_body}</p>
+      </div>
+      <LeadForm name={enquiry.form_name} submitLabel="Have someone call me" compact
+        reason="demo" source={`Blog post — ${post.data.title}`} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .bp-narrow { max-width: 72ch; }
+  .bp-head h1 { margin-top: 0.5rem; }
+  .bp-head .mono-label a { color: inherit; }
+
+  .bp-draft { background: var(--glass); color: var(--accent-deep); font-family: var(--font-data); font-size: var(--small); padding-block: 0.6rem; }
+
+  /* Article text: comfortable line length, real heading rhythm. */
+  .bp-body :global(h2) { font-size: var(--display-lg); margin: 2.5rem 0 0.75rem; }
+  .bp-body :global(h3) { font-size: var(--heading); margin: 2rem 0 0.5rem; }
+  .bp-body :global(p) { margin: 0 0 1.1rem; }
+  .bp-body :global(ul), .bp-body :global(ol) { margin: 0 0 1.25rem; padding-left: 1.25rem; }
+  .bp-body :global(li) { margin-bottom: 0.4rem; }
+  .bp-body :global(a) { color: var(--accent-deep); text-decoration: underline; text-underline-offset: 3px; }
+  .bp-body :global(strong) { color: var(--text); }
+  .bp-body :global(blockquote) { margin: 1.5rem 0; padding-left: 1rem; border-left: 3px solid var(--epay); color: var(--text-muted); }
+  .bp-body :global(table) { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: var(--small); }
+  .bp-body :global(th), .bp-body :global(td) { border-bottom: 1px solid var(--rule); padding: 0.6rem 0.5rem; text-align: left; }
+
+  .bp-related { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+  .bp-related ul { list-style: none; padding: 0; margin: 0.75rem 0 0; display: grid; gap: 0.4rem; }
+  .bp-related a { color: var(--accent-deep); font-weight: var(--weight-ui); }
+
+  .bp-cta { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 900px) { .bp-cta { grid-template-columns: 1fr 1fr; gap: 4rem; } }
+</style>

@@ -1,0 +1,42 @@
+---
+import Base from "../layouts/Base.astro";
+import LeadForm from "../components/LeadForm.astro";
+import { site, enquiry } from "../lib/content";
+
+const copy = (site as any).page_copy.demo;
+---
+
+<Base
+  title="Book a POS Demo | EPAY POS"
+  description="See EPAY POS running on your own menu or catalog. Short demo with someone who knows your business type."
+>
+  <section class="band band--deck">
+    <div class="wrap grid2">
+      <div>
+        <p class="mono-label">Demo</p>
+        <h1>{copy.h1}</h1>
+        <p class="lede">{copy.lede}</p>
+        <ul class="expect">
+          <li>A walkthrough on your actual items and pricing</li>
+          <li>A straight answer on what it would cost you monthly</li>
+          <li>A review of your current statement if you send one</li>
+        </ul>
+        <!-- Swap this form for a Calendly or Cal.com embed once scheduling is set up. -->
+      </div>
+      <LeadForm name={enquiry.form_name} submitLabel="Request a demo"
+        reason="demo" source="Book a demo page" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .band { padding-block: clamp(4rem, 9vw, 7rem); }
+  .grid2 { display: grid; gap: 3rem; }
+  @media (min-width: 900px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+  .expect { margin-top: 1.5rem; }
+  .expect li {
+    padding-block: 0.75rem;
+    border-top: 1px solid var(--rule);
+    color: var(--text-muted);
+  }
+</style>

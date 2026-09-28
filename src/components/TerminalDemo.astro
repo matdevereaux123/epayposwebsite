@@ -1,0 +1,677 @@
+---
+// A working copy of the EPAY Terminal screen, for the /epay-terminal page.
+//
+// Visitors key in a price, add or multiply on the calculator, then walk
+// through the checkout a customer sees: tax, the pricing program (Consumer
+// Choice or INT Plus), tip, tap, approved, void.
+// Nothing is charged. All money is whole cents, never floats.
+
+import terminal from "../../content/terminal.json";
+
+const d = (terminal as any).demo;
+const modes = d.pricing_modes;
+const config = {
+  taxPercent: d.tax_percent,
+  taxLabel: d.tax_label,
+  tips: d.tip_percents,
+  // Starts on Consumer Choice at its default percent; the switch under the
+  // device changes both while someone is playing with it.
+  cardPercent: modes.consumer_choice.default_percent,
+  mode: modes.consumer_choice.id,
+};
+---
+
+<div class="td" data-terminal-demo data-config={JSON.stringify(config)} data-flat-note={modes.int_plus.note}>
+  <!-- The shell mirrors the real handheld: printer lid on top, black bezel,
+       white body. Decoration only — the screen inside is the working part. -->
+  <div class="td__shell">
+    <div class="td__lid" aria-hidden="true">
+      <span class="td__wave"></span>
+    </div>
+    <div class="td__device" role="group" aria-label="EPAY Terminal demo">
+      <div class="td__screen">
+        <div class="td__status" aria-hidden="true">
+          <span class="td__burger"></span>
+          <span class="td__model">A800</span>
+        </div>
+        <p class="td__bartitle">Enter Amount</p>
+
+        <!-- Keypad view -->
+        <div class="td__view" data-view="keypad">
+          <div class="td__tabs">
+            <span class="td__tab td__tab--on">CREDIT</span>
+            <span class="td__tab">GIFTCARD</span>
+          </div>
+          <p class="td__expr" data-expr aria-live="polite"></p>
+          <p class="td__amount" data-amount aria-live="polite">$0.00</p>
+          <div class="td__keys">
+            {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((k) => (
+              <button type="button" class="td__key" data-key={k}>{k}</button>
+            ))}
+            <button type="button" class="td__key td__key--clear" data-key="C" aria-label="Clear">Clear</button>
+            <button type="button" class="td__key td__key--plus" data-key="+" aria-label="Plus">+</button>
+            <button type="button" class="td__key td__key--times" data-key="×" aria-label="Times">×</button>
+            <button type="button" class="td__key td__key--zero" data-key="0">0</button>
+            <button type="button" class="td__key td__key--del" data-key="⌫" aria-label="Delete">✕</button>
+          </div>
+          <p class="td__pricing">Pricing Options</p>
+          <button type="button" class="td__pay td__pay--cash" data-action="charge" data-pay="cash">
+            Cash <span data-cash>$0.00</span>
+          </button>
+          <button type="button" class="td__pay td__pay--card" data-action="charge" data-pay="card">
+            Card <span data-card>$0.00</span>
+          </button>
+        </div>
+
+      <!-- Review: subtotal, tax, dual pricing -->
+      <div class="td__view" data-view="review" hidden>
+        <p class="td__title">Review sale</p>
+        <dl class="td__lines" data-lines></dl>
+        <label class="td__toggle"><input type="checkbox" data-tax checked /> <span data-tax-label></span></label>
+        <div class="td__dual" data-dual hidden></div>
+        <div class="td__row">
+          <button type="button" class="td__btn td__btn--ghost" data-action="back">Back</button>
+          <button type="button" class="td__btn" data-action="to-tip">Continue</button>
+        </div>
+      </div>
+
+      <!-- Tip -->
+      <div class="td__view" data-view="tip" hidden>
+        <p class="td__title">Add a tip?</p>
+        <p class="td__hint">The customer sees this screen.</p>
+        <div class="td__tips" data-tips></div>
+      </div>
+
+      <!-- Pay -->
+      <div class="td__view td__view--center" data-view="pay" hidden>
+        <p class="td__title">Total</p>
+        <p class="td__amount" data-total></p>
+        <p class="td__hint">Tap, insert or swipe</p>
+        <button type="button" class="td__btn" data-action="tap">Tap card (demo)</button>
+      </div>
+
+      <!-- Approved -->
+      <div class="td__view td__view--center" data-view="done" hidden>
+        <p class="td__ok" aria-hidden="true">✓</p>
+        <p class="td__title" data-done-title>Approved</p>
+        <p class="td__amount" data-done-total></p>
+        <div class="td__row">
+          <button type="button" class="td__btn td__btn--ghost" data-action="void">Void sale</button>
+          <button type="button" class="td__btn" data-action="new">New sale</button>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Program switch. It sits under the device, not on the screen: a real
+       terminal has no such control, the merchant's account decides. -->
+  <div class="td__program">
+    <p class="td__program-label">{modes.label}</p>
+    <div class="td__seg" role="group" aria-label={modes.label}>
+      <button type="button" class="td__segbtn td__segbtn--on" data-mode={modes.consumer_choice.id}
+        aria-pressed="true">{modes.consumer_choice.label}</button>
+      <button type="button" class="td__segbtn" data-mode={modes.int_plus.id}
+        aria-pressed="false">{modes.int_plus.label}</button>
+    </div>
+    <div class="td__rates" data-rates>
+      <span class="td__rates-label">Card price</span>
+      {modes.consumer_choice.percents.map((value: number) => (
+        <button type="button" class={`td__rate ${value === modes.consumer_choice.default_percent ? "td__rate--on" : ""}`}
+          data-percent={value} aria-pressed={value === modes.consumer_choice.default_percent ? "true" : "false"}>
+          {value}%
+        </button>
+      ))}
+    </div>
+    <p class="td__program-note" data-mode-note>{modes.consumer_choice.note}</p>
+  </div>
+</div>
+
+<script>
+  type Term = { qty: number; cents: number };
+
+  const fmt = (c: number) => "$" + (c / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const pct = (c: number, p: number) => Math.round((c * p) / 100);
+
+  document.querySelectorAll<HTMLElement>("[data-terminal-demo]").forEach((root) => {
+    const cfg = JSON.parse(root.dataset.config || "{}");
+    const $ = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
+    const views = root.querySelectorAll<HTMLElement>("[data-view]");
+
+    let terms: Term[] = [];
+    let qty: number | null = null;
+    let digits = "";
+    let taxOn = true;
+    let tip = 0;
+    let total = 0;
+    let payMode: "cash" | "card" = "cash";
+    const notes = {
+      consumer: $("[data-mode-note]").textContent || "",
+      flat: root.dataset.flatNote || "",
+    };
+
+    const entryCents = () => parseInt(digits || "0", 10);
+    /** Consumer Choice adds a card price; INT Plus is one price for both. */
+    const cardUplift = (cents: number) =>
+      cfg.mode === "int_plus" || !cfg.cardPercent ? 0 : pct(cents, cfg.cardPercent);
+    const subtotal = () => terms.reduce((s, t) => s + t.qty * t.cents, 0) + (qty ?? 1) * entryCents();
+    const tax = () => (taxOn ? pct(subtotal(), cfg.taxPercent) : 0);
+
+    function show(name: string) {
+      views.forEach((v) => (v.hidden = v.dataset.view !== name));
+    }
+
+    function termText(t: Term) {
+      return (t.qty > 1 ? `${t.qty} × ` : "") + fmt(t.cents);
+    }
+
+    function paintKeypad() {
+      let expr = terms.map(termText).join(" + ");
+      if (terms.length && (digits || qty !== null)) expr += " +";
+      if (qty !== null) expr += ` ${qty} ×`;
+      $("[data-expr]").textContent = expr.trim();
+      const showingTotal = terms.length > 0 && !digits && qty === null;
+      const shown = showingTotal ? subtotal() : entryCents();
+      $("[data-amount]").textContent = fmt(shown);
+      // The two price buttons read like the real dual-pricing screen: what it
+      // costs in cash, and what it costs on a card.
+      const cash = subtotal();
+      $("[data-cash]").textContent = fmt(cash);
+      $("[data-card]").textContent = fmt(cash + cardUplift(cash));
+    }
+
+    function commit() {
+      if (digits && entryCents() > 0) terms.push({ qty: qty ?? 1, cents: entryCents() });
+      digits = "";
+      qty = null;
+    }
+
+    function press(k: string) {
+      if (/^\d+$/.test(k)) {
+        if ((digits + k).replace(/^0+/, "").length > 7) return; // up to $99,999.99
+        digits = (digits + k).replace(/^0+/, "");
+      } else if (k === "⌫") {
+        digits = digits.slice(0, -1);
+      } else if (k === "C") {
+        terms = []; qty = null; digits = "";
+      } else if (k === "+") {
+        commit();
+      } else if (k === "×") {
+        // The number typed so far is a quantity, not a price.
+        const n = parseInt(digits || "0", 10);
+        if (n > 0 && qty === null) { qty = Math.min(n, 999); digits = ""; }
+      }
+      paintKeypad();
+    }
+
+    function paintReview() {
+      const sub = subtotal();
+      const t = tax();
+      total = sub + t;
+      const lines = $("[data-lines]");
+      lines.replaceChildren();
+      const add = (label: string, value: string, strong = false) => {
+        const dt = document.createElement("dt"); dt.textContent = label;
+        const dd = document.createElement("dd"); dd.textContent = value;
+        if (strong) { dt.className = dd.className = "td__strong"; }
+        lines.append(dt, dd);
+      };
+      terms.forEach((term) => add(termText(term), fmt(term.qty * term.cents)));
+      add("Subtotal", fmt(sub));
+      if (taxOn) add("Tax", fmt(t));
+      add("Total", fmt(total), true);
+
+      const dual = $("[data-dual]");
+      const uplift = cardUplift(total);
+      if (uplift) {
+        dual.hidden = false;
+        const card = total + uplift;
+        dual.textContent = payMode === "card"
+          ? `Card price ${fmt(card)} · cash would be ${fmt(total)}`
+          : `Cash price ${fmt(total)} · card would be ${fmt(card)}`;
+        if (payMode === "card") total = card;
+      } else {
+        dual.hidden = false;
+        dual.textContent = "INT Plus — one price, card or cash.";
+      }
+    }
+
+    function paintTips() {
+      const box = $("[data-tips]");
+      box.replaceChildren();
+      const sub = subtotal();
+      const choices: [string, number][] = cfg.tips.map((p: number) => [`${p}%`, pct(sub, p)]);
+      choices.push(["No tip", 0]);
+      choices.forEach(([label, cents]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "td__tip";
+        const l = document.createElement("span"); l.textContent = label;
+        const v = document.createElement("span"); v.className = "td__tipv"; v.textContent = cents ? fmt(cents) : "";
+        b.append(l, v);
+        b.addEventListener("click", () => {
+          tip = cents;
+          $("[data-total]").textContent = fmt(total + tip);
+          show("pay");
+        });
+        box.append(b);
+      });
+    }
+
+    root.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("button");
+      if (!btn || !root.contains(btn)) return;
+      const key = btn.dataset.key;
+      if (key) return press(key);
+
+      // Program switch: Consumer Choice adds a card price, INT Plus does not.
+      if (btn.dataset.mode) {
+        cfg.mode = btn.dataset.mode;
+        root.querySelectorAll<HTMLButtonElement>("[data-mode]").forEach((b) => {
+          const on = b === btn;
+          b.classList.toggle("td__segbtn--on", on);
+          b.setAttribute("aria-pressed", String(on));
+        });
+        const consumerChoice = cfg.mode !== "int_plus";
+        $("[data-rates]").hidden = !consumerChoice;
+        $("[data-mode-note]").textContent = consumerChoice ? notes.consumer : notes.flat;
+        paintKeypad();
+        return;
+      }
+      if (btn.dataset.percent) {
+        cfg.cardPercent = parseInt(btn.dataset.percent, 10);
+        root.querySelectorAll<HTMLButtonElement>("[data-percent]").forEach((b) => {
+          const on = b === btn;
+          b.classList.toggle("td__rate--on", on);
+          b.setAttribute("aria-pressed", String(on));
+        });
+        paintKeypad();
+        return;
+      }
+      switch (btn.dataset.action) {
+        case "charge":
+          payMode = btn.dataset.pay === "card" ? "card" : "cash";
+          commit();
+          if (subtotal() <= 0) { paintKeypad(); return; }
+          paintReview(); show("review"); break;
+        case "back":
+          // Put the last amount back on the keypad so it can be edited.
+          show("keypad"); paintKeypad(); break;
+        case "to-tip":
+          paintTips(); show("tip"); break;
+        case "tap":
+          $("[data-done-title]").textContent = "Approved";
+          $("[data-done-total]").textContent = fmt(total + tip);
+          ($("[data-action='void']") as HTMLButtonElement).hidden = false;
+          show("done"); break;
+        case "void":
+          $("[data-done-title]").textContent = "Sale voided";
+          btn.hidden = true; break;
+        case "new":
+          terms = []; qty = null; digits = ""; tip = 0; taxOn = true;
+          ($("[data-tax]") as HTMLInputElement).checked = true;
+          paintKeypad(); show("keypad"); break;
+      }
+    });
+
+    $("[data-tax-label]").textContent = cfg.taxLabel;
+    ($("[data-tax]") as HTMLInputElement).addEventListener("change", (e) => {
+      taxOn = (e.target as HTMLInputElement).checked;
+      paintReview();
+    });
+
+    // Physical keyboard works too when the demo has focus.
+    root.addEventListener("keydown", (e) => {
+      if (!$("[data-view='keypad']").hidden) {
+        const map: Record<string, string> = { Backspace: "⌫", Escape: "C", "*": "×", x: "×", "+": "+" };
+        const k = /^\d$/.test(e.key) ? e.key : map[e.key];
+        if (k) { e.preventDefault(); press(k); }
+      }
+    });
+
+    paintKeypad();
+  });
+</script>
+
+<style>
+  /* ---------- device shell, shaped like the A800 ----------
+     White body, dark printer lid across the top with the contactless mark,
+     black glass below it, power and volume nubs on the right edge. */
+  .td__shell {
+    position: relative;
+    width: min(100%, 330px);
+    margin-inline: auto;
+    border-radius: 28px;
+    background: linear-gradient(160deg, #ffffff 0%, #f1f3f6 45%, #dfe4ea 100%);
+    padding: 0 9px 18px;
+    box-shadow:
+      0 26px 50px -18px rgba(10, 21, 32, 0.35),
+      0 2px 0 rgba(255, 255, 255, 0.9) inset,
+      0 0 0 1px rgba(10, 21, 32, 0.12);
+  }
+  /* Power and volume nubs. */
+  .td__shell::after {
+    content: "";
+    position: absolute;
+    top: 128px; right: -3px;
+    width: 3px; height: 92px;
+    border-radius: 0 3px 3px 0;
+    background: linear-gradient(180deg, #cdd4dc 0 38%, transparent 38% 46%, #cdd4dc 46% 100%);
+  }
+
+  .td__lid {
+    position: relative;
+    height: 40px;
+    margin-inline: -9px;
+    border-radius: 28px 28px 10px 10px;
+    background: linear-gradient(180deg, #33393f 0%, #1b2025 60%, #0f1317 100%);
+    display: grid;
+    place-items: center;
+  }
+  /* Paper slot along the front lip of the printer. */
+  .td__lid::after {
+    content: "";
+    position: absolute;
+    left: 14%; right: 14%; bottom: 4px;
+    height: 3px; border-radius: 3px;
+    background: rgba(255, 255, 255, 0.16);
+  }
+  /* The contactless mark moulded into the lid. */
+  .td__wave {
+    width: 24px; height: 13px;
+    border-right: 2px solid rgba(255, 255, 255, 0.55);
+    border-top: 2px solid rgba(255, 255, 255, 0.55);
+    border-radius: 0 14px 0 0;
+    transform: rotate(-14deg) translateY(-2px);
+  }
+
+  /* ---------- program switch (site UI, not device UI) ---------- */
+  .td__program {
+    width: min(100%, 330px);
+    margin: 1.25rem auto 0;
+    text-align: center;
+  }
+  .td__program-label {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-data);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+  .td__seg {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    background: #fff;
+  }
+  .td__segbtn {
+    border: 0; background: none; cursor: pointer;
+    padding: 0.5rem 0.4rem;
+    border-radius: 999px;
+    font-size: var(--small); font-weight: var(--weight-ui);
+    color: var(--text-muted);
+  }
+  .td__segbtn:hover { color: var(--text); }
+  .td__segbtn--on { background: var(--epay); color: var(--text); }
+
+  .td__rates {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    margin-top: 0.7rem;
+  }
+  .td__rates-label { font-size: var(--small); color: var(--text-muted); }
+  .td__rate {
+    border: 1px solid var(--rule-strong); background: #fff; cursor: pointer;
+    border-radius: 999px; padding: 0.3rem 0.7rem;
+    font-size: var(--small); font-weight: var(--weight-ui); color: var(--text-muted);
+  }
+  .td__rate:hover { border-color: var(--glass-line); color: var(--text); }
+  .td__rate--on { background: #d6f7fe; border-color: var(--glass-line); color: var(--text); }
+
+  .td__program-note { margin: 0.6rem 0 0; font-size: var(--small); color: var(--text-muted); }
+
+  /* ---------- screen ---------- */
+  .td__status {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--td-blue); color: #fff;
+    padding: 6px 10px; font-size: 11px; letter-spacing: 0.02em;
+  }
+  .td__burger { width: 14px; height: 10px; border-top: 2px solid #fff; border-bottom: 2px solid #fff; position: relative; }
+  .td__burger::after { content: ""; position: absolute; inset: 3px 0 auto 0; border-top: 2px solid #fff; }
+  .td__model { font-family: var(--font-data); font-size: 10.5px; }
+  .td__bartitle {
+    margin: 0; background: var(--td-blue); color: #fff; text-align: center;
+    padding: 0 10px 8px; font-size: 13px; font-weight: 600;
+  }
+
+  .td__tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px 10px 4px; background: var(--td-blue); }
+  .td__tab {
+    text-align: center; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em;
+    padding: 6px 4px; border-radius: 999px; color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+  }
+  .td__tab--on { background: #fff; color: var(--td-blue); border-color: #fff; }
+
+  .td__expr { text-align: center; }
+
+  /* ---------- keypad: 3 digit columns, utilities down the right ---------- */
+  .td__keys {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 1.05fr;
+    grid-auto-rows: 44px;
+    gap: 6px;
+    padding: 0 10px;
+  }
+  .td__key {
+    border: 0; background: #fff; color: #10161c;
+    font-size: 1.15rem; font-weight: 600;
+    border-radius: 8px; cursor: pointer;
+    box-shadow: inset 0 0 0 1px #e6eaef;
+  }
+  .td__key:hover { background: #f2f6fa; }
+  .td__key:active { background: #e8eef4; }
+  /* Digits stay in the left three columns; the right column is utilities,
+     the same arrangement as the device. */
+  .td__key:nth-child(1) { grid-area: 1 / 1; }
+  .td__key:nth-child(2) { grid-area: 1 / 2; }
+  .td__key:nth-child(3) { grid-area: 1 / 3; }
+  .td__key:nth-child(4) { grid-area: 2 / 1; }
+  .td__key:nth-child(5) { grid-area: 2 / 2; }
+  .td__key:nth-child(6) { grid-area: 2 / 3; }
+  .td__key:nth-child(7) { grid-area: 3 / 1; }
+  .td__key:nth-child(8) { grid-area: 3 / 2; }
+  .td__key:nth-child(9) { grid-area: 3 / 3; }
+  .td__key--clear { grid-column: 4; grid-row: 1; background: #ffe3e3; color: #b3261e; font-size: 0.82rem; font-weight: 700; }
+  .td__key--plus  { grid-column: 1; grid-row: 4; color: var(--td-blue); font-size: 1.5rem; }
+  .td__key--times { grid-column: 4; grid-row: 3; color: var(--td-blue); font-size: 1.3rem; }
+  .td__key--zero  { grid-column: 2; grid-row: 4; }
+  .td__key--del   { grid-column: 4; grid-row: 4; background: var(--td-blue); color: #fff; box-shadow: none; }
+
+  .td__pricing {
+    margin: 10px 0 0; text-align: center; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.04em; color: #4a5b69;
+  }
+  .td__pay {
+    display: flex; justify-content: center; gap: 10px;
+    width: calc(100% - 20px); margin: 6px 10px 0;
+    border: 0; border-radius: 8px; padding: 12px 10px;
+    font-size: 1rem; font-weight: 700; color: #fff; cursor: pointer;
+  }
+  .td__pay:last-child { margin-bottom: 10px; }
+  /* Both are a shade deeper than the device's own green and blue so white
+     text clears 4.5:1 — the photo's lighter fills do not. */
+  .td__pay--cash { background: #2e8b45; }
+  .td__pay--cash:hover { background: #26743a; }
+  .td__pay--card { background: var(--td-blue); }
+  .td__pay--card:hover { background: #12599e; }
+
+  .td { display: grid; justify-items: center; }
+
+  /* The device: a dark bezel around a white screen, echoing the Mini. */
+  .td__device {
+    width: 100%;
+    padding: 10px;
+    border-radius: 0 0 20px 20px;
+    background: #14181d;
+  }
+
+  .td { --td-blue: #1570c4; }
+
+  .td__screen {
+    background: #fff;
+    border-radius: 10px;
+    padding: 0 0 4px;
+    min-height: 470px;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: 0;
+    overflow: hidden;
+  }
+  /* Every view except the keypad keeps the old comfortable padding. */
+  .td__view:not([data-view="keypad"]) { padding: 14px; }
+
+  .td__status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-data);
+    font-size: 0.6875rem;
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .td__badge { border: 1px solid var(--rule-strong); border-radius: 999px; padding: 1px 8px; }
+
+  .td__view { display: grid; gap: 10px; align-content: start; }
+  .td__view--center { align-content: center; justify-items: center; text-align: center; }
+  .td__view[hidden] { display: none; }
+
+  .td__expr {
+    min-height: 1.2em;
+    margin: 0;
+    font-family: var(--font-data);
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+
+  .td__amount {
+    margin: 10px 0 8px;
+    font-family: var(--font-data);
+    font-variant-numeric: tabular-nums;
+    font-size: 2.3rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #10161c;
+    text-align: center;
+  }
+  .td__view--center .td__amount { text-align: center; }
+
+  .td__keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+
+  .td__key {
+    height: 52px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 12px;
+    background: var(--canvas);
+    font-family: var(--font-data);
+    font-size: 1.125rem;
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+  }
+  .td__key:hover { border-color: var(--epay); }
+  .td__key:active { background: var(--glass); }
+  .td__key--op { color: var(--accent-deep); background: var(--surface); }
+  .td__key--go {
+    grid-column: 4;
+    grid-row: 4;
+    background: var(--accent-deep);
+    border-color: var(--accent-deep);
+    color: var(--canvas);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: var(--weight-ui);
+  }
+  .td__key--go:hover { filter: brightness(1.1); }
+
+  .td__title { margin: 0; font-weight: var(--weight-ui); color: var(--text); }
+  .td__hint { margin: 0; font-size: var(--small); color: var(--text-muted); }
+
+  .td__lines {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 6px 12px;
+    margin: 0;
+    font-family: var(--font-data);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  .td__lines dd { margin: 0; text-align: right; }
+  .td__lines .td__strong { color: var(--text); font-weight: 500; border-top: 1px solid var(--rule); padding-top: 6px; }
+
+  .td__toggle { display: flex; gap: 8px; align-items: center; font-size: var(--small); color: var(--text-muted); }
+
+  .td__dual {
+    font-family: var(--font-data);
+    font-size: 0.875rem;
+    color: var(--accent-deep);
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 8px 10px;
+  }
+
+  .td__row { display: flex; gap: 8px; justify-content: flex-end; }
+  .td__view--center .td__row { justify-content: center; }
+
+  .td__btn {
+    border: 1px solid var(--accent-deep);
+    border-radius: 999px;
+    padding: 0.55rem 1.1rem;
+    background: var(--accent-deep);
+    color: var(--canvas);
+    font-family: var(--font-body);
+    font-size: var(--small);
+    font-weight: var(--weight-ui);
+    cursor: pointer;
+  }
+  .td__btn--ghost { background: var(--canvas); color: var(--accent-deep); border-color: var(--rule-strong); }
+
+  .td__tips { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .td__tip {
+    display: grid;
+    gap: 2px;
+    padding: 14px 8px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 12px;
+    background: var(--canvas);
+    font-family: var(--font-body);
+    font-weight: var(--weight-ui);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .td__tip:hover { border-color: var(--epay); }
+  .td__tipv { font-family: var(--font-data); font-size: 0.8125rem; color: var(--text-muted); font-weight: 400; }
+
+  .td__ok {
+    width: 56px;
+    height: 56px;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--glass);
+    color: var(--accent-deep);
+    font-size: 1.6rem;
+  }
+
+  .td__key:focus-visible, .td__btn:focus-visible, .td__tip:focus-visible {
+    outline: 2px solid var(--epay);
+    outline-offset: 2px;
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+// The two promo blocks near the foot of the homepage — the shop and the
+// Training Center. Both from site.json > home_promos, both pointing at
+// something that already exists.
+
+import ImageSlot from "./ImageSlot.astro";
+import { site } from "../lib/content";
+
+const blocks = (site as any).home_promos.blocks;
+---
+
+{blocks.map((block: any, i: number) => (
+  <section class={`band band--dark promo ${i % 2 === 1 ? "promo--flip" : ""}`}>
+    <div class="wrap promo__grid">
+      <div class="promo__copy">
+        <p class="mono-label">{block.eyebrow}</p>
+        <h2>{block.heading}</h2>
+        <p class="lede">{block.body}</p>
+        <div class="actions">
+          <a
+            class="btn btn--primary"
+            href={block.cta.href}
+            target={block.cta.href.startsWith("http") ? "_blank" : undefined}
+            rel={block.cta.href.startsWith("http") ? "noopener" : undefined}
+          >
+            {block.cta.label}
+          </a>
+        </div>
+      </div>
+      <ImageSlot name={block.heading} file={block.image} ratio="16 / 10" />
+    </div>
+  </section>
+))}
+
+<style>
+  .promo__grid { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 900px) {
+    .promo__grid { grid-template-columns: 1fr 1fr; gap: 3.5rem; }
+    .promo--flip .promo__copy { order: 2; }
+  }
+</style>

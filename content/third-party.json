@@ -1,0 +1,258 @@
+{
+  "_instructions": "Third-party platforms EPAY can set a merchant up on when EPAY POS is not the right fit. Pages generate at /third-party/<slug>.",
+  "_note_on_claims": "VERIFY BEFORE PUBLISHING. These descriptions are written from general knowledge of each platform, not from EPAY's own agreements. Three things to check: (1) that EPAY is actually authorised to resell or board merchants on each one, (2) that the wording does not imply a partnership or endorsement that does not exist, (3) trademark usage — do not add another company's logo without permission. Every platform name here is someone else's trademark.",
+  "_note_on_prices": "NO PRICES. Hardware prices for other companies' devices vary by reseller, change often, and publishing them as if they were EPAY's price is a liability. Every item says 'Ask us' and routes to contact. If you want real prices here, supply the ones you actually sell at.",
+  "eyebrow": "Third-party software",
+  "heading": "When EPAY POS Isn't the Right Fit",
+  "lede": "Some businesses are already committed to a platform, or need something EPAY POS doesn't do. We can board and support you on these instead — same team, same statement review, same local support.",
+  "platforms": [
+    {
+      "slug": "clover",
+      "name": "Clover",
+      "kicker": "Cloud POS · Fiserv",
+      "summary": "A widely used cloud POS with a large app marketplace and a full hardware range.",
+      "body": "Clover is a cloud-based POS platform from Fiserv, used across restaurants, retail and services. Its strength is breadth — a large third-party app marketplace and a hardware line that spans a countertop station down to a handheld. Merchants already on Clover often want to keep the platform and change who supports and prices the processing behind it.",
+      "hero_image": "/img/third-party/clover-hero.jpg",
+      "good_for": [
+        "Merchants already on Clover who want better processing rates",
+        "Businesses that rely on a specific Clover app",
+        "Multi-site operators standardised on one platform"
+      ],
+      "items": [
+        {
+          "name": "Clover Station Solo",
+          "spec": "Countertop station",
+          "image": "/img/third-party/clover-station.jpg"
+        },
+        {
+          "name": "Clover Mini",
+          "spec": "Compact countertop",
+          "image": "/img/third-party/clover-mini.jpg"
+        },
+        {
+          "name": "Clover Flex",
+          "spec": "Handheld",
+          "image": "/img/third-party/clover-flex.jpg"
+        },
+        {
+          "name": "Clover Duo",
+          "spec": "Station with customer display",
+          "image": "/img/third-party/clover-duo.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "nrs",
+      "name": "NRS",
+      "kicker": "Convenience & bodega POS",
+      "summary": "National Retail Solutions — POS built specifically for independent convenience stores and bodegas.",
+      "body": "NRS is aimed squarely at independent convenience stores, bodegas and small groceries. It ships with a large pre-built product catalogue for that trade, handles age-restricted items, and includes a customer-facing screen. It is a narrower product than a general POS, which is exactly why it fits the stores it is built for.",
+      "hero_image": "/img/third-party/nrs-hero.jpg",
+      "good_for": [
+        "Independent convenience stores and bodegas",
+        "Stores that want a pre-loaded product catalogue",
+        "Operators running a cash discount programme"
+      ],
+      "items": [
+        {
+          "name": "NRS POS terminal",
+          "spec": "Touchscreen register",
+          "image": "/img/third-party/nrs-terminal.jpg"
+        },
+        {
+          "name": "Customer-facing display",
+          "spec": "Second screen",
+          "image": "/img/third-party/nrs-display.jpg"
+        },
+        {
+          "name": "Full hardware bundle",
+          "spec": "Register, scanner, printer, drawer",
+          "image": "/img/third-party/nrs-bundle.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "ncr",
+      "name": "NCR",
+      "kicker": "Enterprise POS · NCR Voyix",
+      "summary": "One hardware family that runs several different POS software lines — restaurant, specialty retail, grocery and convenience.",
+      "body": "NCR (now NCR Voyix) is one of the oldest names in point of sale, and its strength is range rather than a single product. The same terminals, handhelds and kitchen screens run whichever NCR software line fits the business — Aloha in a restaurant, Counterpoint in a specialty store, a scanning and self-checkout setup in a grocery. That matters for operators running more than one kind of location, or for anyone who has already standardised on NCR hardware and does not want to replace it to change what runs on top.",
+      "hero_image": "/img/third-party/ncr-hero.jpg",
+      "good_for": [
+        "Grocery and supermarket operators running scanning lanes or self-checkout",
+        "Multi-unit and franchise restaurant groups on Aloha",
+        "Specialty retailers running NCR Counterpoint",
+        "Operators with mixed formats — a restaurant and a store under one owner",
+        "Anyone standardised on NCR hardware who wants to change what runs on it"
+      ],
+      "items": [
+        {
+          "name": "NCR Aloha terminal",
+          "spec": "Restaurant workstation",
+          "image": "/img/third-party/ncr-aloha.jpg"
+        },
+        {
+          "name": "NCR handheld",
+          "spec": "Tableside ordering",
+          "image": "/img/third-party/ncr-handheld.jpg"
+        },
+        {
+          "name": "Kitchen display",
+          "spec": "Back of house",
+          "image": "/img/third-party/ncr-kds.jpg"
+        }
+      ],
+      "software_eyebrow": "Software it runs",
+      "software_note": "Which of these we can board and support depends on the configuration. Tell us the format and we will tell you straight which line fits — including when EPAY POS is the better answer.",
+      "software": [
+        {
+          "name": "Aloha",
+          "fits": "Restaurants",
+          "body": "NCR's restaurant platform, common in table service and multi-unit groups. Deep back office, franchise-level reporting and a long list of established integrations."
+        },
+        {
+          "name": "Counterpoint",
+          "fits": "Specialty retail",
+          "body": "Retail POS built around inventory — matrix items, purchasing and stock control across more than one store."
+        },
+        {
+          "name": "Grocery and supermarket",
+          "fits": "High-SKU food retail",
+          "body": "Scanning lanes, scale integration and self-checkout for stores moving serious volume through the front end."
+        },
+        {
+          "name": "Convenience and fuel",
+          "fits": "C-store and forecourt",
+          "body": "Forecourt control and age-restricted sales handled at the register, with the fuel position tied into the same system."
+        },
+        {
+          "name": "Third-party integrations",
+          "fits": "Everything around it",
+          "body": "Accounting, payroll, loyalty and online ordering hang off the platform rather than being rebuilt inside it."
+        }
+      ]
+    },
+    {
+      "slug": "tsys",
+      "name": "TSYS",
+      "kicker": "Processing · Global Payments",
+      "summary": "A major merchant acquirer and processor, now part of Global Payments.",
+      "body": "TSYS is a processing platform rather than a POS. It sits behind the terminal, handling authorisation, settlement and funding. Merchants come to it for the processing relationship and the terminal estate that runs on it, rather than for front-of-house software.",
+      "hero_image": "/img/third-party/tsys-hero.jpg",
+      "good_for": [
+        "Merchants who need a specific processing platform",
+        "Businesses keeping existing terminals",
+        "Anyone comparing acquirers on price"
+      ],
+      "items": [
+        {
+          "name": "Countertop terminal",
+          "spec": "Ingenico Desk/5000 · standalone",
+          "image": "/img/third-party/tsys-terminal.jpg"
+        },
+        {
+          "name": "Wireless terminal",
+          "spec": "Ingenico Move/5000 · portable, LTE",
+          "image": "/img/third-party/tsys-wireless.jpg"
+        },
+        {
+          "name": "PIN pad",
+          "spec": "Ingenico Lane/5000 · semi-integrated",
+          "image": "/img/third-party/tsys-pinpad.jpg"
+        }
+      ],
+      "meta_description": "TSYS is a major merchant acquirer and processor, now part of Global Payments. What it means for your card processing, from EPAY POS in Troy, MI."
+    },
+    {
+      "slug": "lodging",
+      "name": "Lodging with EPAY",
+      "kicker": "Hotels · FreedomPay FuseBox",
+      "summary": "Payments for hotel property management systems, integrated through FreedomPay's FuseBox gateway.",
+      "body": "Hotels have requirements a restaurant POS does not: payments have to integrate with the property management system, handle pre-authorisations at check-in and incrementals through the stay, and settle folios at check-out. We support that through FreedomPay's FuseBox gateway, which is the integration route most major hotel brands and PMS vendors certify against.",
+      "hero_image": "/img/third-party/lodging-hero.jpg",
+      "lodging": true,
+      "good_for": [
+        "Branded properties whose PMS certifies against FreedomPay",
+        "Independent hotels needing PMS-integrated payments",
+        "Properties with food and beverage on the same folio"
+      ],
+      "capabilities": [
+        {
+          "name": "PMS-Integrated Payments",
+          "body": "Card capture and settlement flow through the property management system, not a terminal sitting beside it."
+        },
+        {
+          "name": "Pre-Auth and Incrementals",
+          "body": "Authorise at check-in and increment through the stay, so the folio settles cleanly at check-out."
+        },
+        {
+          "name": "FuseBox Gateway",
+          "body": "FreedomPay's FuseBox is the integration layer most major PMS platforms certify against."
+        },
+        {
+          "name": "Food and Beverage on Folio",
+          "body": "Restaurant and bar charges posted to the room, settled with the stay."
+        },
+        {
+          "name": "Tokenisation",
+          "body": "Card data is tokenised at the gateway, so it never sits in the property's systems."
+        },
+        {
+          "name": "Multi-Property Reporting",
+          "body": "Consolidated reporting across a portfolio rather than per-property exports."
+        }
+      ],
+      "items": [
+        {
+          "name": "Front desk PIN pad",
+          "spec": "Ingenico Lane/7000 · semi-integrated, PMS-connected",
+          "image": "/img/third-party/lodging-pinpad.jpg"
+        },
+        {
+          "name": "F&B terminal",
+          "spec": "Restaurant and bar, posts to folio",
+          "image": "/img/third-party/lodging-fnb.jpg"
+        },
+        {
+          "name": "Portable terminal",
+          "spec": "Ingenico Move/5000 · poolside, events, room service",
+          "image": "/img/third-party/lodging-portable.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "gateways",
+      "name": "Additional Gateways",
+      "kicker": "Online & integrated payments",
+      "summary": "Gateway options for e-commerce, virtual terminals and custom integrations.",
+      "body": "Where a business already has a website, a booking system or bespoke software, the payment side is a gateway rather than a POS. We can set you up on the common gateways so card payments run through your existing system instead of a new one.",
+      "hero_image": "/img/third-party/gateways-hero.jpg",
+      "good_for": [
+        "E-commerce running on an existing platform",
+        "Booking and scheduling software that takes payment",
+        "Custom software needing an API"
+      ],
+      "items": [
+        {
+          "name": "Virtual terminal",
+          "spec": "Take payment from a browser",
+          "image": "/img/third-party/gateway-virtual.jpg"
+        },
+        {
+          "name": "Hosted checkout",
+          "spec": "For an existing website",
+          "image": "/img/third-party/gateway-hosted.jpg"
+        },
+        {
+          "name": "API integration",
+          "spec": "For custom software",
+          "image": "/img/third-party/gateway-api.jpg"
+        }
+      ],
+      "meta_title": "Payment Gateways — Online & Integrated | EPAY POS"
+    }
+  ],
+  "_note_on_ncr": "NCR's software line-up below is written from publicly documented NCR Voyix products, not from EPAY's reseller agreement. Before publishing, confirm which of these EPAY can actually board and support, and cut any it cannot. 'Aloha', 'Counterpoint' and 'NCR Voyix' are NCR's trademarks.",
+  "_note_on_vendor_images": "Product photography on the Clover, NCR and NRS pages is the manufacturers' own, taken from their public product pages, and carries their logos on the devices. Clover's published media guidelines permit editorial use only and prohibit use 'in connection with advertisement, promotion, or sale' without separate written approval from Fiserv; the owner has directed that these go up on the strength of EPAY's reseller relationship. Get that in writing from Clover/Fiserv, NCR and NRS before launch, and swap in partner-portal assets if they supply them.",
+  "_note_on_terminals": "Terminal and PIN pad photography is Ingenico's own, from their product pages at ingenico.com, because Ingenico is what EPAY mainly deploys. If EPAY ships a different model on any of these, swap the image and the spec line together — the spec names the model in the photo and the two must not drift apart."
+}

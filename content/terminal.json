@@ -1,0 +1,177 @@
+{
+  "_instructions": "The EPAY Terminal page. It is SOFTWARE that runs on the EPAY Mini — never describe it as a separate device or give it a hardware price. The hardware price and lease belong to the Mini.",
+  "eyebrow": "EPAY Software",
+  "heading": "EPAY Terminal",
+  "lede": "A plain card terminal that runs on the EPAY Mini. Key in the price, take the card, hand over the receipt. No catalog to build, no inventory to keep, and a calculator built in.",
+  "hero_image": "/img/pages/terminal-hero.jpg",
+  "card": {
+    "_note": "The EPAY Terminal card in the homepage hardware row. Terminal is software, so this card shows the monthly plan price and links to the Terminal page — never a hardware price, lease or placement line.",
+    "kicker": "Smart terminal",
+    "summary": "Key in the price, take the card, hand over the receipt.",
+    "image": "/img/pages/terminal-hero.jpg",
+    "plan_id": "terminal",
+    "tags": [
+      "Card present",
+      "No catalog"
+    ],
+    "href": "/epay-terminal"
+  },
+  "runs_on": {
+    "product_id": "epay-mini",
+    "heading": "EPAY Terminal Runs on the EPAY Mini",
+    "body": "There is no separate terminal to buy. EPAY Terminal is a mode on the same handheld that runs the full POS — so a business can start on the keypad and turn on the full register later without changing hardware.",
+    "image": "/img/pages/terminal-runs-on.jpg",
+    "_note_on_image": "Photo for this section only. Leave blank to fall back to the EPAY Mini's own product photo."
+  },
+  "points": [
+    {
+      "name": "Keypad Entry",
+      "body": "Type the amount and take payment. No products to set up first."
+    },
+    {
+      "name": "Built-In Calculator",
+      "body": "Add several amounts into one charge, or multiply a quantity by a price, right on the keypad."
+    },
+    {
+      "name": "Every Payment Type",
+      "body": "EMV chip, tap, swipe and mobile wallets, the same as the full system."
+    },
+    {
+      "name": "Tips on Screen",
+      "body": "Customers choose or type a tip on the screen before they pay."
+    },
+    {
+      "name": "Dual Pricing",
+      "body": "Shows the cash price and the card price, so the customer chooses. Works with Consumer Choice."
+    },
+    {
+      "name": "Sales Tax",
+      "body": "Adds your sales tax to the keyed amount automatically."
+    },
+    {
+      "name": "Refunds and Voids",
+      "body": "Refund or void a sale right on the terminal. No back office to log into."
+    },
+    {
+      "name": "Receipts",
+      "body": "Printed on the built-in printer, or sent digitally."
+    },
+    {
+      "name": "Batches and Funding",
+      "body": "Daily totals and batch history on the device. Batches settle the next business day."
+    }
+  ],
+  "good_for": [
+    "Service businesses billing by job",
+    "A second register at a busy counter",
+    "Market stalls, popups and events",
+    "Anyone who does not need a catalog"
+  ],
+  "not_for": [
+    "Table service that needs coursing and split checks",
+    "High-SKU retail that needs inventory",
+    "Anywhere the kitchen needs printed tickets"
+  ],
+  "steps": [
+    {
+      "name": "Key in the price",
+      "body": "Type the amount, or add and multiply on the built-in calculator."
+    },
+    {
+      "name": "Take the card",
+      "body": "Tap, chip, swipe or phone. Tax, tip and dual pricing are handled on screen."
+    },
+    {
+      "name": "Hand over the receipt",
+      "body": "Print it on the Mini or send it digitally. Money lands the next business day."
+    }
+  ],
+  "compare": {
+    "_note": "Rows for the Terminal vs full POS table. Only list what is confirmed: the first five were confirmed by Matt on 2026-09-18, the last three come from not_for.",
+    "columns": [
+      "EPAY Terminal",
+      "Full EPAY POS"
+    ],
+    "rows": [
+      {
+        "name": "Keypad entry and calculator",
+        "terminal": true,
+        "full": true
+      },
+      {
+        "name": "Tips, sales tax and dual pricing",
+        "terminal": true,
+        "full": true
+      },
+      {
+        "name": "Refunds and voids",
+        "terminal": true,
+        "full": true
+      },
+      {
+        "name": "Chip, tap, swipe and mobile wallets",
+        "terminal": true,
+        "full": true
+      },
+      {
+        "name": "Next-day funding",
+        "terminal": true,
+        "full": true
+      },
+      {
+        "name": "Product catalog and inventory",
+        "terminal": false,
+        "full": true
+      },
+      {
+        "name": "Table service, coursing and split checks",
+        "terminal": false,
+        "full": true
+      },
+      {
+        "name": "Printed kitchen tickets",
+        "terminal": false,
+        "full": true
+      }
+    ],
+    "footnote": "Same EPAY Mini either way. Turn on the full POS later without changing hardware."
+  },
+  "demo": {
+    "_note": "Interactive keypad on the page. tax_percent is Michigan's state sales tax, shown as an example. pricing_modes drives the demo's own program switch: Consumer Choice adds a card price at the chosen percent, INT Plus charges one price. These percents are demo figures for the widget — a merchant's real card price is set on their account.",
+    "eyebrow": "Try it",
+    "body": "This is the EPAY Terminal screen. Key in a price, add or multiply with the calculator, then charge it to see the steps a customer sees.",
+    "note": "Demo only. No card is charged.",
+    "tax_percent": 6,
+    "tax_label": "Sales tax 6% (Michigan, example)",
+    "tip_percents": [
+      15,
+      18,
+      20
+    ],
+    "pricing_modes": {
+      "label": "Pricing program",
+      "consumer_choice": {
+        "id": "consumer_choice",
+        "label": "Consumer Choice",
+        "note": "Card price covers the processing cost.",
+        "percents": [
+          3,
+          4
+        ],
+        "default_percent": 4
+      },
+      "int_plus": {
+        "id": "int_plus",
+        "label": "INT Plus",
+        "note": "One price. No card-price difference."
+      }
+    }
+  },
+  "closing": {
+    "eyebrow": "Get started",
+    "body": "Tell us about your business and we'll set up EPAY Terminal on a Mini, ready to take cards.",
+    "submit_label": "Have someone call me",
+    "_note_on_form_name": "RETIRED. The whole site posts to one Netlify form — content/enquiry.json > form_name. This value is no longer read by any page; submissions are told apart by the reason/item/source_button fields instead."
+  },
+  "meta_description": "EPAY Terminal: key in a price and take the card. Built-in calculator, tips, sales tax, dual pricing, refunds and voids, on the EPAY Mini."
+}
