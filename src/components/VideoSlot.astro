@@ -62,7 +62,12 @@ const hasPoster = onDisk(v.poster);
           playsinline
           disablepictureinpicture
           disableremoteplayback
-          preload="auto"
+          {/* metadata, not auto: this file is 5MB and sits below the fold, but
+              preload="auto" pulled the whole thing during initial page load —
+              half the homepage's total weight before a visitor scrolled to it.
+              Autoplay is unaffected; browsers do not play an offscreen video
+              either way, and it buffers when it scrolls into view. */}
+          preload="metadata"
           controlslist="nodownload nofullscreen noremoteplayback noplaybackrate"
           tabindex="-1"
           aria-label={`${v.heading}: ${v.body}`}

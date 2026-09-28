@@ -11,7 +11,7 @@
       "kicker": "Handheld",
       "summary": "Take orders and take payment anywhere on the floor.",
       "body": "A fast, portable handheld that keeps service moving. Prints receipts on the spot, handles tableside payment, deliveries, curbside, and events.",
-      "image": "/img/products/epay-mini.png",
+      "image": "/img/products/epay-mini.jpg",
       "best_for": [
         "Full service",
         "Bar",
@@ -52,7 +52,7 @@
       "kicker": "Restaurant system",
       "summary": "Full restaurant control — floor, kitchen, and payments in one system.",
       "body": "Ordering, kitchen communication, table management, and payment flow through one place. Dine-in, takeout, and third-party orders all land in the same ticket queue.",
-      "image": "/img/products/epay-table.png",
+      "image": "/img/products/epay-table.jpg",
       "best_for": [
         "Full service",
         "Pizzeria",
@@ -92,7 +92,7 @@
       "kicker": "Retail system",
       "summary": "Everything a store needs to run the counter and the back room.",
       "body": "Manage inventory, track sales, run promotions, and take every payment type. Built for high-SKU counts and fast checkout lines.",
-      "image": "/img/products/epay-retail.png",
+      "image": "/img/products/epay-retail.jpg",
       "best_for": [
         "Convenience",
         "Liquor",
@@ -168,5 +168,6 @@
   "_note_on_stations": "EPAY Stations was removed — Matt confirmed it is the same unit as EPAY Retail. Every industry that listed epay-stations now lists epay-retail instead. The 'EPAY Station Receipt Rolls' accessory keeps its name because that is the SKU on the live store.",
   "_note_on_free_kds": "kitchen-display has free_with_lease: true — the builder charges no lease for it as long as at least one chargeable system is on the lease. Leasing a KDS on its own still costs the lease rate. It is still a normal purchase price on the buy-outright path.",
   "_note_on_feature_bullets": "Table and Kitchen Display bullets are taken verbatim from the live epaypos.net product page. EPAY MINI and EPAY RETAIL bullets were written from their `specs` here, NOT copied from the live site: that page currently lists Retail's features as 'drag-and-drop floor plans, split checks, merge tables, course firing' — the Table copy pasted onto the Retail product. Fix it on Wix too.",
-  "_note_on_terminal": "EPAY Terminal is NOT separate hardware — it is a software mode that runs on the EPAY Mini. It lives in software.json, not here, so it never appears as something to buy, lease or add to a build."
+  "_note_on_terminal": "EPAY Terminal is NOT separate hardware — it is a software mode that runs on the EPAY Mini. It lives in software.json, not here, so it never appears as something to buy, lease or add to a build.",
+  "_note_on_image_format": "epay-mini, epay-retail and epay-table were PNGs of opaque product photographs — 1.0MB between them, and PNG is the wrong container for a photo with no transparency. Re-encoded to JPEG at 1200px/q82 on 2026-09-28 for a 90% saving. The originals are in tools/removed-photos/. WebP would be smaller still but this Mac has no encoder for it."
 }

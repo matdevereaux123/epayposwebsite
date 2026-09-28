@@ -44,11 +44,16 @@ export const fonts: Record<"display" | "body" | "data", FontSpec> = {
   },
 
   // All running copy, buttons, nav, form fields.
+  // Self-hosted since 2026-09-28: the Google Fonts stylesheet was render-
+  // blocking for 310ms and its `display=swap` reflowed every section below the
+  // hero once the face arrived — Lighthouse measured 0.2 CLS from it. The two
+  // .woff2 files live in public/fonts and are preloaded in Base.astro.
+  // Source Sans Pro is OFL licensed, so self-hosting is permitted.
   body: {
     family: "Source Sans Pro",
     weights: "400;600",
     fallback: "system-ui, -apple-system, sans-serif",
-    google: true,
+    google: false,
   },
 
   // Prices, rates, stats, eyebrow labels.
@@ -63,7 +68,7 @@ export const fonts: Record<"display" | "body" | "data", FontSpec> = {
     family: "Source Sans Pro",
     weights: "400;600",
     fallback: "system-ui, sans-serif",
-    google: true,
+    google: false,
   },
 };
 
