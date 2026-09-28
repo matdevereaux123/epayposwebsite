@@ -1,0 +1,132 @@
+---
+// One enquiry form, reachable from every product card and CTA on the site.
+//
+// Base renders this once per page. Any element carrying `data-enquire-reason`
+// opens it, and three attributes travel with the click:
+//
+//   data-enquire-reason="pricing"        why they are getting in touch (hidden)
+//   data-enquire="product:epay-table"    which equipment, if any
+//   data-enquire-label="Add to a build"  the exact button they clicked
+//
+// The reason and the equipment id must exist in content/enquiry.json and
+// equipmentOptions() respectively — a stale one leaves the field blank rather
+// than sending a value the form never offered. The button label and the page
+// path ride along as hidden fields, so a submission says where it came from.
+//
+// A link inside a trigger can opt out with `data-enquire-keep` and will
+// navigate as normal.
+//
+// Netlify reads forms out of the static HTML, so every option has to be
+// rendered at build time — LeadForm does that.
+
+import LeadForm from "./LeadForm.astro";
+import { enquiry } from "../lib/content";
+
+const reasonIds = (enquiry.reasons as any[]).map((r) => r.id).join(" ");
+---
+
+<div class="eq" data-enquiry data-reasons={reasonIds}>
+  <dialog class="eq__dialog" data-dialog aria-labelledby="eq-title">
+    <button class="eq__close" type="button" data-close aria-label={enquiry.close_label}>
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <p class="mono-label">{enquiry.eyebrow}</p>
+    <h2 id="eq-title">{enquiry.heading}</h2>
+    <p class="eq__body">{enquiry.body}</p>
+    <LeadForm
+      name={enquiry.form_name}
+      submitLabel={enquiry.submit_label}
+      withEquipment
+      withCurrentPos
+    />
+  </dialog>
+</div>
+
+<script>
+  const root = document.querySelector("[data-enquiry]");
+  const dialog = root?.querySelector("[data-dialog]") as HTMLDialogElement | null;
+
+  if (dialog) {
+    const reason = dialog.querySelector("[data-reason]") as HTMLInputElement | null;
+    const validReasons = (root?.getAttribute("data-reasons") ?? "").split(" ").filter(Boolean);
+    const item = dialog.querySelector("[data-equipment]") as HTMLSelectElement | null;
+    const srcButton = dialog.querySelector("[data-source-button]") as HTMLInputElement | null;
+    const itemName = dialog.querySelector("[data-item-name]") as HTMLInputElement | null;
+    const srcPage = dialog.querySelector("[data-source-page]") as HTMLInputElement | null;
+
+    // Set a select only to a value it actually offers, so a typo on a card
+    // cannot submit something the dropdown never listed.
+    const setIfKnown = (el: HTMLSelectElement | null, value: string) => {
+      if (!el) return;
+      el.value = [...el.options].some((o) => o.value === value) ? value : "";
+    };
+
+    // The select submits a slug; this carries the readable name alongside it so
+    // the Netlify dashboard shows "EPAY Table" and not "product:epay-table".
+    const syncItemName = () => {
+      if (itemName) itemName.value = item?.selectedOptions[0]?.value ? item.selectedOptions[0].text : "";
+    };
+    item?.addEventListener("change", syncItemName);
+
+    document.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement | null;
+      const trigger = target?.closest("[data-enquire-reason]") as HTMLElement | null;
+      if (!trigger) return;
+      if (target?.closest("[data-enquire-keep]")) return;
+
+      e.preventDefault();
+      // A reason the content file does not define is dropped rather than sent.
+      const r = trigger.dataset.enquireReason ?? "";
+      if (reason) reason.value = validReasons.includes(r) ? r : "";
+      setIfKnown(item, trigger.dataset.enquire ?? "");
+      if (srcButton) {
+        srcButton.value =
+          trigger.dataset.enquireLabel ?? (trigger.textContent ?? "").trim().slice(0, 120);
+      }
+      if (srcPage) srcPage.value = location.pathname + location.hash;
+      syncItemName();
+
+      dialog.showModal();
+      const firstField = dialog.querySelector("select, input:not([type=hidden])") as HTMLElement | null;
+      firstField?.focus();
+    });
+
+    dialog.addEventListener("click", (e) => {
+      const t = e.target as HTMLElement;
+      if (t.closest("[data-close]") || t === dialog) dialog.close();
+    });
+  }
+</script>
+
+<style>
+  .eq__dialog {
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    background: var(--canvas);
+    color: var(--text);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    width: min(92vw, 640px);
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+  .eq__dialog::backdrop { background: rgba(10, 21, 32, 0.45); }
+  .eq__dialog h2 { font-size: var(--display-lg); margin: 0.25rem 0 0.75rem; }
+  .eq__body { color: var(--text-muted); margin: 0 0 1.5rem; max-width: 52ch; }
+
+  .eq__close {
+    float: right;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    background: none;
+    color: var(--text-muted);
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .eq__close:hover { color: var(--text); border-color: var(--epay); }
+
+  /* Any card that opens the dialog should feel clickable. */
+  :global([data-enquire-reason]) { cursor: pointer; }
+</style>

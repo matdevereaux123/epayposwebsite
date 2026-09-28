@@ -1,0 +1,199 @@
+{
+  "_instructions": "Base features grouped by category. Each category maps to a page under Features & Payments. Adding a feature = adding one object to an items array — it will appear on the features page and anywhere that category is surfaced.",
+  "categories": [
+    {
+      "id": "operations",
+      "name": "Front of House",
+      "page": "/epay-base-features",
+      "items": [
+        {
+          "name": "Table and floor management",
+          "body": "Track seating, turns, and server sections from one screen."
+        },
+        {
+          "name": "Split checks and seat ordering",
+          "body": "Split by seat, item, or percentage without restarting the ticket."
+        },
+        {
+          "name": "Course firing",
+          "body": "Hold and fire courses so the kitchen sends food when the table is ready."
+        },
+        {
+          "name": "Tip handling",
+          "body": "Tip pooling, tip sharing, and adjustments after close."
+        }
+      ],
+      "hero_image": "/img/features/epay-base-features-hero.jpg"
+    },
+    {
+      "id": "kitchen",
+      "name": "Kitchen & Display",
+      "page": "/customer-kitchen-display",
+      "items": [
+        {
+          "name": "Kitchen display system",
+          "body": "Orders route to the right station with timers and bump bars."
+        },
+        {
+          "name": "Customer-facing display",
+          "body": "Shows the order as it rings, plus tip prompt and receipt options."
+        },
+        {
+          "name": "Printer routing",
+          "body": "Send items to specific printers by category or station."
+        }
+      ],
+      "hero_image": "/img/features/customer-kitchen-display-hero.jpg"
+    },
+    {
+      "id": "inventory",
+      "name": "Inventory & Catalog",
+      "page": "/epay-base-features",
+      "items": [
+        {
+          "name": "Real-time inventory",
+          "body": "Counts move as items sell, with low-stock alerts."
+        },
+        {
+          "name": "Modifiers and combos",
+          "body": "Nested modifiers, mix-and-match pricing, and bundle deals."
+        },
+        {
+          "name": "Purchase orders",
+          "body": "Build POs, receive against them, and track vendor cost changes."
+        },
+        {
+          "name": "Age verification",
+          "body": "ID scanning and prompts for restricted items."
+        }
+      ],
+      "hero_image": "/img/features/epay-base-features-hero.jpg"
+    },
+    {
+      "id": "employees",
+      "name": "Employee & Time",
+      "page": "/employee-time-management",
+      "items": [
+        {
+          "name": "Clock in and out",
+          "body": "Time tracking on the POS with PIN or badge."
+        },
+        {
+          "name": "Scheduling",
+          "body": "Build shifts and let staff see the schedule from their phone."
+        },
+        {
+          "name": "Permissions",
+          "body": "Role-based access down to the individual function."
+        },
+        {
+          "name": "Labor reporting",
+          "body": "Labor cost as a live percentage of sales."
+        }
+      ],
+      "hero_image": "/img/features/employee-time-management-hero.jpg"
+    },
+    {
+      "id": "analytics",
+      "name": "Reporting & Analytics",
+      "page": "/analytics-app",
+      "items": [
+        {
+          "name": "Mobile analytics app",
+          "body": "Sales, labor, and top items on your phone in real time."
+        },
+        {
+          "name": "Sales reporting",
+          "body": "By daypart, category, employee, or location."
+        },
+        {
+          "name": "Multi-location rollup",
+          "body": "Compare stores side by side on one dashboard."
+        }
+      ],
+      "hero_image": "/img/features/analytics-app-hero.jpg"
+    },
+    {
+      "id": "online",
+      "name": "Online & Delivery",
+      "page": "/e-commerce-websites",
+      "items": [
+        {
+          "name": "Online ordering",
+          "body": "Your own ordering page, orders land directly in the POS."
+        },
+        {
+          "name": "E-commerce buildout",
+          "body": "A storefront tied to the same catalog and inventory."
+        },
+        {
+          "name": "Online invoicing",
+          "body": "Send a payment link and get paid without the customer in front of you."
+        }
+      ],
+      "hero_image": "/img/features/e-commerce-websites-hero.jpg"
+    },
+    {
+      "id": "integrations",
+      "name": "Integrations",
+      "page": "/integrations",
+      "items": [
+        {
+          "name": "Accounting exports",
+          "body": "Clean exports for your bookkeeper or accounting software."
+        }
+      ],
+      "hero_image": "/img/features/integrations-hero.jpg"
+    },
+    {
+      "id": "delivery",
+      "name": "Delivery Apps",
+      "page": "/grub-hub-doordash-uber-eats",
+      "hero_image": "/img/features/grub-hub-doordash-uber-eats-hero.jpg",
+      "items": [
+        {
+          "name": "DoorDash",
+          "body": "Orders route into the POS with no tablet juggling."
+        },
+        {
+          "name": "Uber Eats",
+          "body": "Menu and availability stay in sync with your catalog."
+        },
+        {
+          "name": "Grubhub",
+          "body": "Consolidated ticket flow alongside dine-in orders."
+        },
+        {
+          "name": "One ticket queue",
+          "body": "Delivery orders land beside dine-in and phone orders, so there is no separate tablet to watch."
+        }
+      ]
+    },
+    {
+      "id": "payments",
+      "name": "Payments",
+      "page": "/epay-base-features",
+      "items": [
+        {
+          "name": "Every payment type",
+          "body": "EMV chip, tap, swipe, mobile wallets, and gift cards."
+        },
+        {
+          "name": "Next-day funding",
+          "body": "Batches settle to your account the next business day."
+        },
+        {
+          "name": "Cash discount program",
+          "body": "Run 0% processing with compliant signage and receipt handling."
+        },
+        {
+          "name": "PCI compliance support",
+          "body": "We handle the paperwork so you don't get hit with non-compliance fees."
+        }
+      ],
+      "hero_image": "/img/features/epay-base-features-hero.jpg"
+    }
+  ],
+  "_note_on_images": "Each feature page takes one hero image. Categories that share a page share the same path, so the file is uploaded once. Drop it at hero_image and the slot renders the photo.",
+  "_note_on_delivery": "Delivery moved out of `integrations` into its own category so it generates /grub-hub-doordash-uber-eats. That slug was in the nav and the URL map from day one but nothing built it — it 404'd. It now has a page."
+}

@@ -1,0 +1,140 @@
+---
+// EPAY Software — what we build on top of the POS.
+//
+// Content is content/software.json, drawn from the EPAY App Store material
+// on epaypos.net. Nothing here is a capability we don't ship.
+
+import Base from "../layouts/Base.astro";
+import BatchLine from "../components/BatchLine.astro";
+import ImageSlot from "../components/ImageSlot.astro";
+import appsData from "../../content/software.json";
+import { site, pricing, faqs, headings } from "../lib/content";
+
+const { eyebrow, heading, lede, hero_image, apps } = appsData as any;
+---
+
+<Base
+  title={`EPAY Software — built on the POS | ${site.brand.name}`}
+  description="Loyalty, e-commerce, online ordering, reservations, gift cards and reporting — built on top of the EPAY POS and running off the same catalog and customers."
+>
+  <section class="band band--deck hero">
+    <div class="wrap hero__grid">
+      <div>
+        <p class="mono-label">{eyebrow}</p>
+        <h1>{heading}</h1>
+        <p class="lede">{lede}</p>
+        <div class="actions">
+          <a class="btn btn--primary" href={site.cta.primary.href}>{site.cta.primary.label}</a>
+          <a class="btn btn--ghost" href="/contact">Ask what's possible</a>
+        </div>
+      </div>
+      <ImageSlot name="EPAY Software hero" file={hero_image} ratio="4 / 3" />
+    </div>
+  </section>
+
+  <BatchLine
+    readouts={[
+      { label: "Runs on", value: "The same catalog" },
+      { label: "Setup", value: "We configure it" },
+      { label: "Support", value: "24/7" },
+    ]}
+  />
+
+  <section class="band band--dark">
+    <div class="wrap">
+      <p class="mono-label">What we build</p>
+      <h2>{headings.software.apps}</h2>
+      <div class="grid grid--3 apps">
+        {apps.map((app: any) => (
+          <article class="card reveal" id={app.id}
+                   data-enquire-reason="software"
+                   data-enquire-label={`Software app — ${app.name}`}>
+            <ImageSlot name={app.name} file={app.image} ratio="4 / 3" />
+            <h3>{app.name}</h3>
+            <p>{app.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--dark">
+    <div class="wrap">
+      <p class="mono-label">Included with every plan</p>
+      <h2>{headings.shared.included}</h2>
+      <ul class="incl">
+        {pricing.included_with_every_plan.map((item: string) => <li>{item}</li>)}
+      </ul>
+      <div class="actions">
+        <a class="btn btn--ghost" href="/pricing">See pricing</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--dark">
+    <div class="wrap">
+      <p class="mono-label">Questions</p>
+      <h2>{headings.shared.faq}</h2>
+      <div class="faqs">
+        {faqs.slice(0, 4).map((faq: any) => (
+          <details class="faq">
+            <summary>{faq.q}</summary>
+            <p>{faq.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--dark cta">
+    <div class="wrap">
+      <h2>{headings.software.contact}</h2>
+      <p class="lede">
+        If it runs off your catalog, your customers or your reporting, there's usually a way to
+        build it. Ask and we'll tell you straight whether we can.
+      </p>
+      <div class="actions">
+        <a class="btn btn--primary" href={site.cta.primary.href}>{site.cta.primary.label}</a>
+        <a class="btn btn--ghost" href="/contact">Talk to someone</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding-block: clamp(3rem, 7vw, 5.5rem) clamp(1.5rem, 3vw, 2.5rem); }
+  .hero__grid { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 900px) { .hero__grid { grid-template-columns: 1.1fr 1fr; } }
+
+  .apps { margin-top: 2rem; }
+  .apps h3 { margin-top: 1rem; }
+  .apps p { color: var(--text-muted); font-size: var(--small); }
+
+  .incl { display: grid; gap: 0.25rem; margin-top: 1.5rem; }
+  @media (min-width: 700px) { .incl { grid-template-columns: 1fr 1fr; } }
+  .incl li { padding-block: 0.75rem; border-top: 1px solid var(--rule); }
+
+  .faqs { margin-top: 1.5rem; max-width: 760px; }
+  .faq { border-top: 1px solid var(--rule); }
+  .faq summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+    padding: 1.1rem 0.85rem; margin-inline: -0.85rem;
+    border-radius: var(--radius); cursor: pointer;
+    font-family: var(--font-display); font-weight: 700; font-size: 1.0625rem;
+    list-style: none;
+    transition: background var(--dur-fast) var(--ease);
+  }
+  .faq summary:hover { background: var(--glass); }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: "+"; flex-shrink: 0; font-family: var(--font-data);
+    font-size: 1.25rem; line-height: 1; color: var(--accent-deep);
+    transition: transform var(--dur) var(--ease);
+  }
+  .faq[open] summary::after { transform: rotate(135deg); }
+  .faq p { color: var(--text-muted); padding-bottom: 1rem; max-width: 68ch; }
+
+  .cta { text-align: center; }
+  .cta .lede { margin-inline: auto; }
+  .cta .actions { justify-content: center; }
+</style>

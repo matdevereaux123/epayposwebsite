@@ -1,0 +1,49 @@
+---
+import Base from "../layouts/Base.astro";
+import ApplicationForm from "../components/ApplicationForm.astro";
+import appData from "../../content/application.json";
+import { site } from "../lib/content";
+
+const a = appData as any;
+---
+<Base title="Apply for Processing | EPAY POS" description={a.meta_description} noLeadMagnets>
+  <section class="band band--deck signup__top">
+    <div class="wrap">
+      <p class="mono-label">{a.eyebrow}</p>
+      <h1>{a.heading}</h1>
+      <p class="lede">{a.lede}</p>
+    </div>
+  </section>
+
+  <section class="band signup__form">
+    <div class="wrap">
+      <ApplicationForm />
+    </div>
+  </section>
+
+  <section class="band signup__help">
+    <div class="wrap">
+      <p class="mono-label">Rather not do this online?</p>
+      <p>
+        Call <a href={`tel:${site.contact.phone.replace(/[^\d+]/g, "")}`}>{site.contact.phone}</a> ext. 3
+        and we'll take the application with you over the phone.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* No line art behind an application. The form is long enough without
+     anything moving behind it, and the fields must stay easy to read. */
+  .band::before { content: none !important; }
+
+  .signup__top { padding-block: clamp(3rem, 7vw, 5rem) clamp(1.5rem, 3vw, 2.5rem); }
+  .signup__top h1 { max-width: 18ch; }
+
+  .signup__form { padding-block: clamp(2rem, 5vw, 3.5rem); }
+  .signup__form .wrap { max-width: 52rem; }
+
+  .signup__help { padding-block: clamp(2rem, 4vw, 3rem); }
+  .signup__help p { color: var(--text-muted); }
+  .signup__help a { color: var(--accent-deep); text-decoration: underline; }
+</style>

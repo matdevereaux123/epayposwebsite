@@ -1,0 +1,18 @@
+{
+  "_instructions": "Referral partners who send traffic to this site. Each one gets its own link — epaypos.net/<entry_path> — and every visitor who arrives that way is attributed to that partner for the next 30 days. The site itself does not change: same brand, same pages. Only where the lead lands changes.",
+  "_note_on_crm": "Attribution is the CRM's own mechanism. In the CRM: add the partner under Referral Partners, then Settings > Application links > create TWO links for them — one of kind 'application' and one of kind 'lead' — with the partner attached to both. LABEL THEM WITH THE PARTNER NAME: the label is copied onto every lead as its source ('Lead form — Palm Tree Pay Tech'), which is what makes a partner lead obvious in the list. The lead is also linked to the partner record, and the note on it opens with 'Via Palm Tree Pay Tech'.",
+  "_note_on_email": "A partner's leads go to the CRM only. The sales@ alert that fires for ordinary applications is deliberately skipped for partner traffic, because the partner's own team works those records in the CRM.",
+  "param": "partner",
+  "window_days": 30,
+  "partners": [
+    {
+      "id": "palm-tree-pay-tech",
+      "name": "Palm Tree Pay Tech",
+      "entry_path": "/palm-tree-pay-tech",
+      "active": true,
+      "application_slug": "",
+      "lead_slug": "",
+      "_note_on_slugs": "REQUIRED before anything routes to Palm Tree. Until these are filled in, a visitor who arrives on the partner link is still tagged, but their application uses the normal EPAY link and their enquiry goes to Netlify as usual — nothing breaks, it simply is not attributed."
+    }
+  ]
+}

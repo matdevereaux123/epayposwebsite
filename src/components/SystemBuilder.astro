@@ -1,0 +1,449 @@
+---
+// System builder — merchant picks a software plan and hardware, and gets a
+// monthly + upfront breakdown across the three acquisition paths.
+//
+// Every figure comes from /content. Nothing is priced in this file: plan
+// prices from pricing.json, lease rates from pricing.hardware.lease, unit
+// prices from each product's `purchase_price`. If a product has no published
+// price it renders "Ask us" rather than a number we made up.
+//
+// Money is handled in integer cents in the client script. 19.99 * 3 in
+// floating point is 59.97000000000001, and a merchant must never see that.
+
+import { pricing, products, money, headings } from "../lib/content";
+
+const hw = (pricing as any).hardware;
+// Only priced items flagged for the builder — it does arithmetic, so an
+// unpriced item cannot appear here.
+const accessories = ((await import("../../content/store.json")).default as any).items
+  .filter((i: any) => i.in_builder && i.price !== null);
+---
+
+<section class="band band--surface sb" id="build">
+  <div class="wrap">
+    <p class="mono-label">Build your system</p>
+    <h2>{headings.products.builder}</h2>
+    <p class="lede">
+      Pick your plan and the hardware you need. The total updates as you go, across
+      all three ways to get the equipment.
+    </p>
+
+    <div class="sb__grid">
+      <div class="sb__config">
+        <fieldset class="sb__block">
+          <legend class="mono-label">1 &middot; Software plan</legend>
+          <div class="sb__plans">
+            {pricing.plans.map((plan, i) => (
+              <label class="sb__plan">
+                <input
+                  type="radio"
+                  name="sb-plan"
+                  value={plan.id}
+                  data-cents={Math.round(plan.price * 100)}
+                  checked={i === 2}
+                />
+                <span class="sb__plan-body">
+                  <span class="sb__plan-name">{plan.name}</span>
+                  <span class="sb__plan-price figure">{money(plan.price)}<span class="sb__int">/{plan.interval}</span></span>
+                  <span class="sb__plan-for">{plan.best_for}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset class="sb__block">
+          <legend class="mono-label">2 &middot; Hardware</legend>
+          <ul class="sb__items">
+            {products.map((product: any) => (
+              <li class="sb__item">
+                <span class="sb__item-main">
+                  <span class="sb__item-name">{product.name}</span>
+                  <span class="sb__item-meta">
+                    {!product.purchase_price
+                      ? <>Ask us for pricing</>
+                      : product.free_with_lease
+                        ? <>{money(product.purchase_price)} &middot; free with a system lease</>
+                        : <>{money(product.purchase_price)} &middot; lease {money(product.lease_tier === "small" ? hw.lease.small_monthly : hw.lease.large_monthly)}/mo</>}
+                  </span>
+                </span>
+                <span class="sb__qty">
+                  <button type="button" class="sb__step" data-step="-1" aria-label={`Remove one ${product.name}`}>&minus;</button>
+                  <input
+                    class="sb__count figure"
+                    type="number"
+                    min="0"
+                    max="99"
+                    value="0"
+                    aria-label={`Quantity of ${product.name}`}
+                    data-unit-cents={product.purchase_price ? Math.round(product.purchase_price * 100) : ""}
+                    data-lease-cents={Math.round((product.lease_tier === "small" ? hw.lease.small_monthly : hw.lease.large_monthly) * 100)}
+                    data-free-lease={product.free_with_lease ? "1" : undefined}
+                  />
+                  <button type="button" class="sb__step" data-step="1" aria-label={`Add one ${product.name}`}>+</button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </fieldset>
+
+        <fieldset class="sb__block">
+          <legend class="mono-label">3 &middot; Add-ons</legend>
+          <ul class="sb__items">
+            {accessories.map((acc: any) => (
+              <li class="sb__item">
+                <span class="sb__item-main">
+                  <span class="sb__item-name">{acc.name}</span>
+                  <span class="sb__item-meta">{money(acc.price)}</span>
+                </span>
+                <span class="sb__qty">
+                  <button type="button" class="sb__step" data-step="-1" aria-label={`Remove one ${acc.name}`}>&minus;</button>
+                  <input
+                    class="sb__count figure"
+                    type="number"
+                    min="0"
+                    max="99"
+                    value="0"
+                    aria-label={`Quantity of ${acc.name}`}
+                    data-unit-cents={Math.round(acc.price * 100)}
+                    data-lease-cents=""
+                  />
+                  <button type="button" class="sb__step" data-step="1" aria-label={`Add one ${acc.name}`}>+</button>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p class="sb__hint">Add-ons are purchase only — they aren't part of a lease.</p>
+        </fieldset>
+
+        <fieldset class="sb__block">
+          <legend class="mono-label">4 &middot; Do you qualify for free placement?</legend>
+          <label class="sb__field">
+            <span>Your monthly card volume</span>
+            <input class="figure" type="number" id="sb-volume" min="0" step="1000" value="0" placeholder="0" />
+          </label>
+          <label class="sb__check">
+            <input type="checkbox" id="sb-cc" />
+            <span>I'd run the Consumer Choice program</span>
+          </label>
+          <p class="sb__hint" id="sb-qualify" role="status"></p>
+        </fieldset>
+      </div>
+
+      <aside class="sb__out" aria-live="polite">
+        <p class="mono-label">Your build</p>
+
+        <div class="sb__opt" data-opt="placement">
+          <p class="sb__opt-name">{hw.free_placement.label}</p>
+          <p class="sb__total figure"><span data-out="placement-monthly">&mdash;</span><span class="sb__int">/mo</span></p>
+          <p class="sb__opt-sub"><span data-out="placement-upfront">&mdash;</span> upfront</p>
+          <p class="sb__opt-body">{hw.free_placement.body}</p>
+          <p class="sb__badge" data-out="placement-status"></p>
+        </div>
+
+        <div class="sb__opt" data-opt="lease">
+          <p class="sb__opt-name">{hw.lease.label}</p>
+          <p class="sb__total figure"><span data-out="lease-monthly">&mdash;</span><span class="sb__int">/mo</span></p>
+          <p class="sb__opt-sub"><span data-out="lease-upfront">&mdash;</span> upfront</p>
+          <p class="sb__opt-body">{hw.lease.body}</p>
+        </div>
+
+        <div class="sb__opt" data-opt="purchase">
+          <p class="sb__opt-name">{hw.purchase.label}</p>
+          <p class="sb__total figure"><span data-out="purchase-monthly">&mdash;</span><span class="sb__int">/mo</span></p>
+          <p class="sb__opt-sub"><span data-out="purchase-upfront">&mdash;</span> upfront</p>
+          <p class="sb__opt-body">{hw.purchase.body}</p>
+        </div>
+
+        <p class="sb__fine" data-out="unpriced" hidden></p>
+        <p class="sb__fine">Monthly figures include your software plan. Hardware purchase is plus tax. This is an estimate, not a quote.</p>
+
+        <div class="actions">
+          <a class="btn btn--primary" href="/book-a-demo">Send me this build</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ qualifiers: hw.free_placement.qualifiers }}>
+  (function () {
+    const root = document.getElementById("build");
+    if (!root) return;
+
+    const counts = () => Array.from(root.querySelectorAll(".sb__count"));
+    const fmt = (cents) =>
+      "$" + (cents / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    function recalc() {
+      const planEl = root.querySelector('input[name="sb-plan"]:checked');
+      const planCents = planEl ? Number(planEl.dataset.cents) : 0;
+
+      // Integer cents throughout — never float arithmetic on money.
+      let buyCents = 0;
+      let leaseCents = 0;
+      let unpriced = 0;
+
+      // A kitchen display is free on a lease, but only alongside a system that
+      // is actually being leased — a KDS on its own still costs the rate.
+      let chargeableLeased = 0;
+      counts().forEach((input) => {
+        const qty = Math.max(0, Math.min(99, parseInt(input.value, 10) || 0));
+        const lease = input.dataset.leaseCents;
+        if (qty && lease && !input.dataset.freeLease) chargeableLeased += qty;
+      });
+
+      counts().forEach((input) => {
+        const qty = Math.max(0, Math.min(99, parseInt(input.value, 10) || 0));
+        if (!qty) return;
+        const unit = input.dataset.unitCents;
+        const lease = input.dataset.leaseCents;
+        if (unit === "" || unit == null) unpriced += qty;
+        else buyCents += Number(unit) * qty;
+        // Add-ons carry no lease rate and are bought outright on every path.
+        if (lease === "" || lease == null) leaseCents += 0;
+        else if (input.dataset.freeLease && chargeableLeased > 0) leaseCents += 0;
+        else leaseCents += Number(lease) * qty;
+      });
+
+      // Add-ons are purchase-only, so they land as upfront cost on every path.
+      let addonCents = 0;
+      counts().forEach((input) => {
+        const qty = Math.max(0, parseInt(input.value, 10) || 0);
+        const lease = input.dataset.leaseCents;
+        const unit = input.dataset.unitCents;
+        if (qty && (lease === "" || lease == null) && unit) addonCents += Number(unit) * qty;
+      });
+
+      const set = (key, value) => {
+        const el = root.querySelector('[data-out="' + key + '"]');
+        if (el) el.textContent = value;
+      };
+
+      set("placement-monthly", fmt(planCents));
+      set("placement-upfront", fmt(addonCents));
+      set("lease-monthly", fmt(planCents + leaseCents));
+      set("lease-upfront", fmt(addonCents));
+      set("purchase-monthly", fmt(planCents));
+      set("purchase-upfront", fmt(buyCents));
+
+      const warn = root.querySelector('[data-out="unpriced"]');
+      if (warn) {
+        warn.hidden = unpriced === 0;
+        warn.textContent = unpriced
+          ? unpriced + " item" + (unpriced === 1 ? "" : "s") + " in your build has no published price — we'll quote it."
+          : "";
+      }
+
+      // Free placement eligibility
+      const volume = Number(document.getElementById("sb-volume").value) || 0;
+      const cc = document.getElementById("sb-cc").checked;
+      const met = qualifiers.filter(
+        (q) => volume >= q.monthly_volume && (q.program === "any" || cc)
+      );
+      const note = document.getElementById("sb-qualify");
+      const badge = root.querySelector('[data-out="placement-status"]');
+      const optEl = root.querySelector('[data-opt="placement"]');
+
+      if (met.length) {
+        note.textContent = "Looks like you qualify — " + met[0].label + ".";
+        note.className = "sb__hint sb__hint--yes";
+        if (badge) badge.textContent = "You likely qualify";
+        optEl.classList.add("is-open");
+      } else if (volume > 0) {
+        const next = qualifiers
+          .filter((q) => q.program === "any" || cc)
+          .sort((a, b) => a.monthly_volume - b.monthly_volume)[0];
+        note.textContent = next
+          ? "Not yet — free placement starts at " + next.label + "."
+          : "Free placement needs $20K+ on Consumer Choice, or $50K+ on any program.";
+        note.className = "sb__hint";
+        if (badge) badge.textContent = "";
+        optEl.classList.remove("is-open");
+      } else {
+        note.textContent = "";
+        if (badge) badge.textContent = "";
+        optEl.classList.remove("is-open");
+      }
+    }
+
+    root.addEventListener("input", recalc);
+    root.addEventListener("change", recalc);
+
+    root.querySelectorAll(".sb__step").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const input = btn.parentElement.querySelector(".sb__count");
+        const next = (parseInt(input.value, 10) || 0) + Number(btn.dataset.step);
+        input.value = String(Math.max(0, Math.min(99, next)));
+        recalc();
+      });
+    });
+
+    recalc();
+  })();
+</script>
+
+<style>
+  .sb__grid { display: grid; gap: 2rem; margin-top: 2.5rem; align-items: start; }
+  @media (min-width: 960px) { .sb__grid { grid-template-columns: 1.35fr 1fr; gap: 2.5rem; } }
+
+  .sb__config { display: grid; gap: 1.25rem; }
+
+  .sb__block {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    background: var(--canvas);
+    padding: 1.25rem;
+    margin: 0;
+  }
+  .sb__block legend { padding-inline: 0.4rem; margin: 0; }
+
+  .sb__plans { display: grid; gap: 0.5rem; }
+  @media (min-width: 620px) { .sb__plans { grid-template-columns: 1fr 1fr; } }
+
+  .sb__plan { position: relative; display: block; cursor: pointer; }
+  .sb__plan input { position: absolute; opacity: 0; pointer-events: none; }
+
+  .sb__plan-body {
+    display: grid;
+    gap: 0.1rem;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+  }
+  .sb__plan input:checked + .sb__plan-body {
+    border-color: var(--epay);
+    background: var(--glass);
+    box-shadow: var(--ring);
+  }
+  .sb__plan input:focus-visible + .sb__plan-body { outline: 2px solid var(--epay); outline-offset: 2px; }
+
+  .sb__plan-name { font-family: var(--font-display); font-weight: 700; }
+  .sb__plan-price { font-size: 1.25rem; color: var(--text); }
+  .sb__plan-for { font-size: var(--small); color: var(--text-muted); }
+  .sb__int { font-size: var(--small); color: var(--accent-deep); }
+
+  .sb__items { display: grid; }
+  .sb__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.7rem;
+    border-top: 1px solid var(--rule);
+  }
+  .sb__item:first-child { border-top: 0; }
+  .sb__item-main { display: grid; gap: 0.1rem; min-width: 0; }
+  .sb__item-name { font-weight: var(--weight-ui); }
+  .sb__item-meta { font-size: var(--small); color: var(--text-muted); }
+
+  .sb__qty { display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0; }
+
+  .sb__step {
+    width: 30px; height: 30px;
+    display: grid; place-items: center;
+    border: 1px solid var(--rule-btn);
+    border-radius: 999px;
+    background: var(--canvas);
+    color: var(--accent-deep);
+    font-size: 1rem; line-height: 1; cursor: pointer;
+    transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+  }
+  .sb__step:hover { border-color: var(--epay); background: var(--glass); }
+
+  .sb__count {
+    width: 46px; text-align: center;
+    padding: 0.35rem 0.2rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-data);
+    font-size: var(--small);
+    background: var(--canvas);
+    color: var(--text);
+  }
+
+  .sb__field { display: grid; gap: 0.3rem; margin-bottom: 0.75rem; }
+  .sb__field > span {
+    font-size: var(--small);
+    color: var(--text-muted);
+  }
+  .sb__field input {
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-data);
+    background: var(--canvas);
+    color: var(--text);
+    width: 100%;
+  }
+  .sb__field input:focus { border-color: var(--epay); outline: none; box-shadow: var(--ring); }
+
+  .sb__check {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: var(--small);
+    cursor: pointer;
+    line-height: 1.4;
+  }
+
+  /* Explicit: a checkbox must never pick up a form field's width:100%. */
+  .sb__check input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    min-width: 1rem;
+    flex: 0 0 auto;
+    margin: 0;
+    accent-color: var(--epay);
+  }
+
+  .sb__check span { min-width: 0; }
+
+  .sb__hint { font-size: var(--small); color: var(--text-muted); margin: 0.6rem 0 0; }
+  .sb__hint--yes { color: var(--accent-deep); font-weight: var(--weight-ui); }
+
+  .sb__out {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius-lg);
+    background: var(--canvas);
+    position: sticky;
+    top: 96px;
+  }
+
+  .sb__opt {
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+  }
+  .sb__opt.is-open { border-color: var(--epay); box-shadow: var(--ring); }
+
+  .sb__opt-name { font-family: var(--font-display); font-weight: 700; margin: 0; }
+  .sb__total { font-size: 1.75rem; color: var(--text); margin: 0.1rem 0 0; line-height: 1.1; }
+  .sb__opt-sub { font-family: var(--font-data); font-size: var(--small); color: var(--text-muted); margin: 0.15rem 0 0.4rem; }
+  .sb__opt-body { font-size: var(--small); color: var(--text-muted); margin: 0; }
+
+  .sb__badge {
+    display: inline-block;
+    margin: 0.6rem 0 0;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: var(--glass-hover);
+    color: var(--accent-deep);
+    font-family: var(--font-data);
+    font-size: 0.6875rem;
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+  }
+  .sb__badge:empty { display: none; }
+
+  .sb__fine { font-size: 0.8125rem; color: var(--text-muted); margin: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sb__plan-body, .sb__step, .sb__opt { transition: none; }
+  }
+</style>

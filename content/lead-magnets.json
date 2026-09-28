@@ -1,0 +1,51 @@
+{
+  "_instructions": "Free downloads shown in the sliding row on every page. A visitor fills in the short form (sent to Netlify as form 'lead-magnet', with the download's id), then the download unlocks on the page. Files live in public/downloads/. Sources: tools/lead-magnets/ (PDFs from HTML via build_pdfs.sh, the calculator via build_calculator.py).",
+  "eyebrow": "Free tools for owners",
+  "heading": "Guides and Templates You Can Use Today",
+  "lede": "Practical tools from the EPAY POS team. Tell us where to reach you and the download unlocks right away.",
+  "form_name": "lead-magnet",
+  "unlock_note": "Unlocked. Your download is ready.",
+  "privacy_note": "We'll only use your details to follow up about EPAY POS. We never sell your data.",
+  "items": [
+    {
+      "id": "statement-checklist",
+      "title": "Statement Analysis Checklist",
+      "summary": "Find your effective rate and every fee on your processing statement, line by line.",
+      "format": "PDF · 5 pages",
+      "file": "/downloads/EPAY-Statement-Analysis-Checklist.pdf",
+      "audience": "all"
+    },
+    {
+      "id": "google-business-profile",
+      "title": "Google Business Profile & Reviews Checklist",
+      "summary": "Get found on Google Maps: fill in your profile, get more reviews the right way, and reply with ready-made templates.",
+      "format": "PDF · 5 pages",
+      "file": "/downloads/EPAY-Google-Business-Profile-Checklist.pdf",
+      "audience": "all"
+    },
+    {
+      "id": "restaurant-business-plan",
+      "title": "Restaurant Business Plan Template",
+      "summary": "A fill-in plan: concept, startup costs, monthly budget, break-even and a launch checklist.",
+      "format": "PDF · 8 pages",
+      "file": "/downloads/EPAY-Restaurant-Business-Plan.pdf",
+      "audience": "restaurant"
+    },
+    {
+      "id": "food-cost-calculator",
+      "title": "Food Cost & Menu Pricing Calculator",
+      "summary": "Cost out every plate, then price your menu to the food cost you're aiming for.",
+      "format": "Excel · 3 tabs",
+      "file": "/downloads/EPAY-Food-Cost-Menu-Pricing-Calculator.xlsx",
+      "audience": "restaurant"
+    },
+    {
+      "id": "bar-pour-cost",
+      "title": "Bar Inventory & Pour Cost Calculator",
+      "summary": "Cost every pour, count weekly, and see when liquor goes out that was never rung in. Covers the AndroBar pouring system.",
+      "format": "Excel · 3 tabs",
+      "file": "/downloads/EPAY-Bar-Inventory-Pour-Cost-Calculator.xlsx",
+      "audience": "restaurant"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+---
+import Base from "../../layouts/Base.astro";
+import { site } from "../../lib/content";
+import { publishedPosts, readingMinutes, formatDate } from "../../lib/blog";
+
+const b = (site as any).blog;
+const posts = await publishedPosts();
+
+const blogSchema = {
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  name: `${site.brand.name} blog`,
+  url: new URL("/blog", site.brand.domain).href,
+  publisher: { "@type": "Organization", name: site.brand.name, logo: new URL(site.brand.logo, site.brand.domain).href },
+  blogPost: posts.slice(0, 20).map((p) => ({
+    "@type": "BlogPosting",
+    headline: p.data.title,
+    url: new URL(`/blog/${p.id}`, site.brand.domain).href,
+    datePublished: p.data.published.toISOString(),
+  })),
+};
+---
+
+<Base title={b.meta_title} description={b.meta_description} schema={blogSchema}>
+  <section class="band band--deck">
+    <div class="wrap rise">
+      <p class="mono-label">{b.eyebrow}</p>
+      <h1>{b.heading}</h1>
+      <p class="lede">{b.lede}</p>
+    </div>
+  </section>
+
+  <section class="band band--dark">
+    <div class="wrap">
+      {posts.length === 0 ? (
+        <p class="bl-empty">The first posts are on their way.</p>
+      ) : (
+        <ol class="bl-list">
+          {posts.map((p) => (
+            <li>
+              <a class="card card--link bl-card" href={`/blog/${p.id}`}>
+                <p class="mono-label">
+                  <time datetime={p.data.published.toISOString()}>{formatDate(p.data.published)}</time>
+                  {" · "}{readingMinutes(p)} min read
+                </p>
+                <h2>{p.data.title}</h2>
+                <p class="bl-card__desc">{p.data.description}</p>
+                {p.data.tags.length > 0 && (
+                  <ul class="bl-tags">{p.data.tags.map((t) => <li class="tag">{t}</li>)}</ul>
+                )}
+                <span class="card__go" aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .bl-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; }
+  @media (min-width: 900px) { .bl-list { grid-template-columns: 1fr 1fr; } }
+  .bl-card { display: grid; gap: 0.5rem; height: 100%; }
+  .bl-card h2 { font-size: var(--heading); margin: 0; }
+  .bl-card__desc { color: var(--text-muted); font-size: var(--small); margin: 0; }
+  .bl-tags { list-style: none; padding: 0; margin: 0.25rem 0 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .bl-empty { color: var(--text-muted); }
+</style>

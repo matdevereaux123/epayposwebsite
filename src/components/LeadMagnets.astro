@@ -1,0 +1,244 @@
+---
+// Free downloads, as a sliding row of cards on every page.
+//
+// "Get it free" opens a short form. On submit the details go to Netlify Forms
+// (form "lead-magnet", with which download they asked for), then the download
+// unlocks on the page. A visitor who has already filled it in skips straight
+// to the download. The row only moves when the visitor scrolls or presses the
+// arrows: nothing slides on its own (design-system.md).
+//
+// Content: content/lead-magnets.json. Files: public/downloads/.
+
+import data from "../../content/lead-magnets.json";
+import { industries } from "../lib/content";
+import LeadMagnetIcon from "./LeadMagnetIcon.astro";
+
+const lm = data as any;
+const items = lm.items as any[];
+---
+
+<section class="band band--dark lm" aria-labelledby="lm-heading" data-lead-magnets>
+  <div class="wrap">
+    <div class="lm__head">
+      <div>
+        <p class="mono-label">{lm.eyebrow}</p>
+        <h2 id="lm-heading">{lm.heading}</h2>
+        <p class="lede">{lm.lede}</p>
+      </div>
+      <div class="lm__arrows" data-arrows>
+        <button type="button" class="lm__arrow" data-dir="-1" aria-label="Previous downloads">←</button>
+        <button type="button" class="lm__arrow" data-dir="1" aria-label="More downloads">→</button>
+      </div>
+    </div>
+
+    <ul class="lm__track" data-track>
+      {items.map((it) => (
+        <li class="lm__card">
+          <div class="lm__cover" aria-hidden="true">
+            <span class="lm__format">{it.format}</span>
+            <LeadMagnetIcon id={it.id} />
+          </div>
+          <div class="lm__body">
+            <h3>{it.title}</h3>
+            <p>{it.summary}</p>
+            <button type="button" class="btn btn--primary lm__get" data-open={it.id}>Get it free</button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <dialog class="lm__dialog" data-dialog aria-labelledby="lm-dialog-title">
+    <button type="button" class="lm__close" data-close aria-label="Close">×</button>
+
+    <div data-step="form">
+      <p class="mono-label">Free download</p>
+      <h3 id="lm-dialog-title" data-title></h3>
+      <form
+        name={lm.form_name}
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        class="lm__form"
+        data-form
+      >
+        <input type="hidden" name="form-name" value={lm.form_name} />
+        <input type="hidden" name="download" data-download-field />
+        <p class="visually-hidden"><label>Leave this empty: <input name="bot-field" /></label></p>
+        <label class="lm__field"><span>Your name</span><input type="text" name="name" required autocomplete="name" /></label>
+        <label class="lm__field"><span>Email</span><input type="email" name="email" required autocomplete="email" /></label>
+        <label class="lm__field"><span>Business name</span><input type="text" name="business" required autocomplete="organization" /></label>
+        <label class="lm__field"><span>Phone (optional)</span><input type="tel" name="phone" autocomplete="tel" /></label>
+        <label class="lm__field lm__field--wide">
+          <span>Business type</span>
+          <select name="business_type">
+            <option value="">Select one</option>
+            {(industries as any[]).map((i) => <option value={i.slug}>{i.name}</option>)}
+            <option value="other">Something else</option>
+          </select>
+        </label>
+        <button class="btn btn--primary lm__submit" type="submit">Unlock the download</button>
+        <p class="lm__privacy">{lm.privacy_note}</p>
+      </form>
+    </div>
+
+    <div data-step="done" hidden>
+      <p class="lm__ok" aria-hidden="true">✓</p>
+      <p class="mono-label">{lm.unlock_note}</p>
+      <h3 data-done-title></h3>
+      <a class="btn btn--primary" data-file download>Download now</a>
+    </div>
+  </dialog>
+</section>
+
+<script define:vars={{ items }}>
+  const KEY = "epay-lead-unlocked";
+  const byId = Object.fromEntries(items.map((i) => [i.id, i]));
+
+  document.querySelectorAll("[data-lead-magnets]").forEach((root) => {
+    const track = root.querySelector("[data-track]");
+    const arrows = root.querySelector("[data-arrows]");
+    const dialog = root.querySelector("[data-dialog]");
+    const form = root.querySelector("[data-form]");
+    const stepForm = root.querySelector("[data-step='form']");
+    const stepDone = root.querySelector("[data-step='done']");
+    let current = null;
+
+    // Arrows only when the row is wider than the screen.
+    const syncArrows = () => { arrows.hidden = track.scrollWidth <= track.clientWidth + 4; };
+    syncArrows();
+    window.addEventListener("resize", syncArrows);
+    arrows.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-dir]");
+      if (!btn) return;
+      const card = track.querySelector(".lm__card");
+      track.scrollBy({ left: Number(btn.dataset.dir) * (card ? card.offsetWidth + 16 : 300), behavior: "smooth" });
+    });
+
+    // Each card's icon plays once as it comes into view (hover replays it).
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (!en.isIntersecting) return;
+          const card = en.target;
+          io.unobserve(card);
+          setTimeout(() => {
+            card.classList.add("is-play");
+            setTimeout(() => card.classList.remove("is-play"), 2400);
+          }, 150 + [...track.children].indexOf(card) * 180);
+        });
+      }, { threshold: 0.6 });
+      track.querySelectorAll(".lm__card").forEach((c) => io.observe(c));
+    }
+
+    const unlocked = () => { try { return localStorage.getItem(KEY) === "1"; } catch { return false; } };
+    const remember = () => { try { localStorage.setItem(KEY, "1"); } catch {} };
+
+    function showDone(item) {
+      stepForm.hidden = true;
+      stepDone.hidden = false;
+      root.querySelector("[data-done-title]").textContent = item.title;
+      const a = root.querySelector("[data-file]");
+      a.href = item.file;
+      a.setAttribute("download", item.file.split("/").pop());
+    }
+
+    root.addEventListener("click", (e) => {
+      const open = e.target.closest("[data-open]");
+      if (open) {
+        current = byId[open.dataset.open];
+        root.querySelector("[data-title]").textContent = current.title;
+        root.querySelector("[data-download-field]").value = current.id;
+        if (unlocked()) showDone(current);
+        else { stepForm.hidden = false; stepDone.hidden = true; }
+        dialog.showModal();
+        return;
+      }
+      if (e.target.closest("[data-close]") || e.target === dialog) dialog.close();
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      const btn = form.querySelector("button[type=submit]");
+      btn.disabled = true;
+      try {
+        await fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(new FormData(form)).toString(),
+        });
+      } catch {
+        // A network hiccup shouldn't keep the visitor from their download.
+      }
+      remember();
+      btn.disabled = false;
+      form.reset();
+      showDone(current);
+    });
+  });
+</script>
+
+<style>
+  .lm__head { display: flex; justify-content: space-between; align-items: end; gap: 1.5rem; flex-wrap: wrap; }
+  .lm__head .lede { margin-bottom: 0; }
+  .lm__arrows { display: flex; gap: 0.5rem; }
+  .lm__arrows[hidden] { display: none; }
+  .lm__arrow {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 1px solid var(--rule-strong); background: var(--canvas);
+    color: var(--accent-deep); font-size: 1.1rem; cursor: pointer;
+  }
+  .lm__arrow:hover { border-color: var(--epay); }
+
+  .lm__track {
+    list-style: none; padding: 0.25rem 0 1rem; margin: 2rem 0 0;
+    display: grid; grid-auto-flow: column; grid-auto-columns: minmax(260px, calc((100% - 2rem) / 3));
+    gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin;
+  }
+  @media (max-width: 720px) { .lm__track { grid-auto-columns: 82%; } }
+
+  .lm__card {
+    scroll-snap-align: start;
+    display: grid; grid-template-rows: auto 1fr;
+    border: 1px solid var(--rule); border-radius: var(--radius); background: var(--canvas); overflow: hidden;
+  }
+  .lm__cover {
+    position: relative; aspect-ratio: 16 / 9; padding: 1rem 1.1rem;
+    display: flex; flex-direction: column; justify-content: space-between;
+    background:
+      url("/img/art/ribbon-art.svg") no-repeat right -40px bottom -10px / 520px auto,
+      var(--surface);
+    border-bottom: 1px solid var(--rule);
+  }
+  .lm__format {
+    align-self: flex-start; font-family: var(--font-data); font-size: var(--mono-label);
+    letter-spacing: var(--track-label); text-transform: uppercase; color: var(--accent-deep);
+    background: var(--canvas); border: 1px solid var(--rule-strong); border-radius: 999px; padding: 2px 10px;
+  }
+  .lm__cover :global(.lm-ic) { align-self: center; margin-top: -0.5rem; }
+  .lm__body { padding: 1rem 1.1rem 1.2rem; display: grid; gap: 0.6rem; align-content: start; }
+  .lm__body h3 { font-size: var(--heading); margin: 0; }
+  .lm__body p { color: var(--text-muted); font-size: var(--small); margin: 0; }
+  .lm__get { justify-self: start; margin-top: 0.25rem; }
+
+  .lm__dialog {
+    width: min(520px, calc(100vw - 32px)); border: 1px solid var(--rule); border-radius: var(--radius-lg);
+    padding: 1.75rem; background: var(--canvas); color: var(--text);
+  }
+  .lm__dialog::backdrop { background: rgba(10, 21, 32, 0.45); }
+  .lm__dialog h3 { font-size: var(--display-lg); margin: 0.25rem 0 1rem; }
+  .lm__close { position: absolute; top: 0.75rem; right: 0.9rem; border: 0; background: none; font-size: 1.6rem; color: var(--text-muted); cursor: pointer; line-height: 1; }
+  .lm__form { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+  @media (max-width: 520px) { .lm__form { grid-template-columns: 1fr; } }
+  .lm__field { display: grid; gap: 0.3rem; }
+  .lm__field--wide, .lm__submit, .lm__privacy { grid-column: 1 / -1; }
+  .lm__field > span { font-family: var(--font-data); font-size: var(--mono-label); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--text-muted); }
+  .lm__field input, .lm__field select {
+    font: inherit; padding: 0.7rem 0.85rem; border: 1px solid var(--rule-strong); border-radius: 10px; background: var(--canvas); color: var(--text); width: 100%;
+  }
+  .lm__field input:focus, .lm__field select:focus { outline: none; border-color: var(--epay); box-shadow: var(--ring); }
+  .lm__submit { justify-self: start; }
+  .lm__privacy { font-size: var(--small); color: var(--text-muted); margin: 0; }
+  .lm__ok { width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; background: var(--glass); color: var(--accent-deep); font-size: 1.5rem; margin: 0 0 0.75rem; }
+</style>

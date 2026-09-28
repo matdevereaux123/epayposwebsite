@@ -1,0 +1,238 @@
+---
+// Third-party platform pages.
+//
+// Two rules this template enforces:
+//   1. No prices. Items show "Ask us" and route to contact — these are other
+//      companies' devices and their pricing is not ours to publish.
+//   2. Vendor product shots carry vendor logos. That is the owner's call, not
+//      this template's — see _note_on_vendor_images in content/third-party.json
+//      for which platforms have been cleared and which are still waiting.
+//
+// Every platform named here is someone else's trademark.
+
+import Base from "../../layouts/Base.astro";
+import BatchLine from "../../components/BatchLine.astro";
+import ImageSlot from "../../components/ImageSlot.astro";
+import LeadForm from "../../components/LeadForm.astro";
+import tpData from "../../../content/third-party.json";
+import { site, headings, fill, slugify, enquiry } from "../../lib/content";
+
+export function getStaticPaths() {
+  return (tpData as any).platforms.map((platform: any) => ({
+    params: { slug: platform.slug },
+    props: { platform },
+  }));
+}
+
+const { platform } = Astro.props as any;
+const others = (tpData as any).platforms.filter((p: any) => p.slug !== platform.slug);
+---
+
+<Base
+  title={platform.meta_title ?? `${platform.name} — ${platform.kicker} | ${site.brand.name}`}
+  description={platform.meta_description ?? platform.summary}
+>
+  <section class="band band--deck hero">
+    <div class="wrap hero__grid">
+      <div class="rise">
+        <p class="mono-label">Third-party software</p>
+        <h1>{platform.name}</h1>
+        <p class="lede">{platform.summary}</p>
+        <div class="actions">
+          <a class="btn btn--primary" href="#talk"
+             data-enquire-reason="third-party"
+             data-enquire-label={`${platform.name} hero — Talk to us`}>Talk to us about {platform.name}</a>
+          <a class="btn btn--ghost" href="/epay-products-1">Compare with EPAY POS</a>
+        </div>
+      </div>
+      <ImageSlot name={`${platform.name} hero`} file={platform.hero_image} ratio="4 / 3" />
+    </div>
+  </section>
+
+  <BatchLine
+    readouts={[
+      { label: "Platform", value: platform.kicker },
+      { label: "Supported by", value: site.brand.name },
+      { label: "Pricing", value: "Ask us" },
+    ]}
+  />
+
+  <section class="band band--dark">
+    <div class="wrap tp__grid">
+      <div>
+        <p class="mono-label">About the platform</p>
+        <h2>{headings.third_party.about}</h2>
+        <p>{platform.body}</p>
+      </div>
+      <div>
+        <p class="mono-label">Where it fits</p>
+        <ul class="tp__fit">
+          {platform.good_for.map((g: string) => <li>{g}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {platform.capabilities && (
+    <section class="band band--dark">
+      <div class="wrap">
+        <p class="mono-label">{platform.capabilities_eyebrow ?? "How it works for hotels"}</p>
+        <h2>{platform.capabilities_heading ?? headings.third_party.lodging}</h2>
+        <div class="grid grid--3 tp__caps">
+          {platform.capabilities.map((c: any) => (
+            <article class="card reveal">
+              <h3>{c.name}</h3>
+              <p>{c.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {platform.software && (
+    <section class="band band--dark">
+      <div class="wrap">
+        <p class="mono-label">{platform.software_eyebrow ?? "Software it runs"}</p>
+        <h2>{platform.software_heading ?? headings.third_party.software}</h2>
+        <ul class="tp__sw">
+          {platform.software.map((sw: any) => (
+            <li class="tp__swrow reveal">
+              <div class="tp__swhead">
+                <h3>{sw.name}</h3>
+                <p class="tp__swfits">{sw.fits}</p>
+              </div>
+              <p class="tp__swbody">{sw.body}</p>
+            </li>
+          ))}
+        </ul>
+        {platform.software_note && <p class="tp__note">{platform.software_note}</p>}
+      </div>
+    </section>
+  )}
+
+  <section class="band band--dark">
+    <div class="wrap">
+      <p class="mono-label">Hardware</p>
+      <h2>{headings.third_party.hardware}</h2>
+      <div class="grid grid--4">
+        {platform.items.map((item: any) => (
+          <article class="card tp__item"
+                   data-enquire-reason="third-party"
+                   data-enquire={`third-party:${platform.slug}:${slugify(item.name)}`}
+                   data-enquire-label={`${platform.name} hardware — ${item.name}`}>
+            <ImageSlot name={item.name} file={item.image} ratio="4 / 3" />
+            <p class="tp__name">{item.name}</p>
+            <p class="tp__spec">{item.spec}</p>
+            <p class="tp__price figure">Ask us</p>
+          </article>
+        ))}
+      </div>
+      <p class="tp__note">
+        Pricing on third-party hardware depends on the platform and the configuration, so we
+        quote it rather than list it. Tell us what you need and we'll come back with real numbers.
+      </p>
+    </div>
+  </section>
+
+  <section class="band band--dark" id="talk">
+    <div class="wrap grid2">
+      <div>
+        <p class="mono-label">Get in touch</p>
+        <h2>{fill(headings.third_party.contact, { name: platform.name })}</h2>
+        <p class="lede">
+          Tell us what you're running now and what you need it to do. If EPAY POS is the better
+          answer we'll say that too.
+        </p>
+      </div>
+      <LeadForm
+        name={enquiry.form_name}
+        reason="third-party"
+        source={`${platform.name} page`}
+        submitLabel={`Ask about ${platform.name}`}
+        withUpload
+        withVolume
+        withCurrentPos
+      />
+    </div>
+  </section>
+
+  <section class="band band--dark">
+    <div class="wrap">
+      <p class="mono-label">Also supported</p>
+      <h2>{headings.third_party.others}</h2>
+      <ul class="siblings">
+        {others.map((o: any) => (
+          <li>
+            <a href={`/third-party/${o.slug}`}>{o.name}<span aria-hidden="true">→</span></a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding-block: clamp(3rem, 7vw, 5.5rem) clamp(1.5rem, 3vw, 2.5rem); }
+  .hero__grid { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 900px) { .hero__grid { grid-template-columns: 1.1fr 1fr; } }
+
+  .tp__grid { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 860px) { .tp__grid { grid-template-columns: 1.3fr 1fr; gap: 3rem; } }
+  .tp__grid p { color: var(--text-muted); }
+
+  .tp__fit li {
+    padding-block: 0.7rem;
+    border-top: 1px solid var(--rule);
+    color: var(--text-muted);
+    font-size: var(--small);
+  }
+
+  /* A row per software line: name and who it fits on the left, what it does on
+     the right. Reads as a list of options, not another grid of cards. */
+  .tp__sw { list-style: none; padding: 0; margin: 2rem 0 0; }
+  .tp__swrow {
+    display: grid;
+    gap: 0.35rem 3rem;
+    padding-block: 1.4rem;
+    border-top: 1px solid var(--rule);
+  }
+  .tp__swrow:last-child { border-bottom: 1px solid var(--rule); }
+  @media (min-width: 860px) {
+    .tp__swrow { grid-template-columns: 16rem 1fr; align-items: baseline; }
+  }
+  .tp__swhead h3 { margin: 0; font-size: 1.1rem; }
+  .tp__swfits {
+    margin: 0.2rem 0 0;
+    font-family: var(--font-data);
+    font-size: var(--mono-label);
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+  .tp__swbody { margin: 0; color: var(--text-muted); max-width: 62ch; }
+
+  .tp__caps { margin-top: 2rem; }
+  .tp__caps p { color: var(--text-muted); font-size: var(--small); }
+
+  .tp__item { padding: 1rem; }
+  .tp__name { font-weight: var(--weight-ui); margin: 0.75rem 0 0.1rem; }
+  .tp__spec { font-family: var(--font-data); font-size: 0.75rem; color: var(--text-muted); margin: 0 0 0.4rem; }
+  .tp__price { font-size: 1rem; color: var(--text-muted); margin: 0; }
+
+  .tp__note { margin-top: 1.5rem; font-size: var(--small); color: var(--text-muted); max-width: 68ch; }
+
+  .grid2 { display: grid; gap: 3rem; }
+  @media (min-width: 900px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+
+  .siblings { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
+  .siblings a {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--rule-strong); border-radius: 999px;
+    font-size: var(--small); color: var(--text-muted);
+    transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+  }
+  .siblings a:hover { border-color: var(--epay); color: var(--text); }
+  .siblings span { color: var(--accent-deep); }
+</style>

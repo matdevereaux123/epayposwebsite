@@ -1,0 +1,271 @@
+---
+// The AI statement reader on the homepage.
+//
+// The visitor picks a processing statement, it goes straight from their
+// browser to EPAY's own analyzer API — the same one behind the landing pages
+// — and Claude reads the fees out of it. Nothing is uploaded to this site,
+// so there is no key here, no serverless function and no Netlify Form
+// carrying a merchant's statement around.
+//
+// Copy, the API URL and the size limit all live in
+// content/statement-analyzer.json.
+
+import { statementAnalyzer as sa } from "../lib/content";
+
+const cfg = {
+  api: sa.api_url,
+  maxMb: sa.max_mb,
+  steps: sa.loading_steps,
+  copy: {
+    label: sa.result.label,
+    suffix: sa.result.suffix,
+    ratePrefix: sa.result.rate_prefix,
+    quoteLabel: sa.result.quote_label,
+    tooBig: sa.too_big,
+    wrongType: sa.wrong_type,
+  },
+};
+---
+
+<div class="sa" data-analyzer data-config={JSON.stringify(cfg)}>
+  <p class="mono-label">{sa.eyebrow}</p>
+
+  <!-- Idle -->
+  <div class="sa__state" data-state="idle">
+    <h3 class="sa__h">{sa.heading}</h3>
+    <p class="sa__body">{sa.body}</p>
+    <label class="sa__drop" data-drop>
+      <input type="file" accept={sa.accept} data-file hidden />
+      <span class="btn btn--primary sa__pick">{sa.cta_label}</span>
+      <span class="sa__hint">{sa.drop_hint}</span>
+    </label>
+    <p class="sa__err" data-error hidden role="alert"></p>
+  </div>
+
+  <!-- Reading -->
+  <div class="sa__state" data-state="loading" hidden>
+    <p class="sa__reading" data-step>{sa.loading_steps[0]}</p>
+    <div class="sa__bar" aria-hidden="true"><span></span></div>
+  </div>
+
+  <!-- What they pay today -->
+  <div class="sa__state" data-state="result" hidden>
+    <p class="sa__label">{sa.result.label}</p>
+    <p class="sa__amount figure" data-amount></p>
+    <p class="sa__sub" data-sub></p>
+    <p class="sa__source" data-source hidden></p>
+    <p class="sa__quote" data-quote hidden></p>
+    <div class="actions">
+      <button type="button" class="btn btn--primary" data-enquire-reason={sa.enquiry_reason}
+        data-enquire-label={sa.result.cta_label} data-handoff>{sa.result.cta_label}</button>
+      <button type="button" class="btn btn--ghost" data-reset>{sa.result.again_label}</button>
+    </div>
+  </div>
+
+  <!-- Could not read it -->
+  <div class="sa__state" data-state="failed" hidden>
+    <h3 class="sa__h">{sa.failed.heading}</h3>
+    <p class="sa__body">{sa.failed.body}</p>
+    <div class="actions">
+      <button type="button" class="btn btn--primary" data-enquire-reason={sa.enquiry_reason}
+        data-enquire-label={sa.failed.cta_label}>{sa.failed.cta_label}</button>
+      <button type="button" class="btn btn--ghost" data-reset>{sa.result.again_label}</button>
+    </div>
+  </div>
+
+  <p class="sa__fine">{sa.disclaimer}</p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-analyzer]").forEach((root) => {
+    const cfg = JSON.parse(root.dataset.config || "{}");
+    const $ = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel);
+    const file = $<HTMLInputElement>("[data-file]")!;
+    const err = $<HTMLElement>("[data-error]")!;
+    const okTypes = ["application/pdf", "image/jpeg", "image/png"];
+    let quote = "";
+    let figures = "";
+
+    const show = (name: string) =>
+      root.querySelectorAll<HTMLElement>("[data-state]").forEach((s) => {
+        s.hidden = s.dataset.state !== name;
+      });
+
+    const money = (n: number) =>
+      "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    /* Same shape as the landing pages use, so a quote number quoted on the
+       phone means the same thing wherever the merchant started. */
+    function newQuote() {
+      const d = new Date();
+      const ymd = String(d.getFullYear()).slice(2) +
+        String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0");
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      const rnd = new Uint32Array(4);
+      crypto.getRandomValues(rnd);
+      return "EPAY-" + ymd + "-" + Array.from(rnd, (n) => chars[n % chars.length]).join("");
+    }
+
+    function fail(message: string) {
+      err.textContent = message;
+      err.hidden = false;
+    }
+
+    async function read(f: File) {
+      err.hidden = true;
+      if (f.size > cfg.maxMb * 1024 * 1024) return fail(cfg.copy.tooBig.replace("{max}", cfg.maxMb));
+      if (f.type && !okTypes.includes(f.type)) return fail(cfg.copy.wrongType);
+
+      show("loading");
+      const stepEl = $<HTMLElement>("[data-step]")!;
+      let i = 0;
+      const ticking = setInterval(() => {
+        i += 1;
+        if (i < cfg.steps.length) stepEl.textContent = cfg.steps[i];
+      }, 800);
+
+      // A statement can be a big scan, so give it room — but never hang.
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 45000);
+      let data: any = null;
+      try {
+        const body = new FormData();
+        body.append("statement", f, f.name);
+        const res = await fetch(cfg.api, { method: "POST", body, signal: ctrl.signal });
+        const json = await res.json();
+        if (json && json.ok) data = json;
+      } catch (e) {
+        data = null;
+      } finally {
+        clearTimeout(timer);
+        clearInterval(ticking);
+      }
+
+      if (!data || typeof data.total_fees !== "number") { show("failed"); return; }
+
+      const fees = data.total_fees;
+      const volume = Number(data.total_volume) || 0;
+      const rate = volume > 0 ? ((fees / volume) * 100).toFixed(2) + "%" : "";
+      $("[data-amount]")!.textContent = money(fees) + "/mo";
+      $("[data-sub]")!.textContent = rate
+        ? `${cfg.copy.suffix} — ${cfg.copy.ratePrefix} ${rate}.`
+        : `${cfg.copy.suffix}.`;
+
+      const where = [data.processor_name, data.statement_period].filter(Boolean).join(", ");
+      const source = $("[data-source]")!;
+      if (where || data.total_fees_source) {
+        source.textContent = "Read from your " + (where || "statement") +
+          (data.total_fees_source ? ": “" + data.total_fees_source + "”" : "");
+        source.hidden = false;
+      } else source.hidden = true;
+
+      quote = newQuote();
+      const q = $("[data-quote]")!;
+      q.textContent = cfg.copy.quoteLabel + " " + quote;
+      q.hidden = false;
+
+      figures = [
+        "Quote " + quote,
+        "Statement fees " + money(fees) + "/mo",
+        volume > 0 ? "Volume " + money(volume) + "/mo" : "",
+        rate ? "Effective rate " + rate : "",
+        data.processor_name ? "Processor " + data.processor_name : "",
+        data.statement_period ? "Period " + data.statement_period : "",
+      ].filter(Boolean).join(" · ");
+
+      show("result");
+    }
+
+    file.addEventListener("change", () => { if (file.files?.[0]) read(file.files[0]); });
+
+    const drop = $<HTMLElement>("[data-drop]")!;
+    ["dragenter", "dragover"].forEach((ev) =>
+      drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("is-over"); }));
+    ["dragleave", "drop"].forEach((ev) =>
+      drop.addEventListener(ev, () => drop.classList.remove("is-over")));
+    drop.addEventListener("drop", (e: DragEvent) => {
+      e.preventDefault();
+      const f = e.dataTransfer?.files?.[0];
+      if (f) read(f);
+    });
+
+    root.querySelectorAll("[data-reset]").forEach((b) =>
+      b.addEventListener("click", () => { file.value = ""; err.hidden = true; show("idle"); }));
+
+    /* Hand the reading to the enquiry form: the dialog opens on its own from
+       data-enquire-reason, and the figures go in the message so sales sees
+       exactly what the merchant saw. */
+    $("[data-handoff]")?.addEventListener("click", () => {
+      window.setTimeout(() => {
+        const box = document.querySelector<HTMLTextAreaElement>("[data-enquiry] textarea[name='message']");
+        if (box && !box.value.trim() && figures) box.value = figures;
+      }, 60);
+    });
+  });
+</script>
+
+<style>
+  .sa {
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius-lg);
+    background: #fff;
+    padding: clamp(1.25rem, 3vw, 1.9rem);
+  }
+  .sa__h { font-size: var(--heading); margin: 0 0 0.4rem; }
+  .sa__body { color: var(--text-muted); font-size: var(--small); margin: 0 0 1.1rem; }
+
+  .sa__drop {
+    display: grid;
+    justify-items: center;
+    gap: 0.6rem;
+    padding: 1.6rem 1rem;
+    border: 1.5px dashed var(--glass-line);
+    border-radius: var(--radius);
+    background: var(--glass);
+    cursor: pointer;
+    transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+  }
+  .sa__drop:hover, .sa__drop.is-over { border-color: var(--accent-deep); background: var(--glass-hover); }
+  .sa__drop:focus-within { outline: 2px solid var(--accent-deep); outline-offset: 2px; }
+  .sa__hint { font-size: var(--small); color: var(--text-muted); text-align: center; }
+
+  .sa__err {
+    margin: 0.9rem 0 0;
+    padding: 0.7rem 0.9rem;
+    border-radius: var(--radius);
+    background: #fdecec;
+    border: 1px solid #f3c6c6;
+    color: #a11b1b;
+    font-size: var(--small);
+  }
+
+  .sa__reading { margin: 0.5rem 0 0.9rem; font-weight: var(--weight-ui); }
+  .sa__bar { height: 4px; border-radius: 4px; background: var(--rule); overflow: hidden; }
+  .sa__bar span {
+    display: block; height: 100%; width: 40%;
+    background: var(--epay);
+    animation: sa-slide 1.1s var(--ease) infinite;
+  }
+  @keyframes sa-slide {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(300%); }
+  }
+
+  .sa__label { margin: 0; font-size: var(--small); color: var(--text-muted); }
+  .sa__amount { font-size: clamp(2rem, 5vw, 2.75rem); line-height: 1.05; margin: 0.1rem 0 0.3rem; }
+  .sa__sub { margin: 0 0 0.6rem; color: var(--text-muted); font-size: var(--small); }
+  .sa__source { margin: 0 0 0.6rem; font-size: 0.75rem; color: var(--text-muted); }
+  .sa__quote {
+    margin: 0 0 1rem;
+    font-family: var(--font-data);
+    font-size: var(--small);
+    color: var(--accent-deep);
+  }
+
+  .sa__fine { margin: 1.1rem 0 0; font-size: 0.6875rem; color: var(--text-muted); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sa__bar span { animation: none; width: 100%; }
+    .sa__drop { transition: none; }
+  }
+</style>

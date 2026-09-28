@@ -1,0 +1,56 @@
+{
+  "_instructions": "Merchant logos. They scroll in an endless strip directly under the homepage banner. Drop each file at `file` under /public/img/logos/ and it joins the strip automatically; until at least one real logo exists, the placeholder slots scroll instead. Only add merchants who have given permission to use their name and mark.",
+  "eyebrow": "Our merchants",
+  "seconds_per_logo": 3,
+  "_note_on_speed": "Seconds of scrolling per logo in the strip. Higher is slower.",
+  "logos": [
+    {
+      "name": "G&S Supermarket",
+      "file": "/img/logos/merchant-1.png"
+    },
+    {
+      "name": "Pho Street",
+      "file": "/img/logos/merchant-2.png"
+    },
+    {
+      "name": "Portland Allergy & Asthma",
+      "file": "/img/logos/merchant-3.png"
+    },
+    {
+      "name": "Treasure Hunt Liquidators",
+      "file": "/img/logos/merchant-4.png"
+    },
+    {
+      "name": "A1 Smoke & Vape Shop",
+      "file": "/img/logos/merchant-5.png"
+    },
+    {
+      "name": "Koi Express Hibachi & Sushi",
+      "file": "/img/logos/merchant-6.png"
+    },
+    {
+      "name": "Sans Souci Bar",
+      "file": "/img/logos/merchant-7.png"
+    },
+    {
+      "name": "Q Baking Corner",
+      "file": "/img/logos/merchant-8.png"
+    },
+    {
+      "name": "Jack's Pub",
+      "file": "/img/logos/merchant-9.png"
+    },
+    {
+      "name": "GNC",
+      "file": "/img/logos/merchant-10.png"
+    },
+    {
+      "name": "Wyndham Hotel Group",
+      "file": "/img/logos/merchant-11.png"
+    },
+    {
+      "name": "Caribe Breeze Food Market",
+      "file": "/img/logos/merchant-12.png"
+    }
+  ]
+}

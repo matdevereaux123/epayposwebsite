@@ -1,0 +1,363 @@
+---
+// Netlify Forms. Submissions appear in the Netlify dashboard. Until the CRM is
+// connected, every form should email sales@epaypos.net: Netlify > Site >
+// Forms > Form notifications > Email, "Any form" (a dashboard setting, not code).
+// The hidden `form-name` field and the honeypot are both required by Netlify.
+//
+// The whole site posts to ONE form, content/enquiry.json > form_name. What used
+// to be a form name per page is now three fields on that one form:
+//   reason         why they got in touch, from enquiry.json > reasons —
+//                  never asked, always inferred from what they clicked
+//   item/item_name which equipment, when the enquiry is about a specific one
+//   source_button  the exact control they clicked, and source_page where
+// Filter on those in the Netlify dashboard to get what separate forms used to
+// give you. Only two others exist: `lead-magnet` (gated downloads) and
+// `application-alert` (the sign-up flow posts it itself).
+import { industries, enquiry, equipmentOptions } from "../lib/content";
+
+interface Props {
+  name: string;
+  submitLabel?: string;
+  /** Adds the statement-upload file input. */
+  withUpload?: boolean;
+  /** Monthly card volume band — the offer pages qualify on this. */
+  withVolume?: boolean;
+  /** "What are you switching from" — switch-bonus eligibility. */
+  withCurrentPos?: boolean;
+  /** Four fields only (name, business, phone, business type) — the homepage. */
+  compact?: boolean;
+  /** Adds the email field to a compact form (the homepage asks for it). */
+  withEmail?: boolean;
+  /** Extra hidden inputs, e.g. which shop item the question is about. */
+  hiddenFields?: Record<string, string>;
+  /** Adds the "which equipment" dropdown, listing everything on the site. */
+  withEquipment?: boolean;
+  /** Preset reason id for a form that already knows why it exists. */
+  reason?: string;
+  /** Which placement this form is, e.g. "Contact page". */
+  source?: string;
+}
+
+const {
+  name,
+  submitLabel = "Send",
+  withUpload = false,
+  withVolume = false,
+  withCurrentPos = false,
+  compact = false,
+  withEmail = false,
+  hiddenFields = {},
+  withEquipment = false,
+  reason = "",
+  source = "",
+} = Astro.props;
+
+// Grouped so a 40-item list stays readable. The value is the namespaced id a
+// product card sends, and the label is what lands in the Netlify submission.
+const equipment = withEquipment ? equipmentOptions() : [];
+const equipmentGroups = [...new Set(equipment.map((e) => e.group))];
+
+// Bands, not a free-text figure: a merchant will give a range far more
+// readily than an exact number, and a range is all we need to qualify.
+const volumeBands = [
+  "Prefer not to say",
+  "Under $10,000",
+  "$10,000–$25,000",
+  "$25,000–$75,000",
+  "$75,000+",
+];
+---
+
+<form
+  class={`lf ${compact ? "lf--compact" : ""}`}
+  name={name}
+  method="POST"
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+  enctype={withUpload ? "multipart/form-data" : undefined}
+  action="/thank-you"
+>
+  <input type="hidden" name="form-name" value={name} />
+  {Object.entries(hiddenFields).map(([k, v]) => <input type="hidden" name={k} value={v} />)}
+  <p class="visually-hidden">
+    <label>Leave this empty: <input name="bot-field" /></label>
+  </p>
+
+  {/* Never asked, always recorded: set at build time by the page, or by the
+      dialog script from whatever the visitor clicked. */}
+  <input type="hidden" name="reason" data-reason value={reason} />
+
+  {/* Readable label for whatever `item` holds — the dialog fills it from the
+      selected option, so the dashboard shows a name and not a slug. */}
+  <input type="hidden" name="item_name" data-item-name value="" />
+
+  {/* Which control they clicked and the page they clicked it on. Set at build
+      time for a form that sits on a page; overwritten by the dialog script
+      when the form is opened from a card or button. */}
+  <input type="hidden" name="source_button" data-source-button value={source} />
+  <input type="hidden" name="source_page" data-source-page value={Astro.url.pathname} />
+  <input type="hidden" name="partner" data-partner value="" />
+
+  <div class="lf__row">
+    <label class="lf__field">
+      <span>Your name</span>
+      <input type="text" name="name" required autocomplete="name" />
+    </label>
+    <label class="lf__field">
+      <span>Business name</span>
+      <input type="text" name="business" required autocomplete="organization" />
+    </label>
+  </div>
+
+  <div class="lf__row">
+    {(!compact || withEmail) && (
+      <label class="lf__field">
+        <span>Email</span>
+        <input type="email" name="email" required autocomplete="email" />
+      </label>
+    )}
+    <label class="lf__field">
+      <span>Phone</span>
+      <input type="tel" name="phone" required autocomplete="tel" />
+    </label>
+  </div>
+
+  {withCurrentPos && (
+    <label class="lf__field">
+      <span>Current POS system</span>
+      <input type="text" name="current_pos" placeholder="Toast, Clover, Square…" />
+    </label>
+  )}
+
+  {withUpload && (
+    <label class="lf__field">
+      <span>Recent processing statement <span class="lf__optional">not required</span></span>
+      <input type="file" name="statement" accept=".pdf,.png,.jpg,.jpeg" />
+    </label>
+  )}
+
+  {!compact && (
+    <label class="lf__field">
+      <span>Anything we should know</span>
+      <textarea name="message" rows="4"></textarea>
+    </label>
+  )}
+
+  {/* Dropdowns belong to the item enquiry only. A plain contact form has none
+      of them: name, business, email, phone and send. Here they sit at the end,
+      none required, and the one that matters is already chosen from whatever
+      the visitor clicked. */}
+  {withEquipment && (
+  <div class="lf__extras">
+    <label class="lf__field">
+      <span>Business type <span class="lf__optional">not required</span></span>
+      <select name="business_type">
+        <option value="">Select one</option>
+        {industries.map((i) => <option value={i.slug}>{i.name}</option>)}
+        <option value="other">Something else</option>
+      </select>
+    </label>
+
+    {(
+      <label class="lf__field">
+        <span>{enquiry.item_label} <span class="lf__optional">not required</span></span>
+        <select name="item" data-equipment>
+          <option value="">{enquiry.item_placeholder}</option>
+          {equipmentGroups.map((group) => (
+            <optgroup label={group}>
+              {equipment
+                .filter((e) => e.group === group)
+                .map((e) => <option value={e.id}>{e.name}</option>)}
+            </optgroup>
+          ))}
+        </select>
+      </label>
+    )}
+
+    {withVolume && (
+      <label class="lf__field">
+        <span>Approx. monthly card volume <span class="lf__optional">not required</span></span>
+        <select name="monthly_volume">
+          {volumeBands.map((band) => <option value={band}>{band}</option>)}
+        </select>
+      </label>
+    )}
+  </div>
+  )}
+
+  <button class="btn btn--primary lf__submit" type="submit">{submitLabel}</button>
+  <p class="lf__note">We don't share your information or sell your data.</p>
+</form>
+
+<style>
+  .lf { display: grid; gap: 1rem; max-width: 620px; }
+  .lf__row { display: grid; gap: 1rem; }
+  @media (min-width: 620px) { .lf__row { grid-template-columns: 1fr 1fr; } }
+
+  .lf__field { display: grid; gap: 0.35rem; }
+
+  /* The optional tail: set apart by a rule, so the required part of the form
+     reads as finished before a visitor reaches it. */
+  .lf__extras {
+    display: grid;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .lf__optional {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text-muted);
+    opacity: 0.8;
+  }
+  .lf__optional::before { content: "— "; }
+
+  .lf__field > span {
+    font-family: var(--font-data);
+    font-size: var(--mono-label);
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  input, select, textarea {
+    font-family: var(--font-body);
+    font-size: var(--body);
+    padding: 0.8rem 1rem;
+    background: var(--canvas);
+    border: 1px solid var(--rule-strong);
+    border-radius: 12px;
+    color: var(--text);
+    width: 100%;
+    transition:
+      border-color var(--dur-fast) var(--ease),
+      box-shadow var(--dur-fast) var(--ease),
+      background var(--dur-fast) var(--ease);
+  }
+
+  input:hover, select:hover, textarea:hover { border-color: var(--glass-line); }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--epay);
+    outline: none;
+    background: var(--glass);
+    box-shadow: var(--ring);
+  }
+
+  /* The file input's own button is a browser widget, so it gets the clear
+     treatment applied directly rather than through .btn. */
+  input[type="file"] { padding: 0.55rem 0.7rem; }
+
+  input[type="file"]::file-selector-button {
+    font-family: var(--font-body);
+    font-size: var(--small);
+    font-weight: var(--weight-ui);
+    padding: 0.45rem 1rem;
+    margin-right: 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--glass-line);
+    background: var(--glass);
+    color: var(--accent-deep);
+    cursor: pointer;
+    transition:
+      background var(--dur-fast) var(--ease),
+      border-color var(--dur-fast) var(--ease);
+  }
+
+  input[type="file"]::file-selector-button:hover {
+    background: var(--glass-hover);
+    border-color: var(--epay);
+  }
+
+  .lf__submit { justify-self: start; margin-top: 0.5rem; }
+  .lf__note { font-size: var(--small); color: var(--text-muted); margin: 0; }
+</style>
+
+<script>
+  /* Partner routing. A visitor who arrived on a partner's link has their
+     enquiry written straight into the CRM through that partner's lead link,
+     so it arrives already attributed. Everyone else posts to Netlify exactly
+     as before. The downloads row is left alone — it unlocks a file on submit
+     and has its own handling. */
+  const NETLIFY_ONLY = ["lead-magnet"];
+
+  document.querySelectorAll<HTMLFormElement>("form.lf").forEach((form) => {
+    const partnerField = form.querySelector<HTMLInputElement>("[data-partner]");
+    const atLoad = typeof (window as any).epayPartner === "function" ? (window as any).epayPartner() : null;
+    if (atLoad && partnerField) partnerField.value = atLoad.id;
+    if (NETLIFY_ONLY.includes(form.getAttribute("name") || "")) return;
+
+    form.addEventListener("submit", async (event) => {
+      if ((form as any).__crmDone) return;   // the native Netlify post
+
+      // Read attribution at submit time, not page load: the tag can be set
+      // after the page renders, and the slugs are read fresh either way.
+      const crm = (window as any).EPAY_CRM || {};
+      const partner = typeof (window as any).epayPartner === "function" ? (window as any).epayPartner() : null;
+      // A tagged visitor goes to that partner's link and nowhere else. Everyone
+      // else writes a CRM lead through the site's own link AND still posts to
+      // Netlify, so sales keeps its email and any attached statement.
+      const partnerRouted = Boolean(partner && partner.lead_slug);
+      const slug = partnerRouted ? partner.lead_slug : crm.lead_slug;
+      if (!slug) return;                     // nothing wired up yet: Netlify as before
+      event.preventDefault();
+      const value = (n: string) =>
+        ((form.querySelector(`[name="${n}"]`) as HTMLInputElement | null)?.value || "").trim();
+      const submit = form.querySelector<HTMLButtonElement>("button[type='submit']");
+      const label = submit?.textContent || "";
+      if (submit) { submit.disabled = true; submit.textContent = "Sending…"; }
+
+      // First line names where the lead came from, so it reads as a Palm Tree
+      // lead at a glance even before anyone checks the linked partner.
+      const via = partnerRouted ? "Via " + partner.name : "Via epaypos.net";
+      const notes = [
+        via + " — " + (form.getAttribute("name") || "form") + " form, " + location.pathname,
+        value("message"),
+        value("current_pos") && "Currently on " + value("current_pos"),
+        value("reason") && "Reason: " + value("reason"),
+        value("item_name") && "Interested in: " + value("item_name"),
+      ].filter(Boolean).join(" · ");
+
+      try {
+        const res = await fetch(crm.url + "/rest/v1/rpc/public_submit_lead_form", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: crm.key,
+            Authorization: "Bearer " + crm.key,
+          },
+          body: JSON.stringify({
+            p_slug: slug,
+            p_business_name: value("business"),
+            p_contact_name: value("name"),
+            p_email: value("email"),
+            p_phone: value("phone"),
+            p_business_address: "",
+            p_business_type: value("business_type"),
+            p_est_volume: value("monthly_volume"),
+            p_notes: notes,
+          }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        if (partnerRouted) {
+          window.location.href = form.getAttribute("action") || "/thank-you";
+        } else {
+          // Hand back to Netlify for the email and the file upload.
+          (form as any).__crmDone = true;
+          form.submit();
+        }
+      } catch (e) {
+        // Never lose an enquiry over a failed partner hand-off: fall back to
+        // the ordinary Netlify post.
+        if (submit) { submit.disabled = false; submit.textContent = label; }
+        form.removeEventListener("submit", () => {});
+        (form as any).__partnerRouted = false;
+        form.submit();
+      }
+    });
+  });
+</script>

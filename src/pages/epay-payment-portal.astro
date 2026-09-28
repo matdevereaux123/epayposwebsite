@@ -1,0 +1,103 @@
+---
+import Base from "../layouts/Base.astro";
+import BatchLine from "../components/BatchLine.astro";
+import ImageSlot from "../components/ImageSlot.astro";
+import portal from "../../content/payment-portal.json";
+import { site, faqs, headings } from "../lib/content";
+
+const p = portal as any;
+---
+
+<Base title={`EPAY Payment Portal | ${site.brand.name}`} description={p.lede}>
+  <section class="band band--deck hero">
+    <div class="wrap hero__grid">
+      <div>
+        <p class="mono-label">{p.eyebrow}</p>
+        <h1>{p.heading}</h1>
+        <p class="lede">{p.lede}</p>
+        <div class="actions">
+          <a class="btn btn--primary" href={site.cta.primary.href}>{site.cta.primary.label}</a>
+          <a class="btn btn--ghost" href={site.cta.login.href} target="_blank" rel="noopener">
+            Open the portal
+          </a>
+        </div>
+      </div>
+      <ImageSlot name="EPAY Payment Portal" file={p.hero_image} ratio="4 / 3" />
+    </div>
+  </section>
+
+  <BatchLine
+    readouts={[
+      { label: "Funding", value: "Next-day" },
+      { label: "Reporting", value: "One system" },
+      { label: "Support", value: "24/7" },
+    ]}
+  />
+
+  <section class="band band--dark">
+    <div class="wrap">
+      <p class="mono-label">What it does</p>
+      <h2>{headings.portal.how}</h2>
+      <div class="grid grid--2 pf">
+        {p.features.map((f: any) => (
+          <article class="card reveal">
+            <h3>{f.name}</h3>
+            <p>{f.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--dark">
+    <div class="wrap">
+      <p class="mono-label">Questions</p>
+      <h2>{headings.shared.faq}</h2>
+      <div class="faqs">
+        {faqs.slice(0, 4).map((faq: any) => (
+          <details class="faq">
+            <summary>{faq.q}</summary>
+            <p>{faq.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--dark cta">
+    <div class="wrap">
+      <h2>{headings.portal.fit}</h2>
+      <div class="actions">
+        <a class="btn btn--primary" href={site.cta.primary.href}>{site.cta.primary.label}</a>
+        <a class="btn btn--ghost" href="/epay-software">All EPAY Software</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding-block: clamp(3rem, 7vw, 5.5rem) clamp(1.5rem, 3vw, 2.5rem); }
+  .hero__grid { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 900px) { .hero__grid { grid-template-columns: 1.1fr 1fr; } }
+  .pf { margin-top: 2rem; }
+  .faqs { margin-top: 1.5rem; max-width: 760px; }
+  .faq { border-top: 1px solid var(--rule); }
+  .faq summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+    padding: 1.1rem 0.85rem; margin-inline: -0.85rem; border-radius: var(--radius);
+    cursor: pointer; font-family: var(--font-display); font-weight: 700;
+    font-size: 1.0625rem; list-style: none;
+    transition: background var(--dur-fast) var(--ease);
+  }
+  .faq summary:hover { background: var(--glass); }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: "+"; flex-shrink: 0; font-family: var(--font-data); font-size: 1.25rem;
+    line-height: 1; color: var(--accent-deep);
+    transition: transform var(--dur) var(--ease);
+  }
+  .faq[open] summary::after { transform: rotate(135deg); }
+  .faq p { color: var(--text-muted); padding-bottom: 1rem; max-width: 68ch; }
+  .cta { text-align: center; }
+  .cta .actions { justify-content: center; }
+</style>

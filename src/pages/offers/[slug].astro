@@ -1,0 +1,270 @@
+---
+// Offer landing pages. One template, one page per entry in offers.json.
+//
+// The structure follows the standalone offer sites (consumerchoice, the
+// bonus signup, the statement review): badge → hero with checks → snapshot
+// table → how it works → eligibility → hardware → form → terms.
+//
+// Every figure and every eligibility rule is content, not markup. These are
+// commercial claims — a change to the bonus amount or a volume threshold is
+// an edit to offers.json, made deliberately, not a change buried in a
+// component.
+
+import Base from "../../layouts/Base.astro";
+import ImageSlot from "../../components/ImageSlot.astro";
+import LeadForm from "../../components/LeadForm.astro";
+import offersData from "../../../content/offers.json";
+import { site, products, pricing, money, headings, enquiry } from "../../lib/content";
+
+export function getStaticPaths() {
+  return (offersData as any).offers.map((offer: any) => ({
+    params: { slug: offer.slug },
+    props: { offer },
+  }));
+}
+
+const { offer } = Astro.props as any;
+const hw = (pricing as any).hardware;
+---
+
+<Base
+  title={`${offer.eyebrow} | ${site.brand.name}`}
+  description={offer.meta_description ?? offer.lede}
+>
+  <p class="offer__badge">{offer.badge}</p>
+
+  <section class="band band--deck hero">
+    <div class="wrap hero__grid">
+      <div class="rise">
+        <p class="mono-label">{offer.eyebrow}</p>
+        <h1>{offer.heading}</h1>
+        <p class="lede">{offer.lede}</p>
+        <div class="actions">
+          <a class="btn btn--primary" href="#claim">{offer.cta}</a>
+          <a class="btn btn--ghost" href="/contact">Talk to someone</a>
+        </div>
+        <ul class="offer__checks">
+          {offer.checks.map((c: string) => <li>{c}</li>)}
+        </ul>
+      </div>
+
+      <aside class="offer__snapshot">
+        <p class="mono-label">{offer.snapshot.title}</p>
+        <dl class="snap">
+          {offer.snapshot.rows.map((row: any) => (
+            <div class="snap__row">
+              <dt>{row.label}</dt>
+              <dd class="figure">{row.value}</dd>
+            </div>
+          ))}
+        </dl>
+        <div class="snap__hl">
+          <span class="snap__hl-label">{offer.snapshot.highlight.label}</span>
+          <span class="snap__hl-value figure">{offer.snapshot.highlight.value}</span>
+        </div>
+        <p class="snap__foot">{offer.snapshot.footnote}</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="band band--dark">
+    <div class="wrap">
+      <p class="mono-label">How it works</p>
+      <h2>{headings.offers.steps}</h2>
+      <div class="grid grid--3 steps">
+        {offer.steps.map((step: any) => (
+          <article class="step reveal">
+            <span class="step__n figure">{step.n}</span>
+            <h3>{step.title}</h3>
+            <p>{step.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {offer.eligibility && (
+    <section class="band band--dark">
+      <div class="wrap">
+        <p class="mono-label">Eligibility</p>
+        <h2>{headings.offers.qualify}</h2>
+        <div class="grid grid--2 elig">
+          <article class="card elig__yes">
+            <p class="elig__mark" aria-hidden="true">✓</p>
+            <h3>{offer.eligibility.yes.title}</h3>
+            <p>{offer.eligibility.yes.body}</p>
+          </article>
+          <article class="card elig__no">
+            <p class="elig__mark" aria-hidden="true">✕</p>
+            <h3>{offer.eligibility.no.title}</h3>
+            <p>{offer.eligibility.no.body}</p>
+          </article>
+        </div>
+        <div class="grid grid--2 elig">
+          {offer.eligibility.extra.map((x: any) => (
+            <article class="card">
+              <p class="elig__k figure">{x.k}</p>
+              <h3>{x.title}</h3>
+              <p>{x.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="band band--dark">
+    <div class="wrap">
+      <p class="mono-label">Hardware</p>
+      <h2>{headings.offers.hardware}</h2>
+      <div class="grid grid--4">
+        {products.map((p: any) => (
+          <article class="card card--link"
+             data-enquire-reason="equipment"
+             data-enquire={`product:${p.id}`}
+             data-enquire-label={`Offer page hardware — ${p.name}`}>
+            <ImageSlot name={p.name} file={p.image} ratio="4 / 3" />
+            <p class="mono-label">{p.kicker}</p>
+            <h3>{p.name}</h3>
+            <p class="showcase__body">{p.summary}</p>
+            <p class="showcase__price figure">
+              {p.purchase_price ? money(p.purchase_price) : "Ask us"}
+            </p>
+            <span class="card__go" aria-hidden="true">→</span>
+            <a class="card__details" href={`/product/${p.id}`} data-enquire-keep>
+              Full specs <span aria-hidden="true">→</span>
+            </a>
+          </article>
+        ))}
+      </div>
+      <p class="offer__hwnote">{hw.free_placement.body}</p>
+    </div>
+  </section>
+
+  <section class="band band--dark" id="claim">
+    <div class="wrap grid2">
+      <div>
+        <p class="mono-label">{offer.eyebrow}</p>
+        <h2>{offer.form.heading}</h2>
+        <p class="lede">{offer.form.body}</p>
+        <p class="offer__terms">{offer.terms}</p>
+      </div>
+      <LeadForm
+        name={enquiry.form_name}
+        reason="pricing"
+        source={`Offer — ${offer.form.name}`}
+        submitLabel={offer.form.submit}
+        withUpload
+        withVolume
+        withCurrentPos={offer.form.current_pos}
+      />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .offer__badge {
+    margin: 0;
+    padding: 0.6rem var(--gutter);
+    background: var(--epay);
+    color: var(--text);
+    font-family: var(--font-data);
+    font-size: 0.6875rem;
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .hero { padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 3vw, 2.5rem); }
+  .hero__grid { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 900px) { .hero__grid { grid-template-columns: 1.15fr 1fr; gap: 3rem; } }
+
+  .offer__checks { margin-top: 2rem; }
+  .offer__checks li {
+    position: relative;
+    padding: 0.55rem 0 0.55rem 1.75rem;
+    border-top: 1px solid var(--rule);
+    color: var(--text-muted);
+    font-size: var(--small);
+  }
+  .offer__checks li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--accent-deep);
+    font-weight: var(--weight-ui);
+  }
+
+  .offer__snapshot {
+    padding: 1.5rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius-lg);
+  }
+
+  .snap__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.7rem;
+    border-top: 1px solid var(--rule);
+    font-size: var(--small);
+  }
+  .snap__row dt { color: var(--text-muted); }
+  .snap__row dd { margin: 0; color: var(--text); }
+
+  .snap__hl {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 0.9rem 1rem;
+    border-radius: var(--radius);
+    background: var(--glass);
+  }
+  .snap__hl-label {
+    font-family: var(--font-data);
+    font-size: var(--mono-label);
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+  .snap__hl-value { font-size: 1.75rem; color: var(--text); }
+
+  .snap__foot { margin: 1rem 0 0; font-size: 0.8125rem; color: var(--text-muted); }
+
+  .steps { margin-top: 2rem; }
+  .step { padding-top: 1rem; border-top: 2px solid var(--epay); }
+  .step__n {
+    display: block;
+    font-size: 1.5rem;
+    color: var(--accent-deep);
+    margin-bottom: 0.35rem;
+  }
+  .step p { color: var(--text-muted); font-size: var(--small); }
+
+  .elig { margin-top: 2rem; }
+  .elig__mark { font-size: 1.25rem; margin: 0 0 0.25rem; }
+  .elig__yes .elig__mark { color: var(--accent-deep); }
+  .elig__no .elig__mark { color: var(--text-muted); }
+  .elig__k {
+    font-size: 1.5rem;
+    color: var(--accent-deep);
+    margin: 0 0 0.25rem;
+  }
+  .elig p { color: var(--text-muted); font-size: var(--small); }
+
+  .offer__hwnote { margin-top: 1.5rem; font-size: var(--small); color: var(--text-muted); }
+
+  .grid2 { display: grid; gap: 3rem; }
+  @media (min-width: 900px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+
+  .offer__terms {
+    margin-top: 1.5rem;
+    padding: 0.85rem 1rem;
+    border-left: 3px solid var(--epay);
+    background: var(--glass);
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+</style>

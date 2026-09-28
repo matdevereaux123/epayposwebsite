@@ -1,0 +1,839 @@
+<title>EPAY Photo Checklist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* EPAY brand palette, taken from the website's own tokens. */
+  :root {
+    --bg: #F4F8FB;
+    --card: #FFFFFF;
+    --well: #EAF2F8;
+    --ink: #0A1520;
+    --muted: #4A5F70;
+    --rule: #E4EDF3;
+    --rule-strong: #CBDCE7;
+    --blue: #1B9FD8;
+    --blue-ink: #0E6FA0;
+    --on-blue: #FFFFFF;
+    --done: #1E7F4F;
+    --done-bg: #E4F3EA;
+    --live: #0E6FA0;
+    --live-bg: #E2F0F9;
+    --warn: #7A4F00;
+    --warn-bg: #FFF3D6;
+    --bad: #B42318;
+    --bad-bg: #FDECEA;
+    --on-bad: #FFFFFF;
+    --shadow: 0 1px 0 rgba(10, 21, 32, 0.04);
+
+    --font-display: "Bricolage Grotesque", "Inter Tight", system-ui, sans-serif;
+    --font-body: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-data: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0B141C; --card: #111D27; --well: #0F2230; --ink: #E6EEF4; --muted: #9AB0C0;
+      --rule: #1E2E3B; --rule-strong: #2B4152; --blue: #3FB4E8; --blue-ink: #3FB4E8; --on-blue: #04121B;
+      --done: #6AD6A1; --done-bg: #123022; --live: #7CCBF0; --live-bg: #0F2A3B;
+      --warn: #F2C46B; --warn-bg: #33270C; --bad: #FF9A90; --bad-bg: #3A1512; --on-bad: #1A0503; --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0B141C; --card: #111D27; --well: #0F2230; --ink: #E6EEF4; --muted: #9AB0C0;
+    --rule: #1E2E3B; --rule-strong: #2B4152; --blue: #3FB4E8; --blue-ink: #3FB4E8; --on-blue: #04121B;
+    --done: #6AD6A1; --done-bg: #123022; --live: #7CCBF0; --live-bg: #0F2A3B;
+    --warn: #F2C46B; --warn-bg: #33270C; --bad: #FF9A90; --bad-bg: #3A1512; --on-bad: #1A0503; --shadow: none;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.5 var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding-inline: 16px; }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+  button, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  .mono { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+
+  /* ---------- Sticky bar ---------- */
+  .bar {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 5;
+    background: var(--bg);
+    border-bottom: 1px solid var(--rule-strong);
+  }
+  .bar__in { display: grid; gap: 10px; padding-block: 14px 12px; }
+  .bar__top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .bar h1 { font-size: 1.35rem; }
+  .count { font-size: 0.95rem; color: var(--muted); }
+  .count b { color: var(--ink); font-weight: 500; font-size: 1.15rem; }
+  .meter { height: 4px; background: var(--rule); border-radius: 2px; overflow: hidden; display: flex; }
+  .meter i { display: block; height: 100%; transition: width 400ms ease; }
+  .meter .m-live { background: var(--live); }
+  .meter .m-done { background: var(--done); }
+  .tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .seg { display: inline-flex; border: 1px solid var(--rule-strong); border-radius: 8px; overflow: hidden; background: var(--card); }
+  .seg button { border: 0; background: none; padding: 7px 12px; cursor: pointer; color: var(--muted); font-weight: 500; }
+  .seg button + button { border-left: 1px solid var(--rule-strong); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .search {
+    flex: 1 1 180px; min-width: 0;
+    border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--card);
+    padding: 7px 11px;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid transparent; border-radius: 8px; padding: 7px 13px;
+    font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap;
+  }
+  .btn--primary { background: var(--blue-ink); color: var(--on-blue); }
+  .btn--primary:hover { filter: brightness(1.08); }
+  .btn--ghost { background: var(--card); border-color: var(--rule-strong); color: var(--blue-ink); }
+  .btn--ghost:hover { border-color: var(--blue); }
+  .btn--quiet { background: none; color: var(--muted); padding-inline: 6px; font-weight: 500; }
+  .btn--quiet:hover { color: var(--bad); }
+  .btn--danger { background: var(--bad); color: var(--on-bad); }
+  .btn[disabled] { opacity: 0.5; cursor: progress; }
+
+  /* ---------- Intro ---------- */
+  main { padding-block: 22px 64px; display: grid; gap: 28px; }
+  .notice { border-radius: 10px; padding: 12px 14px; background: var(--warn-bg); color: var(--warn); }
+  .how { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+  .how div { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; }
+  .how h2 { font-size: 1rem; margin-bottom: 4px; }
+  .how p { margin: 0; color: var(--muted); font-size: 0.93rem; }
+  .jump { display: flex; gap: 6px; flex-wrap: wrap; }
+  .jump a {
+    display: inline-flex; gap: 8px; align-items: baseline;
+    border: 1px solid var(--rule-strong); border-radius: 999px; padding: 5px 12px;
+    background: var(--card); color: var(--ink); text-decoration: none; font-size: 0.9rem;
+  }
+  .jump a:hover { border-color: var(--blue); }
+  .jump a span { color: var(--muted); font-size: 0.8rem; }
+  .jump a.is-complete span { color: var(--done); }
+
+  /* ---------- Sections ---------- */
+  section.sec { display: grid; gap: 12px; scroll-margin-top: 150px; }
+  .sec__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .sec__head h2 { font-size: 1.45rem; }
+  .sec__blurb { margin: -6px 0 0; color: var(--muted); max-width: 62ch; }
+  .group { font-size: 1rem; font-family: var(--font-body); font-weight: 600; letter-spacing: 0; color: var(--muted); padding-top: 6px; }
+  details.unused > summary { cursor: pointer; list-style: none; }
+  details.unused > summary::-webkit-details-marker { display: none; }
+  details.unused > summary h2::after { content: " +"; color: var(--muted); font-family: var(--font-data); font-weight: 400; }
+  details.unused[open] > summary h2::after { content: " −"; }
+  details.unused .sec__blurb { margin-top: 8px; }
+  details.unused .list { margin-top: 12px; }
+  .list { display: grid; gap: 10px; }
+
+  /* ---------- Slot card ---------- */
+  .slot {
+    display: grid;
+    grid-template-columns: minmax(0, 236px) minmax(0, 1fr);
+    gap: 18px;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: var(--shadow);
+    transition: border-color 160ms ease;
+  }
+  .slot.is-drag { border-color: var(--blue); border-style: dashed; }
+  .slot.is-flash { border-color: var(--blue); box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 25%, transparent); }
+  .well {
+    position: relative; width: 100%; max-width: 100%;
+    background: var(--well); border-radius: 8px; overflow: hidden;
+    display: grid; place-items: center; align-self: start;
+  }
+  .well img, .well video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .well--contain img { object-fit: contain; padding: 8px; }
+  .ph { display: grid; justify-items: center; gap: 6px; padding: 12px; text-align: center; color: var(--muted); font-size: 0.82rem; }
+  .ph i { font-style: normal; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; border: 1.5px dashed var(--blue); color: var(--blue-ink); font-size: 1.1rem; line-height: 1; }
+  .can-upload .well { cursor: pointer; }
+  .can-upload .well:hover .ph i { background: var(--blue-ink); color: var(--on-blue); border-style: solid; }
+  .busy-veil { position: absolute; inset: 0; display: grid; place-items: center; background: color-mix(in srgb, var(--card) 78%, transparent); font-weight: 600; font-size: 0.85rem; }
+
+  .body { display: grid; gap: 7px; align-content: start; min-width: 0; }
+  .body__top { display: flex; justify-content: space-between; gap: 10px; align-items: start; }
+  .body h3 { font-size: 1.08rem; letter-spacing: -0.01em; }
+  .pill { flex: none; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--rule-strong); color: var(--muted); }
+  .pill--done { background: var(--done-bg); color: var(--done); border-color: transparent; }
+  .pill--live { background: var(--live-bg); color: var(--live); border-color: transparent; }
+  .where { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; font-size: 0.88rem; margin: 0; }
+  .where > span:first-child { color: var(--muted); margin-right: 2px; }
+  .chip { border: 1px solid var(--rule); background: var(--bg); border-radius: 6px; padding: 1px 7px; }
+  .more { border: 0; background: none; color: var(--blue-ink); cursor: pointer; padding: 1px 4px; font-weight: 500; }
+  .spec, .note, .meta, .msg { margin: 0; }
+  .spec { font-size: 0.8rem; color: var(--muted); }
+  .note { font-size: 0.86rem; background: var(--warn-bg); color: var(--warn); border-radius: 6px; padding: 6px 9px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding-top: 2px; }
+  .meta { font-size: 0.82rem; color: var(--muted); }
+  .msg { font-size: 0.86rem; border-radius: 6px; padding: 6px 9px; }
+  .msg--bad { background: var(--bad-bg); color: var(--bad); }
+  .msg--warn { background: var(--warn-bg); color: var(--warn); }
+  .path { font-size: 0.72rem; color: var(--muted); word-break: break-all; }
+  .read-only .actions { display: none; }
+
+  .empty { text-align: center; color: var(--muted); padding: 40px 0; margin: 0; }
+
+  @media (max-width: 640px) {
+    .slot { grid-template-columns: minmax(0, 1fr); }
+    .well { max-width: 360px; }
+    section.sec { scroll-margin-top: 190px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; scroll-behavior: auto !important; }
+  }
+
+/* ---------- suggested photos ---------- */
+.opts { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+.opts__title { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+.opts__row { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 8px; }
+.opt {
+  position: relative; padding: 0; border: 1px solid var(--line); border-radius: 10px;
+  background: #fff; cursor: pointer; overflow: hidden; display: block; text-align: left;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+.opt:hover:not(:disabled) { border-color: var(--brand, #0099b8); transform: translateY(-1px); }
+.opt:disabled { opacity: .55; cursor: default; }
+.opt img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; }
+.opt__tag {
+  display: block; padding: 5px 6px; font-size: 11px; font-weight: 600; text-align: center;
+  color: #0b1d26; background: #f4f7fb; border-top: 1px solid var(--line);
+}
+.opt--on { border-color: #00b0d8; box-shadow: 0 0 0 2px rgba(0, 176, 216, .25); }
+.opt--on .opt__tag { background: #d6f7fe; }
+.opt__credit {
+  display: block; padding: 0 6px 5px; font-size: 9.5px; line-height: 1.3;
+  color: var(--muted); text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+</style>
+
+<div class="bar" id="bar">
+  <div class="wrap bar__in">
+    <div class="bar__top">
+      <h1>EPAY photo checklist</h1>
+      <div class="count mono" id="count" aria-live="polite">Loading…</div>
+    </div>
+    <div class="meter" aria-hidden="true"><i class="m-live" id="m-live" style="width:0"></i><i class="m-done" id="m-done" style="width:0"></i></div>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="Show">
+        <button type="button" id="f-todo" data-filter="todo" aria-pressed="true">To do</button>
+        <button type="button" id="f-done" data-filter="done" aria-pressed="false">Uploaded</button>
+        <button type="button" id="f-all" data-filter="all" aria-pressed="false">All</button>
+      </div>
+      <input class="search" id="search" type="search" placeholder="Search a page, product or photo" aria-label="Search the checklist">
+      <button class="btn btn--primary" type="button" id="next">Next photo ↓</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap" id="main">
+  <div class="notice" id="notice" hidden></div>
+
+  <div class="how">
+    <div>
+      <h2>Go down the list</h2>
+      <p>Each box is one spot on the website. It says which pages it shows on and the shape it gets cropped to. “Next photo” jumps to the next empty one.</p>
+    </div>
+    <div>
+      <h2>Upload the original</h2>
+      <p>Click a box or drag a photo onto it. Photos are resized for the web on the way in, and location data is stripped. The preview shows the crop visitors will see.</p>
+    </div>
+    <div>
+      <h2>Real photos only</h2>
+      <p>Real EPAY hardware and real businesses. No stock handshakes or people pointing at laptops. Get the owner's OK before a merchant's shop or logo goes up.</p>
+    </div>
+  </div>
+
+  <nav class="jump" id="jump" aria-label="Sections"></nav>
+  <div id="sections"></div>
+  <p class="empty" id="empty" hidden>Nothing matches. Try “All” or clear the search.</p>
+</main>
+
+<input type="file" id="picker" hidden>
+
+<script>
+const DATA = {"pageTitles": {"/": "POS & Payment Processing for Restaurants & Retail", "/404": "Page not found", "/about": "About EPAY POS", "/analytics-app": "Reporting & Analytics", "/auto-services": "Auto Repair & Service Shop POS", "/bar-lounge": "Bar & Nightclub POS System", "/blog": "POS & Payment Processing Blog", "/blog/drafts": "Blog drafts", "/book-a-demo": "Book a POS Demo", "/boutique-apparel": "Boutique & Apparel POS System", "/brewery-taproom": "Brewery & Taproom POS System", "/cafe-bakery": "Cafe & Bakery POS System", "/capital-loans": "Capital Loans for Merchants", "/contact": "Contact EPAY POS", "/convenience-gas": "Convenience Store & Gas Station POS", "/customer-kitchen-display": "Kitchen & Display", "/e-commerce-websites": "Online & Delivery", "/employee-time-management": "Employee & Time", "/enterprise-franchise": "Multi-Location & Franchise POS System", "/epay-base-features": "Front of House", "/epay-payment-portal": "EPAY Payment Portal", "/epay-products-1": "POS Hardware & Terminals", "/epay-software": "EPAY Software — built on the POS", "/epay-terminal": "EPAY Terminal — keypad payments on the Mini", "/fine-dining": "Fine Dining POS System", "/food-truck": "Food Truck POS System", "/full-service-restaurant": "Full Service Restaurant POS System", "/grocery-store": "Grocery Store POS System", "/grub-hub-doordash-uber-eats": "Delivery Apps", "/home-services": "Home Services & Contractor Payments", "/hotel-dining": "Hotel Restaurant & Room Service POS", "/integrations": "Integrations", "/liqour-stores": "Liquor Store POS System", "/misc-retail": "Retail POS System for Specialty Stores", "/offers/consumer-choice": "0% Consumer Choice Program", "/offers/flat-rate": "Flat rate processing", "/offers/free-placement": "Free Placement Program", "/offers/menu-buildout": "Menu and catalog buildout", "/offers/statement-review": "Free Statement Analysis", "/offers/switch-bonus": "$3,000 Switch Bonus", "/pet-supply": "Pet Supply Store POS System", "/pharmacy": "Pharmacy POS System", "/pizzeria-s": "Pizzeria POS System with Delivery", "/pricing": "POS Pricing & Processing Rates", "/privacy-policy": "Privacy Policy", "/product/epay-mini": "EPAY Mini — Handheld", "/product/epay-retail": "EPAY Retail — Retail system", "/product/epay-table": "EPAY Table — Restaurant system", "/product/kitchen-display": "Kitchen Display — KDS", "/professional-services": "Professional Services Payments & Invoicing", "/quick-service": "Quick Service Restaurant POS System", "/salon-spa": "Salon & Spa POS System", "/sign-up": "Apply for Processing", "/smoke-shops": "Smoke Shop & Vape Store POS", "/terms-of-service-agreement": "EPAY POS Terms of Service Agreement", "/thank-you": "Thanks — we got it", "/third-party/clover": "Clover — Cloud POS · Fiserv", "/third-party/gateways": "Payment Gateways — Online & Integrated", "/third-party/lodging": "Lodging with EPAY — Hotels · FreedomPay FuseBox", "/third-party/ncr": "NCR — Enterprise POS · NCR Voyix", "/third-party/nrs": "NRS — Convenience & bodega POS", "/third-party/tsys": "TSYS — Processing · Global Payments"}, "slots": [{"path": "/img/epay-logo.png", "name": "EPAY POS", "owner": "", "section": "Logo", "sectionOrder": 1, "sectionBlurb": "Shows in the header and footer of every page.", "pages": ["/", "/404", "/about", "/analytics-app", "/auto-services", "/bar-lounge", "/blog", "/blog/drafts", "/book-a-demo", "/boutique-apparel", "/brewery-taproom", "/cafe-bakery", "/capital-loans", "/contact", "/convenience-gas", "/customer-kitchen-display", "/e-commerce-websites", "/employee-time-management", "/enterprise-franchise", "/epay-base-features", "/epay-payment-portal", "/epay-products-1", "/epay-software", "/epay-terminal", "/fine-dining", "/food-truck", "/full-service-restaurant", "/grocery-store", "/grub-hub-doordash-uber-eats", "/home-services", "/hotel-dining", "/integrations", "/liqour-stores", "/misc-retail", "/offers/consumer-choice", "/offers/flat-rate", "/offers/free-placement", "/offers/menu-buildout", "/offers/statement-review", "/offers/switch-bonus", "/pet-supply", "/pharmacy", "/pizzeria-s", "/pricing", "/privacy-policy", "/product/epay-mini", "/product/epay-retail", "/product/epay-table", "/product/kitchen-display", "/professional-services", "/quick-service", "/salon-spa", "/sign-up", "/smoke-shops", "/terms-of-service-agreement", "/thank-you", "/third-party/clover", "/third-party/gateways", "/third-party/lodging", "/third-party/ncr", "/third-party/nrs", "/third-party/tsys"], "ratio": "150 / 69", "kind": "image", "format": "png", "maxEdge": 1200, "notes": [], "source": ["site.json → brand.logo"]}, {"path": "/video/pho-street-install.mp4", "name": "EPAY Client Of The Month", "owner": "", "section": "Homepage video", "sectionOrder": 2, "sectionBlurb": "The Pho Street client spotlight on the homepage.", "pages": ["/"], "ratio": "16 / 9", "kind": "video", "format": "video", "maxEdge": 1600, "notes": ["Plays on its own on the homepage, looping, with no sound and no controls. If the video is over 20 MB, skip this one: Matthew is pulling it from Google Drive."], "source": ["site.json → home_video.file"]}, {"path": "/img/pages/pho-street-poster.jpg", "name": "Pho street poster", "owner": "", "section": "Homepage video", "sectionOrder": 2, "sectionBlurb": "", "pages": ["/"], "ratio": "16 / 9", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": ["A still frame from the video. It shows while the video loads, and to visitors whose device is set to reduce motion."], "source": ["site.json → home_video.poster"]}, {"path": "/img/pages/capital-loans-hero.jpg", "name": "Capital loans", "owner": "", "section": "Page photos", "sectionOrder": 3, "sectionBlurb": "Main photos for the standalone pages and the homepage promo blocks.", "pages": ["/capital-loans"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["capital.json → hero_image"]}, {"path": "/img/pages/payment-portal-hero.jpg", "name": "EPAY Payment Portal", "owner": "", "section": "Page photos", "sectionOrder": 3, "sectionBlurb": "Main photos for the standalone pages and the homepage promo blocks.", "pages": ["/epay-payment-portal"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["payment-portal.json → hero_image"]}, {"path": "/img/pages/home-hero.svg", "name": "EPAY POS station showing the EPAY logo", "owner": "", "section": "Page photos", "sectionOrder": 3, "sectionBlurb": "Main photos for the standalone pages and the homepage promo blocks.", "pages": ["/"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["site.json → page_images.home.file"]}, {"path": "/img/pages/shop-promo.jpg", "name": "EPAY Gear and Supplies", "owner": "", "section": "Page photos", "sectionOrder": 3, "sectionBlurb": "Main photos for the standalone pages and the homepage promo blocks.", "pages": ["/"], "ratio": "16 / 10", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["site.json → home_promos.blocks.0.image"]}, {"path": "/img/pages/training-promo.jpg", "name": "Get Your Staff Up to Speed", "owner": "", "section": "Page photos", "sectionOrder": 3, "sectionBlurb": "Main photos for the standalone pages and the homepage promo blocks.", "pages": ["/"], "ratio": "16 / 10", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["site.json → home_promos.blocks.1.image"]}, {"path": "/img/pages/about-hero.jpg", "name": "About EPAY POS", "owner": "", "section": "Page photos", "sectionOrder": 3, "sectionBlurb": "Main photos for the standalone pages and the homepage promo blocks.", "pages": ["/about"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["site.json → about.hero_image"]}, {"path": "/img/pages/applications-hero.jpg", "name": "EPAY Software — main photo", "owner": "", "section": "Page photos", "sectionOrder": 3, "sectionBlurb": "Main photos for the standalone pages and the homepage promo blocks.", "pages": ["/epay-software"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["software.json → hero_image"]}, {"path": "/img/pages/terminal-hero.jpg", "name": "EPAY Terminal", "owner": "", "section": "Page photos", "sectionOrder": 3, "sectionBlurb": "Main photos for the standalone pages and the homepage promo blocks.", "pages": ["/epay-terminal"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["terminal.json → hero_image"]}, {"path": "/img/products/epay-mini.png", "name": "EPAY Mini", "owner": "EPAY Mini", "section": "Hardware", "sectionOrder": 4, "sectionBlurb": "Product shots and in-use photos. Each shows on several pages.", "pages": ["/", "/analytics-app", "/auto-services", "/bar-lounge", "/boutique-apparel", "/brewery-taproom", "/cafe-bakery", "/customer-kitchen-display", "/e-commerce-websites", "/employee-time-management", "/epay-base-features", "/epay-products-1", "/epay-terminal", "/fine-dining", "/food-truck", "/full-service-restaurant", "/grub-hub-doordash-uber-eats", "/home-services", "/hotel-dining", "/integrations", "/misc-retail", "/offers/consumer-choice", "/offers/flat-rate", "/offers/free-placement", "/offers/menu-buildout", "/offers/statement-review", "/offers/switch-bonus", "/pet-supply", "/pharmacy", "/pizzeria-s", "/product/epay-mini", "/product/epay-retail", "/product/epay-table", "/product/kitchen-display", "/professional-services", "/quick-service", "/salon-spa"], "ratio": "4 / 3", "kind": "image", "format": "png", "maxEdge": 1600, "notes": [], "source": ["products.json → products.0.image"]}, {"path": "/img/products/epay-mini-1.jpg", "name": "EPAY Mini — in use", "owner": "EPAY Mini", "section": "Hardware", "sectionOrder": 4, "sectionBlurb": "Product shots and in-use photos. Each shows on several pages.", "pages": ["/product/epay-mini"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["products.json → products.0.gallery.0.file"]}, {"path": "/img/products/epay-mini-2.jpg", "name": "EPAY Mini — detail", "owner": "EPAY Mini", "section": "Hardware", "sectionOrder": 4, "sectionBlurb": "Product shots and in-use photos. Each shows on several pages.", "pages": ["/product/epay-mini"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["products.json → products.0.gallery.1.file"]}, {"path": "/img/products/epay-table.png", "name": "EPAY Table", "owner": "EPAY Table", "section": "Hardware", "sectionOrder": 4, "sectionBlurb": "Product shots and in-use photos. Each shows on several pages.", "pages": ["/", "/analytics-app", "/bar-lounge", "/brewery-taproom", "/customer-kitchen-display", "/e-commerce-websites", "/employee-time-management", "/enterprise-franchise", "/epay-base-features", "/epay-products-1", "/fine-dining", "/food-truck", "/full-service-restaurant", "/grub-hub-doordash-uber-eats", "/hotel-dining", "/integrations", "/offers/consumer-choice", "/offers/flat-rate", "/offers/free-placement", "/offers/menu-buildout", "/offers/statement-review", "/offers/switch-bonus", "/pizzeria-s", "/product/epay-mini", "/product/epay-retail", "/product/epay-table", "/product/kitchen-display", "/quick-service"], "ratio": "4 / 3", "kind": "image", "format": "png", "maxEdge": 1600, "notes": [], "source": ["products.json → products.1.image"]}, {"path": "/img/products/epay-table-1.jpg", "name": "EPAY Table — in use", "owner": "EPAY Table", "section": "Hardware", "sectionOrder": 4, "sectionBlurb": "Product shots and in-use photos. Each shows on several pages.", "pages": ["/product/epay-table"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["products.json → products.1.gallery.0.file"]}, {"path": "/img/products/epay-table-2.jpg", "name": "EPAY Table — detail", "owner": "EPAY Table", "section": "Hardware", "sectionOrder": 4, "sectionBlurb": "Product shots and in-use photos. Each shows on several pages.", "pages": ["/product/epay-table"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["products.json → products.1.gallery.1.file"]}, {"path": "/img/products/epay-retail.png", "name": "EPAY Retail", "owner": "EPAY Retail", "section": "Hardware", "sectionOrder": 4, "sectionBlurb": "Product shots and in-use photos. Each shows on several pages.", "pages": ["/", "/analytics-app", "/auto-services", "/boutique-apparel", "/brewery-taproom", "/cafe-bakery", "/convenience-gas", "/customer-kitchen-display", "/e-commerce-websites", "/employee-time-management", "/enterprise-franchise", "/epay-base-features", "/epay-products-1", "/grocery-store", "/grub-hub-doordash-uber-eats", "/integrations", "/liqour-stores", "/misc-retail", "/offers/consumer-choice", "/offers/flat-rate", "/offers/free-placement", "/offers/menu-buildout", "/offers/statement-review", "/offers/switch-bonus", "/pet-supply", "/pharmacy", "/product/epay-mini", "/product/epay-retail", "/product/epay-table", "/product/kitchen-display", "/salon-spa", "/smoke-shops"], "ratio": "4 / 3", "kind": "image", "format": "png", "maxEdge": 1600, "notes": [], "source": ["products.json → products.2.image"]}, {"path": "/img/products/epay-retail-1.jpg", "name": "EPAY Retail — in use", "owner": "EPAY Retail", "section": "Hardware", "sectionOrder": 4, "sectionBlurb": "Product shots and in-use photos. Each shows on several pages.", "pages": ["/product/epay-retail"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["products.json → products.2.gallery.0.file"]}, {"path": "/img/products/epay-retail-2.jpg", "name": "EPAY Retail — detail", "owner": "EPAY Retail", "section": "Hardware", "sectionOrder": 4, "sectionBlurb": "Product shots and in-use photos. Each shows on several pages.", "pages": ["/product/epay-retail"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["products.json → products.2.gallery.1.file"]}, {"path": "/img/products/kds.png", "name": "Kitchen Display", "owner": "Kitchen Display", "section": "Hardware", "sectionOrder": 4, "sectionBlurb": "Product shots and in-use photos. Each shows on several pages.", "pages": ["/", "/analytics-app", "/customer-kitchen-display", "/e-commerce-websites", "/employee-time-management", "/enterprise-franchise", "/epay-base-features", "/epay-products-1", "/fine-dining", "/full-service-restaurant", "/grub-hub-doordash-uber-eats", "/hotel-dining", "/integrations", "/offers/consumer-choice", "/offers/flat-rate", "/offers/free-placement", "/offers/menu-buildout", "/offers/statement-review", "/offers/switch-bonus", "/pizzeria-s", "/product/epay-mini", "/product/epay-retail", "/product/epay-table", "/product/kitchen-display", "/quick-service"], "ratio": "4 / 3", "kind": "image", "format": "png", "maxEdge": 1600, "notes": [], "source": ["products.json → products.3.image"]}, {"path": "/img/products/kitchen-display-1.jpg", "name": "Kitchen Display — in use", "owner": "Kitchen Display", "section": "Hardware", "sectionOrder": 4, "sectionBlurb": "Product shots and in-use photos. Each shows on several pages.", "pages": ["/product/kitchen-display"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["products.json → products.3.gallery.0.file"]}, {"path": "/img/products/kitchen-display-2.jpg", "name": "Kitchen Display — detail", "owner": "Kitchen Display", "section": "Hardware", "sectionOrder": 4, "sectionBlurb": "Product shots and in-use photos. Each shows on several pages.", "pages": ["/product/kitchen-display"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["products.json → products.3.gallery.1.file"]}, {"path": "/img/industries/full-service-restaurant-hero.jpg", "name": "Full Service Restaurant — main photo", "owner": "Full Service Restaurant", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/full-service-restaurant"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.0.hero_image"]}, {"path": "/img/industries/full-service-restaurant-1.jpg", "name": "Full Service Restaurant — floor / counter", "owner": "Full Service Restaurant", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/full-service-restaurant"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.0.gallery.0.file"]}, {"path": "/img/industries/full-service-restaurant-2.jpg", "name": "Full Service Restaurant — the system in use", "owner": "Full Service Restaurant", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/full-service-restaurant"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.0.gallery.1.file"]}, {"path": "/img/industries/full-service-restaurant-3.jpg", "name": "Full Service Restaurant — staff or detail shot", "owner": "Full Service Restaurant", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/full-service-restaurant"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.0.gallery.2.file"]}, {"path": "/img/industries/bar-lounge-hero.jpg", "name": "Bar & Lounge — main photo", "owner": "Bar & Lounge", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/bar-lounge"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.1.hero_image"]}, {"path": "/img/industries/bar-lounge-1.jpg", "name": "Bar & Lounge — floor / counter", "owner": "Bar & Lounge", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/bar-lounge"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.1.gallery.0.file"]}, {"path": "/img/industries/bar-lounge-2.jpg", "name": "Bar & Lounge — the system in use", "owner": "Bar & Lounge", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/bar-lounge"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.1.gallery.1.file"]}, {"path": "/img/industries/bar-lounge-3.jpg", "name": "Bar & Lounge — staff or detail shot", "owner": "Bar & Lounge", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/bar-lounge"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.1.gallery.2.file"]}, {"path": "/img/industries/pizzeria-s-hero.jpg", "name": "Pizzerias — main photo", "owner": "Pizzerias", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/pizzeria-s"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.2.hero_image"]}, {"path": "/img/industries/pizzeria-s-1.jpg", "name": "Pizzerias — floor / counter", "owner": "Pizzerias", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/pizzeria-s"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.2.gallery.0.file"]}, {"path": "/img/industries/pizzeria-s-2.jpg", "name": "Pizzerias — the system in use", "owner": "Pizzerias", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/pizzeria-s"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.2.gallery.1.file"]}, {"path": "/img/industries/pizzeria-s-3.jpg", "name": "Pizzerias — staff or detail shot", "owner": "Pizzerias", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/pizzeria-s"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.2.gallery.2.file"]}, {"path": "/img/industries/cafe-bakery-hero.jpg", "name": "Cafe & Bakery — main photo", "owner": "Cafe & Bakery", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/cafe-bakery"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.3.hero_image"]}, {"path": "/img/industries/cafe-bakery-1.jpg", "name": "Cafe & Bakery — floor / counter", "owner": "Cafe & Bakery", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/cafe-bakery"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.3.gallery.0.file"]}, {"path": "/img/industries/cafe-bakery-2.jpg", "name": "Cafe & Bakery — the system in use", "owner": "Cafe & Bakery", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/cafe-bakery"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.3.gallery.1.file"]}, {"path": "/img/industries/cafe-bakery-3.jpg", "name": "Cafe & Bakery — staff or detail shot", "owner": "Cafe & Bakery", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/cafe-bakery"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.3.gallery.2.file"]}, {"path": "/img/industries/hotel-dining-hero.jpg", "name": "Hotel Dining — main photo", "owner": "Hotel Dining", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/hotel-dining"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.4.hero_image"]}, {"path": "/img/industries/hotel-dining-1.jpg", "name": "Hotel Dining — floor / counter", "owner": "Hotel Dining", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/hotel-dining"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.4.gallery.0.file"]}, {"path": "/img/industries/hotel-dining-2.jpg", "name": "Hotel Dining — the system in use", "owner": "Hotel Dining", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/hotel-dining"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.4.gallery.1.file"]}, {"path": "/img/industries/hotel-dining-3.jpg", "name": "Hotel Dining — staff or detail shot", "owner": "Hotel Dining", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/hotel-dining"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.4.gallery.2.file"]}, {"path": "/img/industries/enterprise-franchise-hero.jpg", "name": "Enterprise & Franchise — main photo", "owner": "Enterprise & Franchise", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/enterprise-franchise"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.5.hero_image"]}, {"path": "/img/industries/enterprise-franchise-1.jpg", "name": "Enterprise & Franchise — floor / counter", "owner": "Enterprise & Franchise", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/enterprise-franchise"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.5.gallery.0.file"]}, {"path": "/img/industries/enterprise-franchise-2.jpg", "name": "Enterprise & Franchise — the system in use", "owner": "Enterprise & Franchise", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/enterprise-franchise"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.5.gallery.1.file"]}, {"path": "/img/industries/enterprise-franchise-3.jpg", "name": "Enterprise & Franchise — staff or detail shot", "owner": "Enterprise & Franchise", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/enterprise-franchise"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.5.gallery.2.file"]}, {"path": "/img/industries/convenience-gas-hero.jpg", "name": "Convenience & Gas — main photo", "owner": "Convenience & Gas", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/convenience-gas"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.6.hero_image"]}, {"path": "/img/industries/convenience-gas-1.jpg", "name": "Convenience & Gas — floor / counter", "owner": "Convenience & Gas", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/convenience-gas"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.6.gallery.0.file"]}, {"path": "/img/industries/convenience-gas-2.jpg", "name": "Convenience & Gas — the system in use", "owner": "Convenience & Gas", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/convenience-gas"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.6.gallery.1.file"]}, {"path": "/img/industries/convenience-gas-3.jpg", "name": "Convenience & Gas — staff or detail shot", "owner": "Convenience & Gas", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/convenience-gas"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.6.gallery.2.file"]}, {"path": "/img/industries/liqour-stores-hero.jpg", "name": "Liquor Stores — main photo", "owner": "Liquor Stores", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/liqour-stores"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.7.hero_image"]}, {"path": "/img/industries/liqour-stores-1.jpg", "name": "Liquor Stores — floor / counter", "owner": "Liquor Stores", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/liqour-stores"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.7.gallery.0.file"]}, {"path": "/img/industries/liqour-stores-2.jpg", "name": "Liquor Stores — the system in use", "owner": "Liquor Stores", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/liqour-stores"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.7.gallery.1.file"]}, {"path": "/img/industries/liqour-stores-3.jpg", "name": "Liquor Stores — staff or detail shot", "owner": "Liquor Stores", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/liqour-stores"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.7.gallery.2.file"]}, {"path": "/img/industries/smoke-shops-hero.jpg", "name": "Smoke Shops — main photo", "owner": "Smoke Shops", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/smoke-shops"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.8.hero_image"]}, {"path": "/img/industries/smoke-shops-1.jpg", "name": "Smoke Shops — floor / counter", "owner": "Smoke Shops", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/smoke-shops"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.8.gallery.0.file"]}, {"path": "/img/industries/smoke-shops-2.jpg", "name": "Smoke Shops — the system in use", "owner": "Smoke Shops", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/smoke-shops"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.8.gallery.1.file"]}, {"path": "/img/industries/smoke-shops-3.jpg", "name": "Smoke Shops — staff or detail shot", "owner": "Smoke Shops", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/smoke-shops"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.8.gallery.2.file"]}, {"path": "/img/industries/grocery-store-hero.jpg", "name": "Grocery Store — main photo", "owner": "Grocery Store", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/grocery-store"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.9.hero_image"]}, {"path": "/img/industries/grocery-store-1.jpg", "name": "Grocery Store — floor / counter", "owner": "Grocery Store", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/grocery-store"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.9.gallery.0.file"]}, {"path": "/img/industries/grocery-store-2.jpg", "name": "Grocery Store — the system in use", "owner": "Grocery Store", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/grocery-store"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.9.gallery.1.file"]}, {"path": "/img/industries/grocery-store-3.jpg", "name": "Grocery Store — staff or detail shot", "owner": "Grocery Store", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/grocery-store"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.9.gallery.2.file"]}, {"path": "/img/industries/misc-retail-hero.jpg", "name": "Specialty Retail — main photo", "owner": "Specialty Retail", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/misc-retail"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.10.hero_image"]}, {"path": "/img/industries/misc-retail-1.jpg", "name": "Specialty Retail — floor / counter", "owner": "Specialty Retail", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/misc-retail"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.10.gallery.0.file"]}, {"path": "/img/industries/misc-retail-2.jpg", "name": "Specialty Retail — the system in use", "owner": "Specialty Retail", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/misc-retail"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.10.gallery.1.file"]}, {"path": "/img/industries/misc-retail-3.jpg", "name": "Specialty Retail — staff or detail shot", "owner": "Specialty Retail", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/misc-retail"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.10.gallery.2.file"]}, {"path": "/img/industries/quick-service-hero.jpg", "name": "Quick Service — main photo", "owner": "Quick Service", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/quick-service"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.11.hero_image"]}, {"path": "/img/industries/quick-service-1.jpg", "name": "Quick Service — floor / counter", "owner": "Quick Service", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/quick-service"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.11.gallery.0.file"]}, {"path": "/img/industries/quick-service-2.jpg", "name": "Quick Service — the system in use", "owner": "Quick Service", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/quick-service"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.11.gallery.1.file"]}, {"path": "/img/industries/quick-service-3.jpg", "name": "Quick Service — staff or detail shot", "owner": "Quick Service", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/quick-service"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.11.gallery.2.file"]}, {"path": "/img/industries/food-truck-hero.jpg", "name": "Food Truck — main photo", "owner": "Food Truck", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/food-truck"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.12.hero_image"]}, {"path": "/img/industries/food-truck-1.jpg", "name": "Food Truck — floor / counter", "owner": "Food Truck", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/food-truck"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.12.gallery.0.file"]}, {"path": "/img/industries/food-truck-2.jpg", "name": "Food Truck — the system in use", "owner": "Food Truck", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/food-truck"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.12.gallery.1.file"]}, {"path": "/img/industries/food-truck-3.jpg", "name": "Food Truck — staff or detail shot", "owner": "Food Truck", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/food-truck"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.12.gallery.2.file"]}, {"path": "/img/industries/fine-dining-hero.jpg", "name": "Fine Dining — main photo", "owner": "Fine Dining", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/fine-dining"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.13.hero_image"]}, {"path": "/img/industries/fine-dining-1.jpg", "name": "Fine Dining — floor / counter", "owner": "Fine Dining", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/fine-dining"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.13.gallery.0.file"]}, {"path": "/img/industries/fine-dining-2.jpg", "name": "Fine Dining — the system in use", "owner": "Fine Dining", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/fine-dining"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.13.gallery.1.file"]}, {"path": "/img/industries/fine-dining-3.jpg", "name": "Fine Dining — staff or detail shot", "owner": "Fine Dining", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/fine-dining"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.13.gallery.2.file"]}, {"path": "/img/industries/brewery-taproom-hero.jpg", "name": "Brewery & Taproom — main photo", "owner": "Brewery & Taproom", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/brewery-taproom"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.14.hero_image"]}, {"path": "/img/industries/brewery-taproom-1.jpg", "name": "Brewery & Taproom — floor / counter", "owner": "Brewery & Taproom", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/brewery-taproom"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.14.gallery.0.file"]}, {"path": "/img/industries/brewery-taproom-2.jpg", "name": "Brewery & Taproom — the system in use", "owner": "Brewery & Taproom", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/brewery-taproom"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.14.gallery.1.file"]}, {"path": "/img/industries/brewery-taproom-3.jpg", "name": "Brewery & Taproom — staff or detail shot", "owner": "Brewery & Taproom", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/brewery-taproom"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.14.gallery.2.file"]}, {"path": "/img/industries/pharmacy-hero.jpg", "name": "Pharmacy — main photo", "owner": "Pharmacy", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/pharmacy"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.15.hero_image"]}, {"path": "/img/industries/pharmacy-1.jpg", "name": "Pharmacy — floor / counter", "owner": "Pharmacy", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/pharmacy"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.15.gallery.0.file"]}, {"path": "/img/industries/pharmacy-2.jpg", "name": "Pharmacy — the system in use", "owner": "Pharmacy", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/pharmacy"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.15.gallery.1.file"]}, {"path": "/img/industries/pharmacy-3.jpg", "name": "Pharmacy — staff or detail shot", "owner": "Pharmacy", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/pharmacy"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.15.gallery.2.file"]}, {"path": "/img/industries/boutique-apparel-hero.jpg", "name": "Boutique & Apparel — main photo", "owner": "Boutique & Apparel", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/boutique-apparel"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.16.hero_image"]}, {"path": "/img/industries/boutique-apparel-1.jpg", "name": "Boutique & Apparel — floor / counter", "owner": "Boutique & Apparel", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/boutique-apparel"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.16.gallery.0.file"]}, {"path": "/img/industries/boutique-apparel-2.jpg", "name": "Boutique & Apparel — the system in use", "owner": "Boutique & Apparel", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/boutique-apparel"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.16.gallery.1.file"]}, {"path": "/img/industries/boutique-apparel-3.jpg", "name": "Boutique & Apparel — staff or detail shot", "owner": "Boutique & Apparel", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/boutique-apparel"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.16.gallery.2.file"]}, {"path": "/img/industries/pet-supply-hero.jpg", "name": "Pet Supply — main photo", "owner": "Pet Supply", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/pet-supply"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.17.hero_image"]}, {"path": "/img/industries/pet-supply-1.jpg", "name": "Pet Supply — floor / counter", "owner": "Pet Supply", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/pet-supply"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.17.gallery.0.file"]}, {"path": "/img/industries/pet-supply-2.jpg", "name": "Pet Supply — the system in use", "owner": "Pet Supply", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/pet-supply"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.17.gallery.1.file"]}, {"path": "/img/industries/pet-supply-3.jpg", "name": "Pet Supply — staff or detail shot", "owner": "Pet Supply", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/pet-supply"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.17.gallery.2.file"]}, {"path": "/img/industries/salon-spa-hero.jpg", "name": "Salon & Spa — main photo", "owner": "Salon & Spa", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/salon-spa"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.18.hero_image"]}, {"path": "/img/industries/salon-spa-1.jpg", "name": "Salon & Spa — on site", "owner": "Salon & Spa", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/salon-spa"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.18.gallery.0.file"]}, {"path": "/img/industries/salon-spa-2.jpg", "name": "Salon & Spa — the system in use", "owner": "Salon & Spa", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/salon-spa"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.18.gallery.1.file"]}, {"path": "/img/industries/salon-spa-3.jpg", "name": "Salon & Spa — detail shot", "owner": "Salon & Spa", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/salon-spa"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.18.gallery.2.file"]}, {"path": "/img/industries/auto-services-hero.jpg", "name": "Auto Services — main photo", "owner": "Auto Services", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/auto-services"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.19.hero_image"]}, {"path": "/img/industries/auto-services-1.jpg", "name": "Auto Services — on site", "owner": "Auto Services", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/auto-services"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.19.gallery.0.file"]}, {"path": "/img/industries/auto-services-2.jpg", "name": "Auto Services — the system in use", "owner": "Auto Services", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/auto-services"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.19.gallery.1.file"]}, {"path": "/img/industries/auto-services-3.jpg", "name": "Auto Services — detail shot", "owner": "Auto Services", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/auto-services"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.19.gallery.2.file"]}, {"path": "/img/industries/home-services-hero.jpg", "name": "Home Services — main photo", "owner": "Home Services", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/home-services"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.20.hero_image"]}, {"path": "/img/industries/home-services-1.jpg", "name": "Home Services — on site", "owner": "Home Services", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/home-services"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.20.gallery.0.file"]}, {"path": "/img/industries/home-services-2.jpg", "name": "Home Services — the system in use", "owner": "Home Services", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/home-services"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.20.gallery.1.file"]}, {"path": "/img/industries/home-services-3.jpg", "name": "Home Services — detail shot", "owner": "Home Services", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/home-services"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.20.gallery.2.file"]}, {"path": "/img/industries/professional-services-hero.jpg", "name": "Professional Services — main photo", "owner": "Professional Services", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/professional-services"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.21.hero_image"]}, {"path": "/img/industries/professional-services-1.jpg", "name": "Professional Services — on site", "owner": "Professional Services", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/professional-services"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.21.gallery.0.file"]}, {"path": "/img/industries/professional-services-2.jpg", "name": "Professional Services — the system in use", "owner": "Professional Services", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/professional-services"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.21.gallery.1.file"]}, {"path": "/img/industries/professional-services-3.jpg", "name": "Professional Services — detail shot", "owner": "Professional Services", "section": "Industry pages", "sectionOrder": 5, "sectionBlurb": "One main photo and three gallery photos per business type.", "pages": ["/professional-services"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["industries.json → industries.21.gallery.2.file"]}, {"path": "/img/features/epay-base-features-hero.jpg", "name": "Front of House — main photo", "owner": "Front of House", "section": "Feature pages", "sectionOrder": 6, "sectionBlurb": "One main photo per feature page.", "pages": ["/epay-base-features"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["features.json → categories.0.hero_image", "features.json → categories.2.hero_image", "features.json → categories.8.hero_image"]}, {"path": "/img/features/customer-kitchen-display-hero.jpg", "name": "Kitchen & Display — main photo", "owner": "Kitchen & Display", "section": "Feature pages", "sectionOrder": 6, "sectionBlurb": "One main photo per feature page.", "pages": ["/customer-kitchen-display"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["features.json → categories.1.hero_image"]}, {"path": "/img/features/employee-time-management-hero.jpg", "name": "Employee & Time — main photo", "owner": "Employee & Time", "section": "Feature pages", "sectionOrder": 6, "sectionBlurb": "One main photo per feature page.", "pages": ["/employee-time-management"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["features.json → categories.3.hero_image"]}, {"path": "/img/features/analytics-app-hero.jpg", "name": "Reporting & Analytics — main photo", "owner": "Reporting & Analytics", "section": "Feature pages", "sectionOrder": 6, "sectionBlurb": "One main photo per feature page.", "pages": ["/analytics-app"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["features.json → categories.4.hero_image"]}, {"path": "/img/features/e-commerce-websites-hero.jpg", "name": "Online & Delivery — main photo", "owner": "Online & Delivery", "section": "Feature pages", "sectionOrder": 6, "sectionBlurb": "One main photo per feature page.", "pages": ["/e-commerce-websites"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["features.json → categories.5.hero_image"]}, {"path": "/img/features/integrations-hero.jpg", "name": "Integrations — main photo", "owner": "Integrations", "section": "Feature pages", "sectionOrder": 6, "sectionBlurb": "One main photo per feature page.", "pages": ["/integrations"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["features.json → categories.6.hero_image"]}, {"path": "/img/features/grub-hub-doordash-uber-eats-hero.jpg", "name": "Delivery Apps — main photo", "owner": "Delivery Apps", "section": "Feature pages", "sectionOrder": 6, "sectionBlurb": "One main photo per feature page.", "pages": ["/grub-hub-doordash-uber-eats"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["features.json → categories.7.hero_image"]}, {"path": "/img/apps/terminal-mode.jpg", "name": "EPAY Terminal", "owner": "EPAY Terminal", "section": "Software apps", "sectionOrder": 7, "sectionBlurb": "One photo per app on the EPAY Software page.", "pages": ["/epay-software"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["software.json → apps.0.image"]}, {"path": "/img/apps/loyalty.jpg", "name": "Loyalty", "owner": "Loyalty", "section": "Software apps", "sectionOrder": 7, "sectionBlurb": "One photo per app on the EPAY Software page.", "pages": ["/epay-software"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["software.json → apps.1.image"]}, {"path": "/img/apps/ecommerce.jpg", "name": "E-Commerce Storefront", "owner": "E-Commerce Storefront", "section": "Software apps", "sectionOrder": 7, "sectionBlurb": "One photo per app on the EPAY Software page.", "pages": ["/epay-software"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["software.json → apps.2.image"]}, {"path": "/img/apps/online-ordering.jpg", "name": "Online Ordering", "owner": "Online Ordering", "section": "Software apps", "sectionOrder": 7, "sectionBlurb": "One photo per app on the EPAY Software page.", "pages": ["/epay-software"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["software.json → apps.3.image"]}, {"path": "/img/apps/reservations.jpg", "name": "Reservations and Waitlist", "owner": "Reservations and Waitlist", "section": "Software apps", "sectionOrder": 7, "sectionBlurb": "One photo per app on the EPAY Software page.", "pages": ["/epay-software"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["software.json → apps.4.image"]}, {"path": "/img/apps/gift-cards.jpg", "name": "Gift Cards", "owner": "Gift Cards", "section": "Software apps", "sectionOrder": 7, "sectionBlurb": "One photo per app on the EPAY Software page.", "pages": ["/epay-software"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["software.json → apps.5.image"]}, {"path": "/img/apps/reporting.jpg", "name": "Advanced Reporting", "owner": "Advanced Reporting", "section": "Software apps", "sectionOrder": 7, "sectionBlurb": "One photo per app on the EPAY Software page.", "pages": ["/epay-software"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["software.json → apps.6.image"]}, {"path": "/img/third-party/clover-hero.jpg", "name": "Clover — main photo", "owner": "Clover", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/clover"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.0.hero_image"]}, {"path": "/img/third-party/clover-station.jpg", "name": "Clover Station", "owner": "Clover", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/clover"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.0.items.0.image"]}, {"path": "/img/third-party/clover-mini.jpg", "name": "Clover Mini", "owner": "Clover", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/clover"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.0.items.1.image"]}, {"path": "/img/third-party/clover-flex.jpg", "name": "Clover Flex", "owner": "Clover", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/clover"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.0.items.2.image"]}, {"path": "/img/third-party/clover-duo.jpg", "name": "Clover Duo", "owner": "Clover", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/clover"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.0.items.3.image"]}, {"path": "/img/third-party/nrs-hero.jpg", "name": "NRS — main photo", "owner": "NRS", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/nrs"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.1.hero_image"]}, {"path": "/img/third-party/nrs-terminal.jpg", "name": "NRS POS terminal", "owner": "NRS", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/nrs"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.1.items.0.image"]}, {"path": "/img/third-party/nrs-scanner.jpg", "name": "Barcode scanner", "owner": "NRS", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/nrs"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.1.items.1.image"]}, {"path": "/img/third-party/nrs-drawer.jpg", "name": "Cash drawer", "owner": "NRS", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/nrs"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.1.items.2.image"]}, {"path": "/img/third-party/ncr-hero.jpg", "name": "NCR — main photo", "owner": "NCR", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/ncr"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.2.hero_image"]}, {"path": "/img/third-party/ncr-aloha.jpg", "name": "NCR Aloha terminal", "owner": "NCR", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/ncr"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.2.items.0.image"]}, {"path": "/img/third-party/ncr-handheld.jpg", "name": "NCR handheld", "owner": "NCR", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/ncr"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.2.items.1.image"]}, {"path": "/img/third-party/ncr-kds.jpg", "name": "Kitchen display", "owner": "NCR", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/ncr"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.2.items.2.image"]}, {"path": "/img/third-party/tsys-hero.jpg", "name": "TSYS — main photo", "owner": "TSYS", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/tsys"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.3.hero_image"]}, {"path": "/img/third-party/tsys-terminal.jpg", "name": "Countertop terminal", "owner": "TSYS", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/tsys"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.3.items.0.image"]}, {"path": "/img/third-party/tsys-wireless.jpg", "name": "Wireless terminal", "owner": "TSYS", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/tsys"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.3.items.1.image"]}, {"path": "/img/third-party/tsys-pinpad.jpg", "name": "PIN pad", "owner": "TSYS", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/tsys"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.3.items.2.image"]}, {"path": "/img/third-party/lodging-hero.jpg", "name": "Lodging with EPAY — main photo", "owner": "Lodging with EPAY", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/lodging"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.4.hero_image"]}, {"path": "/img/third-party/lodging-pinpad.jpg", "name": "Front desk PIN pad", "owner": "Lodging with EPAY", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/lodging"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.4.items.0.image"]}, {"path": "/img/third-party/lodging-fnb.jpg", "name": "F&B terminal", "owner": "Lodging with EPAY", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/lodging"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.4.items.1.image"]}, {"path": "/img/third-party/lodging-portable.jpg", "name": "Portable terminal", "owner": "Lodging with EPAY", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/lodging"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.4.items.2.image"]}, {"path": "/img/third-party/gateways-hero.jpg", "name": "Additional Gateways — main photo", "owner": "Additional Gateways", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/gateways"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.5.hero_image"]}, {"path": "/img/third-party/gateway-virtual.jpg", "name": "Virtual terminal", "owner": "Additional Gateways", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/gateways"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.5.items.0.image"]}, {"path": "/img/third-party/gateway-hosted.jpg", "name": "Hosted checkout", "owner": "Additional Gateways", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/gateways"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.5.items.1.image"]}, {"path": "/img/third-party/gateway-api.jpg", "name": "API integration", "owner": "Additional Gateways", "section": "Third-party platforms", "sectionOrder": 8, "sectionBlurb": "Clover, NCR, NRS, TSYS, gateways and lodging.", "pages": ["/third-party/gateways"], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["third-party.json → platforms.5.items.2.image"]}, {"path": "/img/store/paper-station.jpg", "name": "Station receipt paper", "owner": "Station receipt paper", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.0.image"]}, {"path": "/img/store/paper-mini.jpg", "name": "Mini handheld receipt paper", "owner": "Mini handheld receipt paper", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.1.image"]}, {"path": "/img/store/server-books.jpg", "name": "Server books", "owner": "Server books", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.2.image"]}, {"path": "/img/store/bill-folds.jpg", "name": "EPAY bill folds", "owner": "EPAY bill folds", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.3.image"]}, {"path": "/img/store/card-trays.jpg", "name": "Plastic card trays", "owner": "Plastic card trays", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.4.image"]}, {"path": "/img/store/bottle-openers.jpg", "name": "EPAY bottle openers", "owner": "EPAY bottle openers", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.5.image"]}, {"path": "/img/store/kitchen-printer.jpg", "name": "Kitchen printer", "owner": "Kitchen printer", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.6.image"]}, {"path": "/img/store/system-printer.jpg", "name": "System printer", "owner": "System printer", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.7.image"]}, {"path": "/img/store/cash-drawer.jpg", "name": "Cash drawer", "owner": "Cash drawer", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.8.image"]}, {"path": "/img/store/handheld-no-printer.jpg", "name": "Handheld, no receipt printer", "owner": "Handheld, no receipt printer", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.9.image"]}, {"path": "/img/store/kiosk.jpg", "name": "EPAY Kiosk", "owner": "EPAY Kiosk", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.10.image"]}, {"path": "/img/store/mini-holsters.jpg", "name": "EPAY Mini holsters", "owner": "EPAY Mini holsters", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.11.image"]}, {"path": "/img/store/hoodie.jpg", "name": "EPAY hoodie", "owner": "EPAY hoodie", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.12.image"]}, {"path": "/img/store/collared-shirt.jpg", "name": "EPAY collared shirt", "owner": "EPAY collared shirt", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.13.image"]}, {"path": "/img/store/hat.jpg", "name": "EPAY hat", "owner": "EPAY hat", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.14.image"]}, {"path": "/img/store/tote-bag.jpg", "name": "EPAY tote bag", "owner": "EPAY tote bag", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.15.image"]}, {"path": "/img/store/lanyards.jpg", "name": "EPAY lanyards", "owner": "EPAY lanyards", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.16.image"]}, {"path": "/img/store/pens.jpg", "name": "EPAY pens", "owner": "EPAY pens", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.17.image"]}, {"path": "/img/store/golf-tees.jpg", "name": "EPAY golf tees", "owner": "EPAY golf tees", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.18.image"]}, {"path": "/img/store/ball-markers.jpg", "name": "EPAY ball markers", "owner": "EPAY ball markers", "section": "Shop", "sectionOrder": 9, "sectionBlurb": "Supplies and EPAY gear. Square photos on a clean background.", "pages": ["/epay-products-1"], "ratio": "1 / 1", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["store.json → items.19.image"]}, {"path": "/img/logos/merchant-1.png", "name": "Merchant one", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "8 / 3", "kind": "image", "format": "png", "maxEdge": 1200, "notes": ["Only upload a merchant's logo once they've given written permission."], "source": ["logos.json → logos.0.file"]}, {"path": "/img/logos/merchant-2.png", "name": "Merchant two", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "8 / 3", "kind": "image", "format": "png", "maxEdge": 1200, "notes": ["Only upload a merchant's logo once they've given written permission."], "source": ["logos.json → logos.1.file"]}, {"path": "/img/logos/merchant-3.png", "name": "Merchant three", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "8 / 3", "kind": "image", "format": "png", "maxEdge": 1200, "notes": ["Only upload a merchant's logo once they've given written permission."], "source": ["logos.json → logos.2.file"]}, {"path": "/img/logos/merchant-4.png", "name": "Merchant four", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "8 / 3", "kind": "image", "format": "png", "maxEdge": 1200, "notes": ["Only upload a merchant's logo once they've given written permission."], "source": ["logos.json → logos.3.file"]}, {"path": "/img/logos/merchant-5.png", "name": "Merchant five", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "8 / 3", "kind": "image", "format": "png", "maxEdge": 1200, "notes": ["Only upload a merchant's logo once they've given written permission."], "source": ["logos.json → logos.4.file"]}, {"path": "/img/logos/merchant-6.png", "name": "Merchant six", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "8 / 3", "kind": "image", "format": "png", "maxEdge": 1200, "notes": ["Only upload a merchant's logo once they've given written permission."], "source": ["logos.json → logos.5.file"]}, {"path": "/img/offers/switch-bonus-hero.jpg", "name": "Switch bonus hero", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["offers.json → offers.0.hero_image"]}, {"path": "/img/offers/consumer-choice-hero.jpg", "name": "Consumer choice hero", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["offers.json → offers.1.hero_image"]}, {"path": "/img/offers/statement-review-hero.jpg", "name": "Statement review hero", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["offers.json → offers.2.hero_image"]}, {"path": "/img/offers/free-placement-hero.jpg", "name": "Free placement hero", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["offers.json → offers.3.hero_image"]}, {"path": "/img/offers/menu-buildout-hero.jpg", "name": "Menu buildout hero", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["offers.json → offers.4.hero_image"]}, {"path": "/img/offers/flat-rate-hero.jpg", "name": "Flat rate hero", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["offers.json → offers.5.hero_image"]}, {"path": "/img/og-default.jpg", "name": "EPAY POS", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["site.json → brand.share_image"]}, {"path": "/img/pages/pricing-hero.jpg", "name": "Pricing — main photo", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["site.json → page_images.pricing.file"]}, {"path": "/img/pages/products-hero.jpg", "name": "Hardware — main photo", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["site.json → page_images.products.file"]}, {"path": "/img/pages/contact-hero.jpg", "name": "Contact — main photo", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["site.json → page_images.contact.file"]}, {"path": "/img/pages/demo-hero.jpg", "name": "Demo — main photo", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["site.json → page_images.book-a-demo.file"]}, {"path": "/img/pages/signup-hero.jpg", "name": "Signup hero", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["site.json → signup.hero_image"]}, {"path": "/img/pages/application-hero.jpg", "name": "Application hero", "owner": "", "section": "Not on any page yet", "sectionOrder": 99, "sectionBlurb": "These are listed in the content files, but no page shows them. Uploading one changes nothing on the site until a page uses it.", "pages": [], "ratio": "4 / 3", "kind": "image", "format": "jpeg", "maxEdge": 1600, "notes": [], "source": ["site.json → application.hero_image"]}]};
+
+(function () {
+  "use strict";
+
+  const SLOTS = DATA.slots;
+  const TITLES = Object.assign({}, DATA.pageTitles, { "/": "Homepage", "/404": "Page-not-found page" });
+  const UNUSED = 99;
+  const TOTAL_PAGES = Object.keys(DATA.pageTitles).length;
+  const MAX_BYTES = 20 * 1024 * 1024;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const docId = (p) => p.replace(/^\//, "").replace(/\//g, "__");
+  const byPath = new Map(SLOTS.map((s) => [s.path, s]));
+  const cards = new Map();
+
+  const state = {
+    rows: {},          // path -> db document
+    names: {},         // user id -> display name (resolved each render, never stored)
+    busy: {},          // path -> label while working
+    msg: {},           // path -> {kind, text}
+    keep: new Set(),   // cards touched this visit stay in view until the filter changes
+    filter: "todo",
+    q: "",
+    canUpload: false,
+    loaded: false,
+  };
+  let db = null, assets = null, user = null, myId = null;
+
+  state.opts = state.opts || {};
+  try { const f = localStorage.getItem("epay-photo-filter"); if (f === "todo" || f === "done" || f === "all") state.filter = f; } catch (e) {}
+
+  // ---------- tiny DOM helper (text always goes in as text) ----------
+  function h(tag, attrs, ...kids) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (v == null || v === false) continue;
+      if (k === "class") el.className = v;
+      else el.setAttribute(k, v === true ? "" : v);
+    }
+    for (const kid of kids.flat()) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    return el;
+  }
+
+  // ---------- labels ----------
+  const RATIO = { "4 / 3": "Landscape 4:3", "1 / 1": "Square", "16 / 10": "Landscape 16:10", "16 / 9": "Widescreen 16:9", "8 / 3": "Wide logo", "150 / 69": "Wide logo" };
+  function specFor(s) {
+    if (s.kind === "video") return "MP4 video · under 20 MB";
+    if (s.path.startsWith("/img/logos/") || s.path === "/img/epay-logo.png") return "PNG with a transparent background, trimmed close to the logo";
+    const shape = RATIO[s.ratio] || s.ratio.replace(/ /g, "");
+    const bg = s.format === "png" ? " · plain white or transparent background" : "";
+    return `${shape} · best at ${s.maxEdge}px or larger${bg}`;
+  }
+  function status(path) {
+    const r = state.rows[path];
+    if (!r || !r.assetId) return "todo";
+    return r.onSite ? "live" : "done";
+  }
+  const isUsed = (s) => s.sectionOrder !== UNUSED;
+  const isLogo = (s) => s.path.startsWith("/img/logos/") || s.path === "/img/epay-logo.png";
+  const fmtBytes = (n) => n > 1048576 ? (n / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1024)) + " KB";
+  const fmtDate = (iso) => { try { return new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric" }); } catch (e) { return ""; } };
+
+  // ---------- build the page once ----------
+  const sectionsEl = document.getElementById("sections");
+  const sections = [];
+  let current = null;
+  for (const s of SLOTS) {
+    if (!current || current.title !== s.section) {
+      current = { title: s.section, order: s.sectionOrder, blurb: s.sectionBlurb, slots: [], id: "sec-" + s.section.toLowerCase().replace(/[^a-z0-9]+/g, "-") };
+      sections.push(current);
+    }
+    current.slots.push(s);
+  }
+
+  for (const sec of sections) {
+    const ownerCounts = {};
+    sec.slots.forEach((s) => { if (s.owner) ownerCounts[s.owner] = (ownerCounts[s.owner] || 0) + 1; });
+    const list = h("div", { class: "list" });
+    let lastOwner = null;
+    for (const s of sec.slots) {
+      if (s.owner && ownerCounts[s.owner] > 1 && s.owner !== lastOwner) list.append(h("h3", { class: "group", "data-group": s.owner }, s.owner));
+      lastOwner = s.owner;
+      const card = buildCard(s);
+      cards.set(s.path, card);
+      list.append(card.el);
+    }
+    const head = h("div", { class: "sec__head" }, h("h2", {}, sec.title), h("span", { class: "count mono", "data-sec-count": sec.id }));
+    let el;
+    if (sec.order === UNUSED) {
+      el = h("section", { class: "sec", id: sec.id }, h("details", { class: "unused" }, h("summary", {}, head), h("p", { class: "sec__blurb" }, sec.blurb), list));
+    } else {
+      el = h("section", { class: "sec", id: sec.id }, head, sec.blurb ? h("p", { class: "sec__blurb" }, sec.blurb) : null, list);
+    }
+    sec.el = el;
+    sectionsEl.append(el);
+  }
+
+  function chip(p) { return h("span", { class: "chip" }, TITLES[p] || p); }
+
+  function buildCard(s) {
+    const well = h("div", { class: "well" + (s.format === "png" ? " well--contain" : ""), style: `aspect-ratio:${s.ratio}` });
+    const pill = h("span", { class: "pill" });
+    const meta = h("p", { class: "meta", hidden: true });
+    const msg = h("p", { class: "msg", hidden: true, role: "status" });
+    const uploadBtn = h("button", { class: "btn btn--primary", type: "button" }, "Upload photo");
+    const removeBtn = h("button", { class: "btn btn--quiet", type: "button", hidden: true }, "Remove");
+    const actions = h("div", { class: "actions" }, uploadBtn, removeBtn);
+
+    const where = h("p", { class: "where" }, h("span", {}, "Shows on"));
+    const pages = s.pages;
+    if (!pages.length) where.append(h("span", { class: "chip" }, "no page yet"));
+    else if (pages.length === TOTAL_PAGES) where.append(h("span", { class: "chip" }, `every page (${pages.length})`));
+    else {
+      pages.slice(0, 4).forEach((p) => where.append(chip(p)));
+      if (pages.length > 4) {
+        const rest = pages.slice(4);
+        const more = h("button", { class: "more", type: "button" }, `+ ${rest.length} more`);
+        more.addEventListener("click", () => { more.remove(); rest.forEach((p) => where.append(chip(p))); });
+        where.append(more);
+      }
+    }
+
+    // Suggested photos for this slot. Filled in by Matthew; picking one is
+    // the same as uploading it, so the rest of the page needs no special case.
+    const opts = h("div", { class: "opts", hidden: true });
+
+    const body = h("div", { class: "body" },
+      h("div", { class: "body__top" }, h("h3", {}, s.name), pill),
+      where,
+      h("p", { class: "spec mono" }, specFor(s)),
+      s.notes.map((n) => h("p", { class: "note" }, n)),
+      actions, meta, msg, opts,
+      h("code", { class: "path mono", title: s.source.join("\n") }, s.path)
+    );
+    const el = h("article", { class: "slot", id: "slot-" + docId(s.path) }, well, body);
+
+    well.addEventListener("click", () => { if (state.canUpload && !state.busy[s.path]) pick(s); });
+    uploadBtn.addEventListener("click", () => pick(s));
+    let armed = null;
+    const disarm = () => { armed = null; removeBtn.textContent = "Remove"; removeBtn.className = "btn btn--quiet"; };
+    removeBtn.addEventListener("click", () => {
+      if (!armed) {
+        removeBtn.textContent = "Click again to remove";
+        removeBtn.className = "btn btn--danger";
+        armed = setTimeout(disarm, 4000);
+        return;
+      }
+      clearTimeout(armed); disarm();
+      removeSlot(s);
+    });
+    el.addEventListener("dragover", (e) => { if (!state.canUpload) return; e.preventDefault(); el.classList.add("is-drag"); });
+    el.addEventListener("dragleave", () => el.classList.remove("is-drag"));
+    el.addEventListener("drop", (e) => {
+      el.classList.remove("is-drag");
+      if (!state.canUpload) return;
+      e.preventDefault();
+      const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) handleFile(s, f);
+    });
+
+    return { el, well, pill, meta, msg, uploadBtn, removeBtn, opts, optsKey: undefined, shown: undefined };
+  }
+
+  // ---------- render state into one card ----------
+  function paint(path) {
+    const s = byPath.get(path), c = cards.get(path);
+    const r = state.rows[path], st = status(path), busy = state.busy[path];
+
+    c.pill.className = "pill" + (st === "done" ? " pill--done" : st === "live" ? " pill--live" : "");
+    c.pill.textContent = !state.loaded && st === "todo" ? "…" : st === "todo" ? "To do" : st === "done" ? "Uploaded" : "On the website";
+
+    const assetId = (r && r.assetId) || null;
+    const shownKey = (assetId || "") + "|" + state.canUpload;
+    if (c.shown !== shownKey) {
+      c.shown = shownKey;
+      c.well.replaceChildren();
+      if (assetId) {
+        const src = "/_blob/" + assetId;
+        if (s.kind === "video") c.well.append(h("video", { src, muted: true, playsinline: true, preload: "metadata", controls: true }));
+        else c.well.append(h("img", { src, alt: s.name, loading: "lazy" }));
+      } else {
+        c.well.append(h("div", { class: "ph" }, h("i", { "aria-hidden": "true" }, "+"),
+          state.canUpload ? (s.kind === "video" ? "Drop a video here" : "Drop a photo here") : "No photo yet"));
+      }
+    }
+    const veil = c.well.querySelector(".busy-veil");
+    if (busy && !veil) c.well.append(h("div", { class: "busy-veil" }, busy));
+    else if (busy && veil) veil.textContent = busy;
+    else if (!busy && veil) veil.remove();
+
+    c.uploadBtn.textContent = assetId ? "Replace" : s.kind === "video" ? "Upload video" : "Upload photo";
+    c.uploadBtn.className = "btn " + (assetId ? "btn--ghost" : "btn--primary");
+    c.uploadBtn.disabled = !!busy;
+    c.removeBtn.hidden = !assetId || !!busy;
+
+    if (assetId) {
+      const who = r.uploadedBy ? (state.names[r.uploadedBy] || "someone") : "someone";
+      const dims = r.width && r.height ? ` · ${r.width}×${r.height}` : "";
+      c.meta.textContent = `${r.onSite ? "Added to the website" : "Uploaded"} by ${who} · ${fmtDate(r.uploadedAt)}${dims} · ${fmtBytes(r.sizeBytes || 0)}`;
+      c.meta.hidden = false;
+    } else c.meta.hidden = true;
+
+    // ---- suggested photos ----
+    const list = (state.opts[path] && state.opts[path].items) || [];
+    const optsKey = list.map((o) => o.assetId).join(",") + "|" + (assetId || "") + "|" + state.canUpload;
+    if (c.optsKey !== optsKey) {
+      c.optsKey = optsKey;
+      c.opts.replaceChildren();
+      c.opts.hidden = list.length === 0;
+      if (list.length) {
+        c.opts.append(h("p", { class: "opts__title mono" }, "Options — pick one"));
+        const row = h("div", { class: "opts__row" });
+        list.forEach((o) => {
+          const chosen = assetId === o.assetId;
+          const btn = h("button", {
+            class: "opt" + (chosen ? " opt--on" : ""),
+            type: "button",
+            title: o.credit || o.label || "",
+            disabled: !state.canUpload || !!busy,
+          },
+            h("img", { src: "/_blob/" + o.assetId, alt: o.label || "Option", loading: "lazy" }),
+            h("span", { class: "opt__tag" }, chosen ? "Chosen" : "Use this"),
+            o.credit ? h("span", { class: "opt__credit" }, o.credit) : null
+          );
+          btn.addEventListener("click", () => chooseOption(s, o));
+          row.append(btn);
+        });
+        c.opts.append(row);
+      }
+    }
+
+    const m = state.msg[path];
+    c.msg.hidden = !m;
+    if (m) { c.msg.className = "msg " + (m.kind === "bad" ? "msg--bad" : "msg--warn"); c.msg.textContent = m.text; }
+  }
+
+  function applyFilter() {
+    const q = state.q.trim().toLowerCase();
+    let any = false;
+    for (const sec of sections) {
+      let shown = 0;
+      for (const s of sec.slots) {
+        const st = status(s.path);
+        const passFilter = state.filter === "all" || state.keep.has(s.path) || (state.filter === "todo" ? st === "todo" : st !== "todo");
+        const hay = (s.name + " " + s.owner + " " + s.path + " " + s.pages.map((p) => TITLES[p] || p).join(" ")).toLowerCase();
+        const vis = passFilter && (!q || hay.includes(q));
+        cards.get(s.path).el.hidden = !vis;
+        if (vis) shown++;
+      }
+      sec.el.querySelectorAll("[data-group]").forEach((g) => {
+        let n = g.nextElementSibling, vis = false;
+        while (n && !n.matches("[data-group]")) { if (!n.hidden) { vis = true; break; } n = n.nextElementSibling; }
+        g.hidden = !vis;
+      });
+      sec.el.hidden = shown === 0;
+      if (shown) any = true;
+    }
+    document.getElementById("empty").hidden = any;
+    document.querySelectorAll(".seg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filter === state.filter)));
+  }
+
+  function summarize() {
+    const used = SLOTS.filter(isUsed);
+    const up = used.filter((s) => status(s.path) !== "todo").length;
+    const live = used.filter((s) => status(s.path) === "live").length;
+    document.getElementById("count").replaceChildren(state.loaded ? h("span", {}, h("b", {}, up), ` of ${used.length} uploaded`) : "Loading upload status…");
+    document.getElementById("m-live").style.width = (live / used.length * 100) + "%";
+    document.getElementById("m-done").style.width = ((up - live) / used.length * 100) + "%";
+
+    const jump = document.getElementById("jump");
+    jump.replaceChildren();
+    for (const sec of sections) {
+      const n = sec.slots.length, d = sec.slots.filter((s) => status(s.path) !== "todo").length;
+      const counter = sec.el.querySelector(`[data-sec-count="${sec.id}"]`);
+      if (counter) counter.textContent = `${d} / ${n}`;
+      if (sec.order === UNUSED) continue;
+      jump.append(h("a", { href: "#" + sec.id, class: d === n ? "is-complete" : null }, sec.title, h("span", { class: "mono" }, `${d}/${n}`)));
+    }
+  }
+
+  function repaintAll() { SLOTS.forEach((s) => paint(s.path)); summarize(); applyFilter(); }
+
+  function notice(parts) {
+    const n = document.getElementById("notice");
+    n.replaceChildren(...parts);
+    n.hidden = false;
+  }
+
+  // ---------- controls ----------
+  function setFilter(f) {
+    state.filter = f;
+    state.keep.clear();
+    try { localStorage.setItem("epay-photo-filter", f); } catch (e) {}
+    applyFilter();
+  }
+  document.querySelectorAll(".seg button").forEach((b) => b.addEventListener("click", () => setFilter(b.dataset.filter)));
+  document.getElementById("search").addEventListener("input", (e) => { state.q = e.target.value; applyFilter(); });
+  document.getElementById("next").addEventListener("click", () => {
+    const next = SLOTS.find((s) => isUsed(s) && status(s.path) === "todo" && !state.busy[s.path]);
+    if (!next) { notice([h("strong", {}, "Every photo spot is filled."), " Nice work. Tell Matthew it's ready."]); return; }
+    if (state.filter === "done" || state.q) { state.q = ""; document.getElementById("search").value = ""; setFilter("todo"); }
+    const el = cards.get(next.path).el;
+    el.scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" });
+    el.classList.add("is-flash");
+    setTimeout(() => el.classList.remove("is-flash"), 1400);
+  });
+
+  // ---------- uploads ----------
+  const picker = document.getElementById("picker");
+  let pickingFor = null;
+  function pick(s) {
+    if (!state.canUpload || state.busy[s.path]) return;
+    pickingFor = s;
+    picker.accept = s.kind === "video" ? "video/mp4,video/webm,.mp4,.webm,.mov" : "image/*,.heic,.heif";
+    picker.value = "";
+    picker.click();
+  }
+  picker.addEventListener("change", () => {
+    const f = picker.files && picker.files[0];
+    if (f && pickingFor) handleFile(pickingFor, f);
+  });
+
+  class Problem extends Error { constructor(code, text) { super(text); this.code = code; this.text = text; } }
+
+  async function decode(file) {
+    try {
+      const bmp = await createImageBitmap(file, { imageOrientation: "from-image" });
+      return { src: bmp, w: bmp.width, h: bmp.height, done: () => bmp.close && bmp.close() };
+    } catch (e) { /* fall back to <img>, which also covers SVG */ }
+    const url = URL.createObjectURL(file);
+    try {
+      const img = new Image();
+      img.src = url;
+      await img.decode();
+      return { src: img, w: img.naturalWidth || 1200, h: img.naturalHeight || 600, done: () => URL.revokeObjectURL(url) };
+    } catch (e) {
+      URL.revokeObjectURL(url);
+      const heic = /\.hei[cf]$/i.test(file.name) || /hei[cf]/i.test(file.type);
+      throw new Problem("decode", heic
+        ? "This browser can't open iPhone HEIC photos. Use Safari, or export the photo as JPG first (in Photos: File → Export)."
+        : "That file isn't a photo this browser can open. Try a JPG or PNG.");
+    }
+  }
+
+  // Resize to the slot's size, re-encode (which also drops GPS and camera data).
+  async function prepareImage(file, s) {
+    const img = await decode(file);
+    try {
+      const long = Math.max(img.w, img.h);
+      const scale = Math.min(1, s.maxEdge / long);
+      const w = Math.max(1, Math.round(img.w * scale)), hh = Math.max(1, Math.round(img.h * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = hh;
+      const ctx = canvas.getContext("2d");
+      const type = s.format === "png" ? "image/png" : "image/jpeg";
+      if (type === "image/jpeg") { ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, w, hh); }
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img.src, 0, 0, w, hh);
+      const blob = await new Promise((res) => canvas.toBlob(res, type, 0.86));
+      if (!blob) throw new Problem("decode", "Couldn't process that photo. Try a different file.");
+      if (blob.size > MAX_BYTES) throw new Problem("too_large", "That image is still over 20 MB after resizing. Try a JPG instead of PNG.");
+      const warn = long < 1000 && !isLogo(s)
+        ? `Heads up: the original is only ${img.w}×${img.h}, so it may look soft on big screens. Use a larger photo if there is one.`
+        : null;
+      return { blob, type, width: w, height: hh, warn };
+    } finally { img.done(); }
+  }
+
+  function prepareVideo(file) {
+    if (/\.mov$/i.test(file.name) || file.type === "video/quicktime") {
+      throw new Problem("unsupported_type", "This is a .mov file, and the website needs MP4. Send it to Matthew directly (AirDrop or Google Drive) and it'll be converted.");
+    }
+    if (file.size > MAX_BYTES) {
+      throw new Problem("too_large", `This video is ${fmtBytes(file.size)}. Uploads here max out at 20 MB. Send it to Matthew directly (AirDrop or Google Drive) instead.`);
+    }
+    const type = file.type === "video/webm" || /\.webm$/i.test(file.name) ? "video/webm" : "video/mp4";
+    return { blob: file, type, width: null, height: null, warn: null };
+  }
+
+  function explain(e) {
+    if (e instanceof Problem) return e.text;
+    switch (e && e.code) {
+      case "too_large": return "That file is over 20 MB. Try a smaller version.";
+      case "unsupported_type": return "That file type isn't accepted. Use JPG, PNG or HEIC for photos and MP4 for video.";
+      case "quota_or_state": case "quota_exceeded": return "The checklist is out of storage space. Tell Matthew.";
+      case "rate_limited": case "resource_exhausted": return "Too many uploads at once. Wait a few seconds, then try again.";
+      case "upstream_auth": return "Your sign-in expired. Reload the page, then try again.";
+      case "not_granted": case "capability_disabled": case "capability_removed": case "invalid_argument": case "revoked":
+        return "You can't upload with your current access. Ask Matthew to share this page with you as “Can edit”.";
+      default: return "The upload didn't go through. Try again. If it keeps failing, tell Matthew.";
+    }
+  }
+
+  async function withRetry(fn) {
+    try { return await fn(); }
+    catch (e) {
+      if (e && (e.code === "store_unavailable" || e.code === "unavailable")) {
+        await new Promise((r) => setTimeout(r, 900 + Math.random() * 600));
+        return fn();
+      }
+      throw e;
+    }
+  }
+
+  // Picking a suggestion writes the same row an upload would, pointing at the
+  // suggestion's file. `fromOption` marks it so the file is never deleted on
+  // replace — several slots can be offered the same photo.
+  async function chooseOption(s, o) {
+    if (!state.canUpload || state.busy[s.path]) return;
+    delete state.msg[s.path];
+    state.busy[s.path] = "Choosing…";
+    paint(s.path);
+    try {
+      const prev = state.rows[s.path];
+      const row = {
+        path: s.path,
+        assetId: o.assetId,
+        contentType: o.contentType || "image/jpeg",
+        sizeBytes: o.sizeBytes || 0,
+        width: o.width || null,
+        height: o.height || null,
+        originalName: o.label || "Suggested photo",
+        uploadedBy: myId,
+        uploadedAt: new Date().toISOString(),
+        onSite: false,
+        fromOption: true,
+        credit: o.credit || null,
+      };
+      await withRetry(() => db.doc("photos/" + docId(s.path)).set(row));
+      state.rows[s.path] = row;
+      if (prev && prev.assetId && prev.assetId !== o.assetId && !prev.fromOption) {
+        assets.delete(prev.assetId).catch(() => {});
+      }
+    } catch (e) {
+      state.msg[s.path] = { kind: "bad", text: explain(e) };
+    } finally {
+      delete state.busy[s.path];
+      paint(s.path); summarize(); resolveNames();
+    }
+  }
+
+  async function handleFile(s, file) {
+    if (!state.canUpload || state.busy[s.path]) return;
+    delete state.msg[s.path];
+    state.keep.add(s.path);
+    state.busy[s.path] = s.kind === "video" ? "Checking…" : "Resizing…";
+    paint(s.path);
+    let uploaded = null, saved = false;
+    try {
+      const prepared = s.kind === "video" ? prepareVideo(file) : await prepareImage(file, s);
+
+      state.busy[s.path] = "Uploading…"; paint(s.path);
+      uploaded = await withRetry(() => assets.upload(prepared.blob, { type: prepared.type }));
+
+      const prev = state.rows[s.path];
+      const row = {
+        path: s.path,
+        assetId: uploaded.id,
+        contentType: uploaded.contentType,
+        sizeBytes: uploaded.sizeBytes,
+        width: prepared.width,
+        height: prepared.height,
+        originalName: String(file.name || "").slice(0, 200),
+        uploadedBy: myId,
+        uploadedAt: new Date().toISOString(),
+        onSite: false,
+      };
+      await withRetry(() => db.doc("photos/" + docId(s.path)).set(row));
+      saved = true;
+      state.rows[s.path] = row;
+      // The replaced file is no longer pointed at by anything.
+      if (prev && prev.assetId && prev.assetId !== uploaded.id && !prev.fromOption) {
+        assets.delete(prev.assetId).catch(() => {});
+      }
+      if (prepared.warn) state.msg[s.path] = { kind: "warn", text: prepared.warn };
+    } catch (e) {
+      if (uploaded && !saved) assets.delete(uploaded.id).catch(() => {});
+      state.msg[s.path] = { kind: "bad", text: explain(e) };
+    } finally {
+      delete state.busy[s.path];
+      paint(s.path); summarize();
+      resolveNames();
+    }
+  }
+
+  async function removeSlot(s) {
+    const r = state.rows[s.path];
+    if (!r || !r.assetId) return;
+    state.keep.add(s.path);
+    state.busy[s.path] = "Removing…"; paint(s.path);
+    try {
+      await withRetry(() => db.doc("photos/" + docId(s.path)).delete());
+      delete state.rows[s.path];
+      // A suggestion is shared: several slots can be offered the same photo,
+      // so clearing one slot must not delete the file.
+      if (!r.fromOption) await assets.delete(r.assetId).catch(() => {});
+      delete state.msg[s.path];
+    } catch (e) {
+      state.msg[s.path] = { kind: "bad", text: explain(e) };
+    } finally {
+      delete state.busy[s.path];
+      paint(s.path); summarize(); applyFilter();
+    }
+  }
+
+  async function resolveNames() {
+    if (!user) return;
+    const ids = [...new Set(Object.values(state.rows).map((r) => r.uploadedBy).filter(Boolean))];
+    if (!ids.length) return;
+    const ps = await user.profiles(ids);
+    let changed = false;
+    for (const id of ids) {
+      const p = ps[id];
+      const n = p && p.isMe ? "you" : ((p && p.name) || "someone");
+      if (state.names[id] !== n) { state.names[id] = n; changed = true; }
+    }
+    if (changed) SLOTS.forEach((s) => { if (state.rows[s.path]) paint(s.path); });
+  }
+
+  // ---------- first paint from the embedded list, then connect ----------
+  repaintAll();
+
+  (async function connect() {
+    const c = window.claude;
+    if (!c || typeof c.use !== "function") {
+      notice([h("strong", {}, "Uploading only works on claude.ai."), " Open this checklist from the link Matthew shared."]);
+      return;
+    }
+    const safe = (p) => Promise.resolve(p).catch(() => null);
+    [db, assets, user] = await Promise.all([safe(c.use("db")), safe(c.use("assets")), safe(c.use("user"))]);
+    if (user) myId = await user.id();
+
+    if (!db) {
+      notice([h("strong", {}, "Upload status can't load here."), " Reload the page, or open it from the link Matthew shared."]);
+      state.loaded = true; repaintAll();
+      return;
+    }
+    let allowed = !!assets;
+    if (allowed && user) { const can = await user.can("assets.write"); if (can === false) allowed = false; }
+    state.canUpload = allowed;
+    document.body.classList.toggle("can-upload", allowed);
+    document.body.classList.toggle("read-only", !allowed);
+    if (!allowed) notice([h("strong", {}, "You can view this checklist but not upload."), " Ask Matthew to share it with you as “Can edit”."]);
+
+    db.collection("options").onSnapshot((snap) => {
+      const touched = new Set();
+      for (const ch of snap.docChanges()) {
+        const d = ch.doc.data() || {};
+        if (!d.path || !byPath.has(d.path)) continue;
+        if (ch.type === "removed") delete state.opts[d.path];
+        else state.opts[d.path] = d;
+        touched.add(d.path);
+      }
+      touched.forEach((p) => { if (cards.has(p)) paint(p); });
+    });
+
+    db.collection("photos").onSnapshot((snap) => {
+      const touched = new Set();
+      for (const ch of snap.docChanges()) {
+        const d = ch.doc.data() || {};
+        const path = d.path;
+        if (!path || !byPath.has(path)) continue;
+        if (ch.type === "removed") delete state.rows[path];
+        else state.rows[path] = d;
+        touched.add(path);
+      }
+      const first = !state.loaded;
+      state.loaded = true;
+      if (first) repaintAll();
+      else { touched.forEach(paint); summarize(); applyFilter(); }
+      resolveNames();
+    }, () => {
+      notice([h("strong", {}, "Lost the connection to the checklist."), " Reload the page to see the latest uploads."]);
+    });
+  })();
+})();
+</script>
