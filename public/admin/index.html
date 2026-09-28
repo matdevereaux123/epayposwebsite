@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Never index the editor. robots.txt disallows it as well, and the
+         sitemap integration only covers src/pages, so /admin never enters it. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <title>EPAY POS — blog editor</title>
+    <link rel="icon" href="/favicon.png" />
+    <style>
+      body { margin: 0; font-family: "Source Sans Pro", system-ui, sans-serif; }
+    </style>
+  </head>
+  <body>
+    <!-- Decap CMS. Pinned to an exact version: an unpinned CDN tag turns a
+         silent upstream release into a broken editor with no commit to blame. -->
+    <script src="https://cdn.jsdelivr.net/npm/decap-cms@3.9.0/dist/decap-cms.js"></script>
+  </body>
+</html>

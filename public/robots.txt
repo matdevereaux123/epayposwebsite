@@ -3,5 +3,6 @@ User-agent: *
 Allow: /
 Disallow: /thank-you
 Disallow: /blog/drafts
+Disallow: /admin
 
 Sitemap: https://www.epaypos.net/sitemap-index.xml

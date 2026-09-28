@@ -1,0 +1,114 @@
+# Decap CMS — the blog editor at /admin.
+#
+# AUTH. The GitHub backend needs a server to sign the OAuth exchange. Netlify
+# hosts one: Project configuration > Security > OAuth, with the Client ID and
+# Secret of a GitHub OAuth App. Deliberately NOT git-gateway — Netlify has
+# deprecated that and does not recommend new configurations.
+#
+# SCHEMA. Every field below mirrors src/content.config.ts. Astro validates the
+# frontmatter at build time, so a field that drifts from that schema does not
+# quietly produce a bad post — it fails the build and the site stops deploying.
+# Change one here and change it there in the same commit.
+#
+# Posts are written to content/blog/<slug>.md. The slug is the live URL
+# (/blog/<slug>) and must never change after publishing — see the SEO rules in
+# CLAUDE.md. New posts take their slug from the title; a post drafted by the
+# daily task already has the id from content/blog-topics.json and keeps it.
+
+backend:
+  name: github
+  repo: matdevereaux123/epayposwebsite
+  branch: main
+  commit_messages:
+    create: 'Blog: draft "{{slug}}" from the editor'
+    update: 'Blog: update "{{slug}}" from the editor'
+    delete: 'Blog: remove "{{slug}}" from the editor'
+    uploadMedia: 'Blog: add media {{path}}'
+    deleteMedia: 'Blog: remove media {{path}}'
+
+# Blog posts carry no images today. If that changes, files land here and the
+# post references them at /img/blog/<file>.
+media_folder: "public/img/blog"
+public_folder: "/img/blog"
+
+# Astro reads content/blog/*.md straight from the repo, so a commit from here
+# triggers a Netlify build and the post is live within a minute or two.
+collections:
+  - name: "blog"
+    label: "Blog posts"
+    label_singular: "post"
+    folder: "content/blog"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{title}}"
+    # Both states stay listed — live posts still need editing. These are the
+    # two views, not a restriction on what the editor can open.
+    view_filters:
+      - label: "Waiting for approval"
+        field: draft
+        pattern: true
+      - label: "Live"
+        field: draft
+        pattern: false
+    fields:
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        hint: "Max 60 characters — longer and Google truncates it in results. The build fails over 60."
+        pattern: ['^.{1,60}$', "Keep the title to 60 characters or fewer"]
+
+      - label: "Meta description"
+        name: "description"
+        widget: "text"
+        hint: "70 to 155 characters. This is the grey text under the title in search results. The build fails outside that range."
+        pattern: ['^[\s\S]{70,155}$', "Between 70 and 155 characters"]
+
+      - label: "Target keyword"
+        name: "keyword"
+        widget: "string"
+        hint: "The one search phrase this post goes after. Put it in the first 100 words and in one H2."
+
+      - label: "Publish date"
+        name: "published"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        picker_utc: true
+
+      - label: "Last updated"
+        name: "updated"
+        widget: "datetime"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        picker_utc: true
+        required: false
+        hint: "Only set this when you materially revise a post that is already live."
+
+      - label: "Author"
+        name: "author"
+        widget: "string"
+        default: "EPAY POS team"
+
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        default: []
+        required: false
+
+      - label: "Related pages"
+        name: "related"
+        widget: "list"
+        default: []
+        required: false
+        hint: "Slugs of pages this post links to, e.g. bar-lounge, pricing. Used for internal linking."
+
+      - label: "Hold as draft"
+        name: "draft"
+        widget: "boolean"
+        default: true
+        hint: "ON means nobody can see it — a production build leaves it out entirely. Turn it OFF to publish. That is the only switch."
+
+      - label: "Post"
+        name: "body"
+        widget: "markdown"
+        hint: "Start with a short intro paragraph. Never use a top-level '#' heading — the page supplies the title. Use ## and ### only. 900 to 1,400 words, at least three links to pages on the site, and finish with a Common questions section."
