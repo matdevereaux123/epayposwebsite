@@ -159,7 +159,6 @@
     },
     {
       "id": "epay-kiosk",
-      "lease_tier": "large",
       "name": "EPAY Kiosk",
       "kicker": "Self-order",
       "summary": "Let customers order and pay themselves, straight into the same ticket queue.",
@@ -187,7 +186,9 @@
       "gallery": [],
       "_note_on_gallery": "Empty on purpose — only the one product shot from epaypos.net exists. Both [slug].astro and product/[id].astro skip gallery entries whose file is not on disk, so the section does not render.",
       "_note_on_copy": "UNVERIFIED with Matt, 2026-09-29. Price and the 'Self-order' line come from content/store.json. The specs and feature bullets describe what a self-order kiosk does generally and were NOT taken from an EPAY spec sheet. Check them before this page is promoted anywhere.",
-      "meta_description": "EPAY Kiosk: a self-order screen that takes the order and the card payment, with every order landing in the same queue as the register."
+      "meta_description": "EPAY Kiosk: a self-order screen that takes the order and the card payment, with every order landing in the same queue as the register.",
+      "lease_monthly": 99,
+      "_note_on_lease": "$99 per unit per month — Matt, 2026-09-29. Overrides the small/large tiers in pricing.json, which do not cover the kiosk. Read through lib/content.ts > leaseMonthly()."
     }
   ],
   "_note_on_prices": "Purchase prices read off the live Wix page on 2026-09-01. kitchen-display is the 349.99 sale price (regular 399.99). Lease rates are in pricing.json > hardware.lease — $19.99 small, $59.99 large, confirmed by Matt.",

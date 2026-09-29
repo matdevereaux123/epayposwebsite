@@ -9,7 +9,7 @@
 import Base from "../../layouts/Base.astro";
 import BatchLine from "../../components/BatchLine.astro";
 import ImageSlot from "../../components/ImageSlot.astro";
-import { products, pricing, site, money, faqs, capabilitiesFor, integrationsFor, headings, fill, titleCase } from "../../lib/content";
+import { products, pricing, site, money, faqs, capabilitiesFor, integrationsFor, headings, fill, titleCase, leaseMonthly } from "../../lib/content";
 
 export function getStaticPaths() {
   return (products as any[]).map((product) => ({
@@ -22,7 +22,7 @@ const { product } = Astro.props as any;
 const hw = (pricing as any).hardware;
 
 const leaseRate =
-  product.lease_tier === "small" ? hw.lease.small_monthly : hw.lease.large_monthly;
+  leaseMonthly(product);
 
 const others = (products as any[]).filter((p) => p.id !== product.id);
 

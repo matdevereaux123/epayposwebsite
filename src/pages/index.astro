@@ -18,6 +18,7 @@ import {
   headings,
   planById,
   enquiry,
+  leaseMonthly,
 } from "../lib/content";
 import terminalData from "../../content/terminal.json";
 
@@ -123,9 +124,7 @@ const terminalPlan = planById(terminalCard.plan_id);
               {product.free_with_lease
                 ? pricing.hardware.callout.free_with_lease
                 : `${pricing.hardware.callout.lease_prefix} ${money(
-                    product.lease_tier === "small"
-                      ? pricing.hardware.lease.small_monthly
-                      : pricing.hardware.lease.large_monthly
+                    leaseMonthly(product)
                   )}${pricing.hardware.callout.lease_suffix}`}
             </p>
             <p class="showcase__free">

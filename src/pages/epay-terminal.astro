@@ -10,13 +10,13 @@ import ImageSlot from "../components/ImageSlot.astro";
 import TerminalDemo from "../components/TerminalDemo.astro";
 import LeadForm from "../components/LeadForm.astro";
 import terminal from "../../content/terminal.json";
-import { site, products, pricing, money, planById, headings, enquiry } from "../lib/content";
+import { site, products, pricing, money, planById, headings, enquiry, leaseMonthly } from "../lib/content";
 
 const t = terminal as any;
 const mini = (products as any[]).find((p) => p.id === t.runs_on.product_id);
 const plan = planById("terminal");
 const hw = (pricing as any).hardware;
-const leaseRate = mini.lease_tier === "small" ? hw.lease.small_monthly : hw.lease.large_monthly;
+const leaseRate = leaseMonthly(mini);
 ---
 
 <Base title={`EPAY Terminal — keypad payments on the Mini | ${site.brand.name}`} description={t.meta_description}>

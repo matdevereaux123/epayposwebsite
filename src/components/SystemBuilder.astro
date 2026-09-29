@@ -10,7 +10,7 @@
 // Money is handled in integer cents in the client script. 19.99 * 3 in
 // floating point is 59.97000000000001, and a merchant must never see that.
 
-import { pricing, products, money, headings } from "../lib/content";
+import { pricing, products, money, headings, leaseMonthly } from "../lib/content";
 
 const hw = (pricing as any).hardware;
 // Only priced items flagged for the builder — it does arithmetic, so an
@@ -64,7 +64,7 @@ const accessories = ((await import("../../content/store.json")).default as any).
                       ? <>Ask us for pricing</>
                       : product.free_with_lease
                         ? <>{money(product.purchase_price)} &middot; free with a system lease</>
-                        : <>{money(product.purchase_price)} &middot; lease {money(product.lease_tier === "small" ? hw.lease.small_monthly : hw.lease.large_monthly)}/mo</>}
+                        : <>{money(product.purchase_price)} &middot; lease {money(leaseMonthly(product))}/mo</>}
                   </span>
                 </span>
                 <span class="sb__qty">
@@ -77,7 +77,7 @@ const accessories = ((await import("../../content/store.json")).default as any).
                     value="0"
                     aria-label={`Quantity of ${product.name}`}
                     data-unit-cents={product.purchase_price ? Math.round(product.purchase_price * 100) : ""}
-                    data-lease-cents={Math.round((product.lease_tier === "small" ? hw.lease.small_monthly : hw.lease.large_monthly) * 100)}
+                    data-lease-cents={Math.round(leaseMonthly(product) * 100)}
                     data-free-lease={product.free_with_lease ? "1" : undefined}
                   />
                   <button type="button" class="sb__step" data-step="1" aria-label={`Add one ${product.name}`}>+</button>

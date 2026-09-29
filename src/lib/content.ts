@@ -112,6 +112,21 @@ export function planById(id: string) {
   return pricing.plans.find((p) => p.id === id);
 }
 
+/**
+ * Monthly lease rate for one unit of a product.
+ *
+ * `lease_monthly` on the product wins when present — some hardware is not on
+ * either standard tier. Otherwise it falls back to the small/large rate in
+ * pricing.json. Four components derived this independently before; they all
+ * call this now, so a rate cannot be right in the builder and wrong on the
+ * product page.
+ */
+export function leaseMonthly(product: any): number {
+  if (typeof product?.lease_monthly === "number") return product.lease_monthly;
+  const lease = (pricingData as any).hardware.lease;
+  return product?.lease_tier === "small" ? lease.small_monthly : lease.large_monthly;
+}
+
 export function productById(id: string) {
   return products.find((p) => p.id === id);
 }

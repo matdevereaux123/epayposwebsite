@@ -119,9 +119,10 @@
       "price": 2199.99,
       "spec": "Self-order",
       "pack": "",
-      "in_builder": true,
+      "in_builder": false,
       "image": "/img/store/kiosk.jpg",
-      "meta_description": "EPAY Kiosk from the EPAY POS shop. Self-order. $2199.99. Order it with your EPAY system or on its own."
+      "meta_description": "EPAY Kiosk from the EPAY POS shop. Self-order. $2199.99. Order it with your EPAY system or on its own.",
+      "_note_on_builder": "Off since 2026-09-29: the kiosk is a product now (products.json > epay-kiosk) and the builder lists it there. Leaving this true put it in the builder twice — once as hardware with a lease rate and once as a purchase-only add-on."
     },
     {
       "id": "mini-holsters",
