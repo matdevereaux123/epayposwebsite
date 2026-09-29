@@ -5,10 +5,10 @@
   "crm": {
     "url": "https://gfnodfqkidtqjoofvwzr.supabase.co",
     "anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdmbm9kZnFraWR0cWpvb2Z2d3pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyMTE2MTgsImV4cCI6MjEwMTc4NzYxOH0.sc0ghmhGt71clexXMQj2Mhj2MFXrgEVmymuGbERePsk",
-    "slug": "",
-    "_note_on_slug": "REQUIRED before this form can submit. In the CRM: Settings > Application links > create a link (label it 'Website sign-up'), then paste its slug here — the last part of the generated URL. Submissions arrive in Applications tagged to that link, so website applications stay countable. Retiring the link switches the form off.",
-    "lead_slug": "",
-    "_note_on_lead_slug": "REQUIRED before ordinary enquiries reach the CRM. In the CRM: Settings > Application links > create a link of kind 'lead' (label it 'Website enquiries'). Whoever creates it is the staff member the leads should belong to. Partner traffic uses the partner's own lead link instead — see content/partners.json."
+    "slug": "website-signup",
+    "_note_on_slug": "Set 2026-09-28. Resolves against application_link_tokens.slug in the CRM — NOT partners.link_slug, which belongs to the /r/<slug> referral pages and a different RPC (public_submit_referral_lead). The token carries the brand, an optional partner to credit and a label that becomes the lead's source line, and counts its own submissions.",
+    "lead_slug": "website",
+    "_note_on_lead_slug": "Set 2026-09-28. Enquiries arrive at the Inbound Lead stage with lead_source \"Lead form — EPAY POS Website\". Partner-tagged traffic uses the partner's own token instead — see content/partners.json."
   },
   "alert": {
     "_note": "Every submitted application also sends an alert to the sales inbox through Netlify Forms, so the team is told by email as well as in the CRM. This keeps working after the CRM link is connected.",
@@ -99,6 +99,14 @@
           "param": "p_drivers_license_state",
           "label": "Driver's licence state",
           "required": true
+        },
+        {
+          "id": "personal_address",
+          "param": "p_personal_address",
+          "label": "Home address",
+          "required": true,
+          "autocomplete": "street-address",
+          "hint": "Your own address, not the business — underwriting checks it against your ID."
         }
       ]
     },
@@ -253,5 +261,6 @@
       "label": "See pricing",
       "href": "/pricing"
     }
-  }
+  },
+  "_note_on_param_count": "public_submit_application takes 28 parameters. Sending 27 fails with PGRST202 (function not found) — PostgREST resolves overloads by exact argument set, so a missing parameter reads as a missing function, not a missing value. If a field is added or removed here, the CRM function signature has to change in the same breath."
 }

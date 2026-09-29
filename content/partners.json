@@ -11,8 +11,8 @@
       "entry_path": "/palm-tree-pay-tech",
       "active": true,
       "application_slug": "",
-      "lead_slug": "",
-      "_note_on_slugs": "REQUIRED before anything routes to Palm Tree. Until these are filled in, a visitor who arrives on the partner link is still tagged, but their application uses the normal EPAY link and their enquiry goes to Netlify as usual — nothing breaks, it simply is not attributed."
+      "lead_slug": "palm-tree-pay-tech",
+      "_note_on_slugs": "lead_slug set 2026-09-28; leads read \"Lead form — Palm Tree Pay Tech — Website\". application_slug is still empty, so a partner-tagged visitor's APPLICATION uses the normal EPAY token — nothing breaks, it simply is not attributed. NOTE: no partner record named Palm Tree Pay Tech exists in the CRM yet, so the token has partner_id = null — leads arrive and are labelled, but nothing credits Palm Tree until that record is created."
     }
   ]
 }
