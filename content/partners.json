@@ -8,11 +8,12 @@
     {
       "id": "palm-tree-pay-tech",
       "name": "Palm Tree Pay Tech",
-      "entry_path": "/palm-tree-pay-tech",
+      "entry_path": "/pt",
       "active": true,
       "application_slug": "",
       "lead_slug": "palm-tree-pay-tech",
-      "_note_on_slugs": "lead_slug set 2026-09-28; leads read \"Lead form — Palm Tree Pay Tech — Website\". application_slug is still empty, so a partner-tagged visitor's APPLICATION uses the normal EPAY token — nothing breaks, it simply is not attributed. NOTE: no partner record named Palm Tree Pay Tech exists in the CRM yet, so the token has partner_id = null — leads arrive and are labelled, but nothing credits Palm Tree until that record is created."
+      "_note_on_slugs": "lead_slug set 2026-09-28; leads read \"Lead form — Palm Tree Pay Tech — Website\". application_slug is still empty, so a partner-tagged visitor's APPLICATION uses the normal EPAY token — nothing breaks, it simply is not attributed. NOTE: no partner record named Palm Tree Pay Tech exists in the CRM yet, so the token has partner_id = null — leads arrive and are labelled, but nothing credits Palm Tree until that record is created.",
+      "_note_on_entry_path": "Shortened to /pt on 2026-09-29 — this is the link to give Palm Tree. The original /palm-tree-pay-tech still redirects the same way (see netlify.toml) so anything already handed out keeps working. The path is only the door; attribution is carried by the ?partner= tag and the lead_slug below."
     }
   ]
 }

@@ -26,11 +26,20 @@
   status = 301
   force = true
 
-# Partner links. Someone arriving from Palm Tree Pay Tech uses
-# epaypos.net/palm-tree-pay-tech; it lands on the ordinary homepage carrying
-# the tag, which the site stores for 30 days and the forms read on submit.
+# Partner links. Someone arriving from Palm Tree Pay Tech uses epaypos.net/pt;
+# it lands on the ordinary homepage carrying the tag, which the site stores for
+# 30 days and the forms read on submit.
 # 302, not 301: the destination is an attribution mechanism, not a permanent
 # home for that URL, and browsers cache a 301 forever.
+[[redirects]]
+  from = "/pt"
+  to = "/?partner=palm-tree-pay-tech"
+  status = 302
+  force = true
+
+# The original, longer path. Kept so any link already handed out still works —
+# it costs one rule and a dead partner link costs a lead. Safe to delete once
+# you are sure /palm-tree-pay-tech was never sent to anyone.
 [[redirects]]
   from = "/palm-tree-pay-tech"
   to = "/?partner=palm-tree-pay-tech"
