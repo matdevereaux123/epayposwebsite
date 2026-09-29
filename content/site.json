@@ -336,6 +336,11 @@
           "group": "Retail stations"
         },
         {
+          "label": "EPAY Kiosk",
+          "href": "/product/epay-kiosk",
+          "group": "Retail stations"
+        },
+        {
           "label": "All hardware",
           "href": "/epay-products-1",
           "group": "Shop"
