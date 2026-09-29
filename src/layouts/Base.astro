@@ -51,6 +51,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? site.brand.domain).h
 // while it is empty nothing is emitted and no request goes out, so the staging
 // deploy never reports into the property.
 const ga4 = ((site as any).analytics?.ga4_id ?? "").trim();
+// Only the live domain reports. One build serves epaypos.net, the Netlify
+// staging URL and every deploy preview, so without this the property fills
+// with our own testing next to real visitors.
+const gaHost = new URL(site.brand.domain).hostname;
+const gaHosts = [gaHost, gaHost.replace(/^www\./, "")];
 
 const buildRef = process.env.COMMIT_REF?.slice(0, 7) ?? "local";
 const buildAt = new Date().toISOString();
@@ -131,17 +136,22 @@ const fontsHref = googleFontsHref();
     <link rel="canonical" href={canonical} />
 
     {ga4 && (
-      <>
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4}`}></script>
-        <script is:inline define:vars={{ ga4 }}>
+      <script is:inline define:vars={{ ga4, gaHosts }}>
+        // The loader is injected rather than written as a tag, so off the live
+        // domain there is no googletagmanager request at all — not a blocked
+        // one, none.
+        if (gaHosts.indexOf(location.hostname) !== -1) {
           window.dataLayer = window.dataLayer || [];
-          function gtag() { window.dataLayer.push(arguments); }
-          gtag("js", new Date());
-          // anonymize_ip is on by default in GA4; declared here so the choice is
-          // visible rather than assumed.
-          gtag("config", ga4, { anonymize_ip: true });
-        </script>
-      </>
+          window.gtag = function () { window.dataLayer.push(arguments); };
+          window.gtag("js", new Date());
+          // anonymize_ip is GA4's default; stated so the choice is visible.
+          window.gtag("config", ga4, { anonymize_ip: true });
+          var g = document.createElement("script");
+          g.async = true;
+          g.src = "https://www.googletagmanager.com/gtag/js?id=" + ga4;
+          document.head.appendChild(g);
+        }
+      </script>
     )}
     {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="icon" href={site.brand.icon_ico} sizes="32x32" />
