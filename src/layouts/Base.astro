@@ -47,6 +47,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? site.brand.domain).h
 // Build stamp. Netlify sets COMMIT_REF and BUILD_ID on every build, so viewing
 // source on the live site says exactly which commit is serving. Without this
 // there is no way to tell a stale deploy from a broken one.
+// Google Analytics 4. The id lives in content/site.json > analytics.ga4_id;
+// while it is empty nothing is emitted and no request goes out, so the staging
+// deploy never reports into the property.
+const ga4 = ((site as any).analytics?.ga4_id ?? "").trim();
+
 const buildRef = process.env.COMMIT_REF?.slice(0, 7) ?? "local";
 const buildAt = new Date().toISOString();
 
@@ -124,6 +129,20 @@ const fontsHref = googleFontsHref();
     <meta name="description" content={description} />
     <meta name="x-build" content={`${buildRef} ${buildAt}`} />
     <link rel="canonical" href={canonical} />
+
+    {ga4 && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4}`}></script>
+        <script is:inline define:vars={{ ga4 }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag() { window.dataLayer.push(arguments); }
+          gtag("js", new Date());
+          // anonymize_ip is on by default in GA4; declared here so the choice is
+          // visible rather than assumed.
+          gtag("config", ga4, { anonymize_ip: true });
+        </script>
+      </>
+    )}
     {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="icon" href={site.brand.icon_ico} sizes="32x32" />
     <link rel="icon" href={site.brand.icon} type="image/png" />

@@ -608,6 +608,12 @@
       "body": "ATM placement and service from Envision ATM, our sister company."
     }
   },
+  "analytics": {
+    "_note": "Google Analytics 4. Paste the Measurement ID from GA4 > Admin > Data streams > Web (format G-XXXXXXXXXX). While it is empty, Base.astro emits no tag at all and no request is made — that is deliberate, so the Netlify staging URL never pollutes the property.",
+    "_note_on_property": "Create the GA4 property with epaypos.net as the site URL, not the netlify.app one, so the history carries over at DNS cutover instead of starting again.",
+    "_note_on_privacy": "content/site.json > legal already discloses analytics use (clause 3.2). No consent banner is wired up; if you add one, the tag must move behind it.",
+    "ga4_id": ""
+  },
   "home_statement": {
     "body": "Send us a recent processing statement. Our team reviews every line, including the back-page fees, and provides a clear breakdown of what you're currently paying.",
     "_note": "Homepage section copy that used to be hardcoded in index.astro."
