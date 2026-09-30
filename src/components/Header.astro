@@ -118,32 +118,38 @@ function grouped(children: { label: string; href: string; group?: string }[]) {
       </button>
     </div>
   </div>
+</header>
 
-  <div class="mnav" id="mobile-nav" hidden>
-    <div class="mnav__inner">
-      {nav.map((item) => (
-        <div class="mnav__group">
-          {"children" in item && item.children ? (
-            <>
-              <p class="mono-label">{item.label}</p>
-              <ul>
-                {item.children.map((c) => (
-                  <li><a href={c.href} target={c.href.startsWith("http") ? "_blank" : undefined} rel={c.href.startsWith("http") ? "noopener" : undefined}>{c.label}</a></li>
-                ))}
-              </ul>
-            </>
-          ) : (
-            <a class="mnav__top" href={item.href}>{item.label}</a>
-          )}
-        </div>
-      ))}
-      <div class="mnav__actions">
-        <a class="btn btn--primary" href={site.cta.primary.href}>{site.cta.primary.label}</a>
-        <a class="btn btn--ghost" href={site.cta.login.href}>{site.cta.login.label}</a>
+<!-- Deliberately OUTSIDE <header>. The header sets backdrop-filter, and any
+     filter/transform makes that element the containing block for a
+     position: fixed descendant. With this panel inside it, `inset: 76px 0 0`
+     resolved against the header's 77px box instead of the viewport, so the
+     menu opened 40px tall with all 66 links clipped out of sight - while the
+     open handler still locked body scroll, which read as the page freezing. -->
+<nav class="mnav" id="mobile-nav" aria-label="Menu" hidden>
+  <div class="mnav__inner">
+    {nav.map((item) => (
+      <div class="mnav__group">
+        {"children" in item && item.children ? (
+          <>
+            <p class="mono-label">{item.label}</p>
+            <ul>
+              {item.children.map((c) => (
+                <li><a href={c.href} target={c.href.startsWith("http") ? "_blank" : undefined} rel={c.href.startsWith("http") ? "noopener" : undefined}>{c.label}</a></li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <a class="mnav__top" href={item.href}>{item.label}</a>
+        )}
       </div>
+    ))}
+    <div class="mnav__actions">
+      <a class="btn btn--primary" href={site.cta.primary.href}>{site.cta.primary.label}</a>
+      <a class="btn btn--ghost" href={site.cta.login.href}>{site.cta.login.label}</a>
     </div>
   </div>
-</header>
+</nav>
 
 <script>
   const header = document.querySelector("[data-header]");
@@ -520,8 +526,14 @@ function grouped(children: { label: string; href: string; group?: string }[]) {
   .mnav {
     position: fixed;
     inset: 76px 0 0;
+    /* One below the header's 100. The panel lives outside <header> (see the
+       note in the markup), so it no longer inherits that stacking level and
+       needs its own - without this it opens at the right size but paints
+       under the page content. */
+    z-index: 99;
     background: var(--canvas);
     overflow-y: auto;
+    overscroll-behavior: contain;
     padding: var(--gutter);
   }
 
