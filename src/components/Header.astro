@@ -128,22 +128,30 @@ function grouped(children: { label: string; href: string; group?: string }[]) {
      open handler still locked body scroll, which read as the page freezing. -->
 <nav class="mnav" id="mobile-nav" aria-label="Menu" hidden>
   <div class="mnav__inner">
-    {nav.map((item) => (
-      <div class="mnav__group">
-        {"children" in item && item.children ? (
-          <>
-            <p class="mono-label">{item.label}</p>
-            <ul>
-              {item.children.map((c) => (
-                <li><a href={c.href} target={c.href.startsWith("http") ? "_blank" : undefined} rel={c.href.startsWith("http") ? "noopener" : undefined}>{c.label}</a></li>
-              ))}
-            </ul>
-          </>
-        ) : (
+    {nav.map((item) =>
+      "children" in item && item.children ? (
+        /* <details> rather than a button + JS: it collapses natively, is
+           keyboard operable for free, and still opens if the script never
+           runs. The section holding the current page starts open. */
+        <details class="mnav__group mnav__group--drop" open={item.label === currentLabel}>
+          <summary class="mnav__summary">
+            <span class="mono-label">{item.label}</span>
+            <svg class="mnav__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </summary>
+          <ul>
+            {item.children.map((c) => (
+              <li><a href={c.href} target={c.href.startsWith("http") ? "_blank" : undefined} rel={c.href.startsWith("http") ? "noopener" : undefined}>{c.label}</a></li>
+            ))}
+          </ul>
+        </details>
+      ) : (
+        <div class="mnav__group">
           <a class="mnav__top" href={item.href}>{item.label}</a>
-        )}
-      </div>
-    ))}
+        </div>
+      )
+    )}
     <div class="mnav__actions">
       <a class="btn btn--primary" href={site.cta.primary.href}>{site.cta.primary.label}</a>
       <a class="btn btn--ghost" href={site.cta.login.href}>{site.cta.login.label}</a>
@@ -540,6 +548,50 @@ function grouped(children: { label: string; href: string; group?: string }[]) {
   .mnav__group {
     padding-block: 1rem;
     border-bottom: 1px solid var(--rule);
+  }
+
+  /* A collapsed section is a row you tap, so the row - not just the text -
+     has to be a 44px target. The group padding shrinks to match so the
+     closed menu stays compact. */
+  .mnav__group--drop {
+    padding-block: 0.25rem;
+  }
+
+  .mnav__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 44px;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .mnav__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mnav__summary .mono-label {
+    margin: 0;
+  }
+
+  .mnav__chev {
+    flex: none;
+    color: var(--text-muted);
+  }
+
+  .mnav__group--drop[open] .mnav__chev {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .mnav__chev {
+      transition: transform 160ms ease;
+    }
+  }
+
+  .mnav__group--drop > ul {
+    padding-block: 0.25rem 0.75rem;
   }
 
   .mnav__group a {
