@@ -1,8 +1,22 @@
 # EPAY POS — epaypos.net
+#
+# One wildcard block on purpose. A named User-agent block REPLACES this one for
+# that crawler rather than adding to it, so spelling out GPTBot, ClaudeBot,
+# PerplexityBot etc. would quietly hand them /admin and /thank-you unless every
+# Disallow below were repeated in each block. The wildcard already allows them,
+# which is what we want: AI answer engines are welcome to read and cite the site.
+# There is deliberately no Google-Extended block — that would opt the site out
+# of Google's AI surfaces.
 User-agent: *
 Allow: /
 Disallow: /thank-you
 Disallow: /blog/drafts
 Disallow: /admin
 
-Sitemap: https://www.epaypos.net/sitemap-index.xml
+# Apex, not www: www.epaypos.net 301s here, and a sitemap should be served from
+# the same host it lists.
+Sitemap: https://epaypos.net/sitemap-index.xml
+
+# For AI assistants: https://epaypos.net/llms.txt is a plain-text brief of what
+# EPAY POS does, what it costs and the answers to the questions merchants ask —
+# generated from the same content the pages use, so it is never out of date.

@@ -3,7 +3,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import LeadMagnets from "../components/LeadMagnets.astro";
 import EnquiryDialog from "../components/EnquiryDialog.astro";
-import { site, partnerConfig } from "../lib/content";
+import { site, partnerConfig, reviewSchema, postalAddress } from "../lib/content";
 import applicationData from "../../content/application.json";
 
 const partnerCfg = partnerConfig();
@@ -55,11 +55,17 @@ const ga4 = ((site as any).analytics?.ga4_id ?? "").trim();
 // staging URL and every deploy preview, so without this the property fills
 // with our own testing next to real visitors.
 const gaHost = new URL(site.brand.domain).hostname;
-const gaHosts = [gaHost, gaHost.replace(/^www\./, "")];
+// brand.domain is the apex now, so stripping "www." off it yields the same
+// string twice and www visitors would stop reporting. Cover both forms
+// explicitly instead — www.epaypos.net 301s to the apex, but a redirect still
+// renders on whichever host the browser lands on first.
+const apexHost = gaHost.replace(/^www\./, "");
+const gaHosts = [...new Set([gaHost, apexHost, `www.${apexHost}`])];
 
 const buildRef = process.env.COMMIT_REF?.slice(0, 7) ?? "local";
 const buildAt = new Date().toISOString();
 
+const lb = ((site as any).local_business ?? {}) as any;
 const localBusiness = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
@@ -67,17 +73,33 @@ const localBusiness = {
   url: site.brand.domain,
   email: site.contact.email,
   telephone: site.contact.phone,
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "185 E Big Beaver Rd",
-    addressLocality: "Troy",
-    addressRegion: "MI",
-    postalCode: "48083",
-    addressCountry: "US",
-  },
+  address: postalAddress(),
   logo: new URL(site.brand.logo, site.brand.domain).href,
   image: new URL(site.brand.share_image, site.brand.domain).href,
   sameAs: Object.values(site.social),
+  // The local-pack fields, from site.json > local_business. Each one is
+  // spread in only when it has a value, so a field Matt has not supplied yet
+  // leaves no empty property behind — a blank geo or a guessed set of opening
+  // hours is worse for local ranking than their absence.
+  ...(lb.description ? { description: lb.description } : {}),
+  ...(lb.price_range ? { priceRange: lb.price_range } : {}),
+  ...(lb.area_served?.length ? { areaServed: lb.area_served } : {}),
+  ...(lb.geo?.latitude && lb.geo?.longitude
+    ? { geo: { "@type": "GeoCoordinates", latitude: lb.geo.latitude, longitude: lb.geo.longitude } }
+    : {}),
+  // Review / aggregateRating, from real entries in testimonials.json. Empty
+  // file means these keys are absent entirely.
+  ...reviewSchema(),
+  ...(lb.hours?.spec?.length
+    ? {
+        openingHoursSpecification: lb.hours.spec.map((h: any) => ({
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: h.days,
+          opens: h.opens,
+          closes: h.closes,
+        })),
+      }
+    : {}),
 };
 const shareImage = new URL(site.brand.share_image, Astro.site ?? site.brand.domain).href;
 

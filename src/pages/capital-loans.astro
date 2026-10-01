@@ -9,17 +9,21 @@
 // person.
 
 import Base from "../layouts/Base.astro";
+import FaqBlock from "../components/FaqBlock.astro";
 import LeadForm from "../components/LeadForm.astro";
 import ImageSlot from "../components/ImageSlot.astro";
 import capital from "../../content/capital.json";
-import { site, headings, enquiry } from "../lib/content";
+import { site, headings, enquiry, faqSchema } from "../lib/content";
 
 const c = capital as any;
+const pageFaqs = c.faqs;
+const pageFaqSchema = faqSchema(pageFaqs);
 ---
 
 <Base
   title={`Capital Loans for Merchants | ${site.brand.name}`}
   description={c.lede}
+  schema={pageFaqSchema ?? undefined}
 >
   <section class="band band--deck hero">
     <div class="wrap hero__grid">
@@ -70,6 +74,8 @@ const c = capital as any;
         reason="capital" source="Capital loans page" />
     </div>
   </section>
+
+  <FaqBlock faqs={pageFaqs} band="surface" />
 </Base>
 
 <style>

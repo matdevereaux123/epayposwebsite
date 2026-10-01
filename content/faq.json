@@ -32,6 +32,34 @@
     {
       "q": "What kind of support do you offer?",
       "a": "24/7 support. Sales is at 947-228-7226 ext. 3 and customer service is ext. 5. We're based in Troy, MI."
+    },
+    {
+      "q": "How do I know if I'm overpaying my credit card processor?",
+      "a": "Work out your effective rate: the total you paid in fees divided by the total you processed that month. A headline rate hides per-item fees, monthly fees and back-page line items; the effective rate does not. EPAY POS will do this read for free from a recent statement."
+    },
+    {
+      "q": "What is the difference between flat rate and interchange-plus pricing?",
+      "a": "Flat rate is one published rate on every card — 2.3% + 5¢ at EPAY POS — so the cost is predictable per sale. Interchange-plus passes through the card networks' own rate and adds a fixed markup, so the cost moves with your card mix. Which works out cheaper depends on your mix and volume, which is what a statement review tells you."
+    },
+    {
+      "q": "Can I use my existing POS hardware with EPAY?",
+      "a": "Tell us what you are running and we will confirm before you switch. For merchants replacing a system, hardware is placed at no upfront cost if they qualify on volume, and the menu or catalog is built before install day."
+    },
+    {
+      "q": "How long does it take to switch POS systems?",
+      "a": "The menu or catalog is built before the hardware arrives, so the system runs from the first shift. Install and staff training are included, and the switch is scheduled so there is no downtime."
+    },
+    {
+      "q": "What POS systems does EPAY POS replace?",
+      "a": "Merchants commonly switch from Toast, Clover, Square and similar systems. Restaurants, bars and retail stores switching an existing POS may also qualify for the $3,000 switch bonus."
+    },
+    {
+      "q": "Does EPAY POS work for retail as well as restaurants?",
+      "a": "Yes. The Retail plan covers convenience and gas, liquor stores, smoke shops, grocery, pharmacy, boutiques and pet supply, with high-SKU inventory, scale and scanner support and age verification. Restaurants run on EPAY Table."
+    },
+    {
+      "q": "Is there a long-term contract?",
+      "a": "No long-term contract lock-in — that is included with every plan, alongside 24/7 support, free installation and staff training, PCI compliance assistance and next-day funding."
     }
   ]
 }

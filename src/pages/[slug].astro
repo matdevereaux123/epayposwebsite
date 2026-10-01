@@ -53,10 +53,17 @@ const isIndustry = props.kind === "industry";
 const industry = isIndustry ? props.industry : null;
 const cats = !isIndustry ? props.cats : [];
 
-const title = isIndustry ? industry.meta_title : `${cats[0].name} | ${site.brand.name}`;
+// Feature pages prefer the lead category's own meta_title/meta_description
+// from features.json. The fallback is the category `name`, which is an
+// internal nav label — "Front of House" is what we call the section, not
+// anything a merchant types into a search box.
+const title = isIndustry
+  ? industry.meta_title
+  : cats[0].meta_title ?? `${cats[0].name} | ${site.brand.name}`;
 const description = isIndustry
   ? industry.meta_description
-  : `${cats[0].name} tools built into every EPAY POS system. ${cats[0].items[0].body}`;
+  : cats[0].meta_description ??
+    `${cats[0].name} tools built into every EPAY POS system. ${cats[0].items[0].body}`;
 
 const plan = isIndustry ? planById(industry.recommended_plan) : null;
 const relatedFeatures = isIndustry
@@ -72,9 +79,25 @@ const siblings = isIndustry
   ? industries.filter((i: any) => i.category === industry.category && i.slug !== industry.slug)
   : [];
 
-// A short FAQ subset. The full list with its FAQPage schema lives on /pricing;
-// repeating all of it here would be duplicate content across 11 pages.
-const shortFaqs = faqs.slice(0, 4);
+// FAQs. An industry with its own `faqs` in industries.json shows those and
+// gets FAQPage schema for them; they are written per-vertical and so are
+// unique to the page. Anything without its own set falls back to the shared
+// subset and gets NO schema — that was the original reasoning and it still
+// holds: the same four Q&As marked up on eleven pages is duplicate structured
+// data, which Google discards rather than rewards.
+const ownFaqs = (isIndustry ? industry.faqs : cats[0]?.faqs) ?? null;
+const shortFaqs = ownFaqs ?? faqs.slice(0, 4);
+const faqSchema = ownFaqs?.length
+  ? {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: ownFaqs.map((f: any) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    }
+  : null;
 
 // Feature pages link to the other feature pages; industry pages to their
 // siblings. Same section, two sources.
@@ -123,7 +146,7 @@ const setupHeading = isIndustry
   : "";
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} schema={faqSchema ?? undefined}>
   {isIndustry && industry.coming_soon && (
     <p class="soon">
       <strong>Coming soon.</strong> We're building this out. Everything below is the plan —
@@ -361,7 +384,7 @@ const setupHeading = isIndustry
         ))}
       </div>
       <div class="actions">
-        <a class="btn btn--ghost" href="/pricing">All pricing and FAQs</a>
+        <a class="btn btn--ghost" href="/pricing">{ownFaqs ? "Pricing and more FAQs" : "All pricing and FAQs"}</a>
       </div>
     </div>
   </section>

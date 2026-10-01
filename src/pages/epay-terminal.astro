@@ -5,21 +5,26 @@
 // a lease rate; those belong to the Mini, and the page links there for them.
 
 import Base from "../layouts/Base.astro";
+import FaqBlock from "../components/FaqBlock.astro";
 import BatchLine from "../components/BatchLine.astro";
 import ImageSlot from "../components/ImageSlot.astro";
 import TerminalDemo from "../components/TerminalDemo.astro";
 import LeadForm from "../components/LeadForm.astro";
 import terminal from "../../content/terminal.json";
-import { site, products, pricing, money, planById, headings, enquiry, leaseMonthly } from "../lib/content";
+import { site, products, pricing, money, planById, headings, enquiry, leaseMonthly, faqSchema } from "../lib/content";
 
 const t = terminal as any;
 const mini = (products as any[]).find((p) => p.id === t.runs_on.product_id);
 const plan = planById("terminal");
 const hw = (pricing as any).hardware;
 const leaseRate = leaseMonthly(mini);
+const pageFaqs = t.faqs;
+const pageFaqSchema = faqSchema(pageFaqs);
 ---
 
-<Base title={`EPAY Terminal — keypad payments on the Mini | ${site.brand.name}`} description={t.meta_description}>
+<Base title={`EPAY Terminal — keypad payments on the Mini | ${site.brand.name}`} description={t.meta_description}
+  schema={pageFaqSchema ?? undefined}
+>
   <section class="band band--deck hero">
     <div class="wrap hero__grid">
       <div class="rise">
@@ -161,6 +166,8 @@ const leaseRate = leaseMonthly(mini);
         reason="equipment" source="EPAY Terminal page" />
     </div>
   </section>
+
+  <FaqBlock faqs={pageFaqs} band="surface" />
 </Base>
 
 <style>

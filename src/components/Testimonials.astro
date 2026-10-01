@@ -1,0 +1,94 @@
+---
+// Social proof band. Renders NOTHING until content/testimonials.json holds at
+// least `min` real entries — the file ships empty on purpose, and a half-filled
+// testimonial band reads worse than no band at all.
+//
+// Nothing here invents a quote, a name or a rating: every field comes from the
+// JSON. Stars only appear on an entry whose `rating` the merchant actually
+// gave. See the _instructions in that file before adding entries.
+import { testimonials } from "../lib/content";
+
+interface Props {
+  /** Entries required before the band appears. */
+  min?: number;
+  heading?: string;
+  eyebrow?: string;
+}
+const { min = 3, heading = "What Owners Say", eyebrow = "Social proof" } = Astro.props;
+
+const list = (testimonials as any[]) ?? [];
+const show = list.length >= min;
+---
+
+{show && (
+  <section class="band band--surface tm">
+    <div class="wrap">
+      <p class="mono-label">{eyebrow}</p>
+      <h2>{heading}</h2>
+      <div class="tm__grid">
+        {list.map((t: any) => (
+          <figure class="tm__card">
+            {typeof t.rating === "number" && (
+              <p class="tm__rating" aria-label={`${t.rating} out of 5`}>
+                <span aria-hidden="true">{"★".repeat(Math.round(t.rating))}{"☆".repeat(5 - Math.round(t.rating))}</span>
+              </p>
+            )}
+            <blockquote class="tm__quote">{t.quote}</blockquote>
+            <figcaption class="tm__who">
+              <span class="tm__name">{t.name}</span>
+              {(t.business || t.location) && (
+                <span class="tm__biz">{[t.business, t.location].filter(Boolean).join(" · ")}</span>
+              )}
+            </figcaption>
+            {t.metric && <p class="tm__metric">{t.metric}</p>}
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .tm__grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    margin-top: 2rem;
+  }
+  .tm__card {
+    margin: 0;
+    padding: 1.5rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .tm__rating {
+    margin: 0;
+    color: var(--epay);
+    letter-spacing: 0.1em;
+    font-size: 0.95rem;
+  }
+  .tm__quote {
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    max-width: 48ch;
+  }
+  .tm__who {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin-top: auto;
+  }
+  .tm__name { font-weight: 600; }
+  .tm__biz { color: var(--text-muted); font-size: 0.9rem; }
+  .tm__metric {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--epay);
+    font-weight: 600;
+  }
+</style>

@@ -24,8 +24,120 @@ export const products = productsData.products;
 export const featureCategories = featuresData.categories;
 export const industries = industriesData.industries;
 export const faqs = faqData.faqs;
+
+/**
+ * FAQPage JSON-LD from a list of {q, a}. Returns null for an empty list, so a
+ * page without its own FAQs emits no schema at all.
+ *
+ * Only ever pass a list that is UNIQUE to the page. The shared subset from
+ * faq.json is shown on several pages for the reader's benefit; marking the
+ * same Q&As up on all of them is duplicate structured data, which Google
+ * discards rather than rewards.
+ */
+/** The office address as schema.org PostalAddress, from content/site.json.
+ *  Both this file and Base.astro emit LocalBusiness markup; before this they
+ *  each carried their own copy of the street, so changing the address meant
+ *  editing code in two places and the two could silently disagree. */
+export function postalAddress() {
+  const a = (siteData as any).contact.postal;
+  return {
+    "@type": "PostalAddress",
+    streetAddress: a.street,
+    addressLocality: a.locality,
+    addressRegion: a.region,
+    postalCode: a.postal_code,
+    addressCountry: a.country,
+  };
+}
+
+export function faqSchema(list: Array<{ q: string; a: string }> | null | undefined) {
+  if (!list?.length) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: list.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+}
+
+/**
+ * Service JSON-LD for the things EPAY does rather than sells as hardware —
+ * the statement review, the processing programs, the menu buildout. Answer
+ * engines asked "who will read my merchant statement" are matching a service,
+ * not a product.
+ */
+export function serviceSchema(opts: {
+  name: string;
+  description: string;
+  url: string;
+  areaServed?: string[];
+  price?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: opts.name,
+    description: opts.description,
+    url: opts.url,
+    provider: {
+      "@type": "LocalBusiness",
+      name: siteData.brand.name,
+      telephone: siteData.contact.phone,
+      address: postalAddress(),
+    },
+    ...(opts.areaServed?.length ? { areaServed: opts.areaServed } : {}),
+    ...(opts.price
+      ? { offers: { "@type": "Offer", price: opts.price, priceCurrency: "USD" } }
+      : {}),
+  };
+}
 export const testimonials = testimonialsData.testimonials;
 export const stats = testimonialsData.stats;
+
+/**
+ * Review / aggregateRating nodes for the LocalBusiness schema, built from real
+ * entries in testimonials.json. Returns {} while that file is empty, so the
+ * schema simply does not carry the keys rather than carrying hollow ones.
+ *
+ * aggregateRating is computed ONLY from entries that actually have a `rating`.
+ * A quote with no rating still becomes a Review node; it just does not invent
+ * five stars to sit under it.
+ */
+export function reviewSchema() {
+  const list = (testimonials as any[]) ?? [];
+  if (!list.length) return {};
+
+  const review = list.map((t) => ({
+    "@type": "Review",
+    reviewBody: t.quote,
+    author: { "@type": "Person", name: t.name },
+    ...(t.business || t.location
+      ? { itemReviewed: { "@type": "LocalBusiness", name: [t.business, t.location].filter(Boolean).join(", ") } }
+      : {}),
+    ...(t.date ? { datePublished: t.date } : {}),
+    ...(typeof t.rating === "number"
+      ? { reviewRating: { "@type": "Rating", ratingValue: t.rating, bestRating: 5, worstRating: 1 } }
+      : {}),
+  }));
+
+  const rated = list.filter((t) => typeof t.rating === "number");
+  const aggregate = rated.length
+    ? {
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: Number((rated.reduce((sum, t) => sum + t.rating, 0) / rated.length).toFixed(2)),
+          reviewCount: rated.length,
+          bestRating: 5,
+          worstRating: 1,
+        },
+      }
+    : {};
+
+  return { review, ...aggregate };
+}
 export const capabilities = capabilitiesData.capabilities;
 export const integrations = integrationsData.integrations;
 export const store = storeData;

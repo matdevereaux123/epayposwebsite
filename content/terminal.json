@@ -3,6 +3,24 @@
   "eyebrow": "EPAY Software",
   "heading": "EPAY Terminal",
   "lede": "A plain card terminal that runs on the EPAY Mini. Key in the price, take the card, hand over the receipt. No catalog to build, no inventory to keep, and a calculator built in.",
+  "faqs": [
+    {
+      "q": "What is a smart card terminal?",
+      "a": "A card terminal takes payments without a product catalog behind it: you key in the amount, take the card and hand over the receipt. EPAY Terminal runs this way on the EPAY Mini, with a built-in calculator, tips, sales tax and dual pricing on screen."
+    },
+    {
+      "q": "Do I need a full POS or just a card terminal?",
+      "a": "A terminal suits service businesses billing by job, a second register at a busy counter, and market stalls, popups and events — anyone who does not need a catalog. A full POS is the answer where you need coursing and split checks, high-SKU inventory, or printed kitchen tickets."
+    },
+    {
+      "q": "Can I start on a terminal and move to a full POS later?",
+      "a": "Yes. EPAY Terminal is a mode on the same handheld that runs the full POS, so you can turn the full register on later without changing hardware."
+    },
+    {
+      "q": "How much does a credit card terminal cost per month?",
+      "a": "The Terminal plan is $17.99 a month. Processing is a flat 2.3% + 5¢ or 0% under the Consumer Choice program, and money lands the next business day."
+    }
+  ],
   "hero_image": "/img/pages/terminal-hero.jpg",
   "card": {
     "_note": "The EPAY Terminal card in the homepage hardware row. Terminal is software, so this card shows the monthly plan price and links to the Terminal page — never a hardware price, lease or placement line.",

@@ -14,7 +14,8 @@ import Base from "../../layouts/Base.astro";
 import ImageSlot from "../../components/ImageSlot.astro";
 import LeadForm from "../../components/LeadForm.astro";
 import offersData from "../../../content/offers.json";
-import { site, products, pricing, money, headings, enquiry } from "../../lib/content";
+import FaqBlock from "../../components/FaqBlock.astro";
+import { site, products, pricing, money, headings, enquiry, faqSchema, serviceSchema } from "../../lib/content";
 
 export function getStaticPaths() {
   return (offersData as any).offers.map((offer: any) => ({
@@ -25,11 +26,28 @@ export function getStaticPaths() {
 
 const { offer } = Astro.props as any;
 const hw = (pricing as any).hardware;
+
+// Offer pages describe things EPAY DOES — reading a statement, running a
+// pricing program, building a menu — so they carry Service alongside the
+// FAQPage. An assistant asked "who will analyse my processing statement"
+// is matching a service, not a product.
+const canonical = new URL(`/offers/${offer.slug}`, site.brand.domain).href;
+const lb = (site as any).local_business ?? {};
+const schema = [
+  serviceSchema({
+    name: offer.eyebrow,
+    description: offer.meta_description ?? offer.lede,
+    url: canonical,
+    areaServed: lb.area_served,
+  }),
+  faqSchema(offer.faqs),
+].filter(Boolean);
 ---
 
 <Base
   title={`${offer.eyebrow} | ${site.brand.name}`}
   description={offer.meta_description ?? offer.lede}
+  schema={schema}
 >
   <p class="offer__badge">{offer.badge}</p>
 
@@ -160,6 +178,8 @@ const hw = (pricing as any).hardware;
       />
     </div>
   </section>
+
+  <FaqBlock faqs={offer.faqs} band="surface" />
 </Base>
 
 <style>

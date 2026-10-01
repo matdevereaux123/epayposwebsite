@@ -3,6 +3,20 @@
   "eyebrow": "EPAY Software",
   "heading": "EPAY Payment Portal",
   "lede": "Take payment when the customer isn't standing in front of you. Send a link, get paid, and have it land in the same reporting as everything else.",
+  "faqs": [
+    {
+      "q": "How do I take a card payment without the customer present?",
+      "a": "Send a payment link from the EPAY Payment Portal. The customer pays from wherever they are, and it lands in the same reporting as everything taken on the register."
+    },
+    {
+      "q": "Can I send invoices and get paid online?",
+      "a": "Yes. Online invoicing sends a payment link rather than waiting on a cheque, and it accepts EMV chip, tap, swipe, mobile wallets and gift cards, the same as the register."
+    },
+    {
+      "q": "When does money from the portal reach my bank?",
+      "a": "Batches settle to your bank account the next business day, the same as in-store payments."
+    }
+  ],
   "hero_image": "/img/pages/payment-portal-hero.jpg",
   "_needs_from_matt": [
     "What can a merchant do in the portal that they can't do at the register?",

@@ -1,8 +1,6 @@
 {
-  "_instructions": "PLACEHOLDER — these are empty on purpose. Do not invent testimonials. Fill in real merchant quotes with permission, then this section renders. Until it has entries, the site should omit the social proof section entirely rather than show fake reviews.",
-
+  "_instructions": "PLACEHOLDER — these are empty on purpose. Do not invent testimonials. Fill in real merchant quotes with permission, then this section renders. Until it has entries, the site omits the social proof section entirely rather than show fake reviews. WIRING (added 2026-09-30): the homepage section and the Review schema are already built and switch on by themselves — add entries here and they appear, no code change. The homepage band needs 3+ entries before it renders; Review schema emits from the first entry. `rating` is OPTIONAL and must be a real number the merchant actually gave (e.g. the stars from a Google review they left). aggregateRating is computed only from entries that have one, so leaving it out is fine and is better than guessing. NOTE: Google does not show rich-result stars for self-serving reviews — a business publishing reviews about itself — so the value here is on-page conversion and AI answer engines quoting them, not star ratings in search.",
   "testimonials": [],
-
   "_shape_example": {
     "quote": "Real merchant quote goes here.",
     "name": "Owner name",
@@ -10,9 +8,11 @@
     "location": "City, ST",
     "industry": "full-service-restaurant",
     "photo": "/img/testimonials/filename.jpg",
-    "metric": "Optional: e.g. saved $380/mo"
+    "metric": "Optional: e.g. saved $380/mo",
+    "rating": "Optional: a real 1-5 number the merchant gave. Omit if they did not give one.",
+    "date": "Optional: YYYY-MM-DD, when they said it.",
+    "permission": "Required before publishing: how consent was given, e.g. 'email 2026-09-30'."
   },
-
   "stats": {
     "_note": "Only use figures you can verify. The merchant count is already public on the current site.",
     "merchants": 10000,

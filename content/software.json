@@ -3,6 +3,20 @@
   "eyebrow": "EPAY Software",
   "heading": "Software EPAY Builds on Top of the POS",
   "lede": "The App Store turns the register into a platform. These are the tools we build and support ourselves, and they run off the same catalog, customers and reporting as everything else.",
+  "faqs": [
+    {
+      "q": "What software runs on the EPAY POS?",
+      "a": "The tools EPAY builds and supports itself run off the same catalog, customers and reporting as the register — including EPAY Terminal for keypad payments and Loyalty for points, rewards and discounts."
+    },
+    {
+      "q": "Do the apps cost extra?",
+      "a": "They run on the same system and the same data rather than being separate products with separate logins. Pricing for your setup is confirmed against your statement before you commit."
+    },
+    {
+      "q": "Do apps share data with the register?",
+      "a": "Yes, that is the point of building them on the POS — one catalog, one customer list and one set of reporting, rather than a second system to reconcile."
+    }
+  ],
   "hero_image": "/img/pages/applications-hero.jpg",
   "apps": [
     {

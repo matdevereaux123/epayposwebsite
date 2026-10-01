@@ -1,5 +1,5 @@
 {
-  "_instructions": "One entry per industry page. All of these render from a single template at src/pages/[slug].astro. To add an industry, copy an entry and change the values — do not create a new page file. Slugs must match the live site exactly.",
+  "_instructions": "One entry per industry page. All of these render from a single template at src/pages/[slug].astro. To add an industry, copy an entry and change the values — do not create a new page file. Slugs must match the live site exactly. faqs: three questions per industry, rendered on that page and emitted as FAQPage schema. They must stay UNIQUE per page — the same Q&A repeated across industries is duplicate content and Google ignores duplicated FAQPage markup. Every answer must be supported by something already on that page (a pain point, a system, the recommended plan) or by a figure in pricing.json. If a price changes in pricing.json, grep here for the old figure: these answers quote prices in prose and will not update themselves.",
   "industries": [
     {
       "slug": "full-service-restaurant",
@@ -9,6 +9,20 @@
       "meta_description": "A restaurant POS built for table service — floor management, course firing, split checks, and 2.3% flat processing. Free placement available.",
       "headline": "Run The Floor Without Running In Circles",
       "subhead": "Seating, courses, and checks all in one system your employees can learn in one shift.",
+      "faqs": [
+        {
+          "q": "How much does a restaurant POS system cost?",
+          "a": "EPAY Table, the plan built for full service restaurants, is $69.99 a month. Processing is either a flat 2.3% + 5¢ per transaction or 0% under the Consumer Choice program, where card-paying customers cover the processing cost. Hardware is placed free for qualifying merchants."
+        },
+        {
+          "q": "Can servers take orders and payment at the table?",
+          "a": "Yes. Handheld terminals work with the main system, so staff take the order, process payment and print the receipt tableside. Orders fire from the table straight to the kitchen instead of a server walking back to the terminal between every table."
+        },
+        {
+          "q": "How does the system handle split checks?",
+          "a": "You can split by seat, by item or by percentage at any point in the ticket, without restarting it. Course firing is separate and holds items until the table is ready for them."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Servers walking back to the terminal between every table",
@@ -74,6 +88,20 @@
       "meta_description": "Fast bar POS with tab management, pre-auth, quick pours, and tip pooling. Flat 2.3% processing or 0% cash discount.",
       "headline": "Built for the Speed of a Friday Night Rush",
       "subhead": "Open tabs, pre-auth cards, ring a round in two taps, and close out without a line at the register.",
+      "faqs": [
+        {
+          "q": "How does a bar POS keep tabs from walking out?",
+          "a": "A card pre-auth holds the tab open safely until it is settled, so an unpaid tab at close is not simply lost. Tabs run on the same system as the floor, so a tab can move from the rail to a table."
+        },
+        {
+          "q": "Can bartenders ring the top sellers without hunting through menus?",
+          "a": "Yes. Custom quick-key layouts put your top 20 pours on one screen, so the common order is one tap rather than three levels of menu navigation."
+        },
+        {
+          "q": "How are tips split across a shift?",
+          "a": "Tip pooling rules calculate automatically at close, so the split is done by the system rather than argued over at the end of the shift. The plan for bars is EPAY Table at $69.99 a month."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Tabs walking out at close",
@@ -138,6 +166,20 @@
       "meta_description": "Pizza POS with half-and-half modifiers, delivery dispatch, and DoorDash, Uber Eats, and Grubhub built in.",
       "headline": "Every Topping, Every Half, Every Delivery — Handled",
       "subhead": "Modifier logic that understands pizza, plus delivery apps that land in the same ticket queue as your phone orders.",
+      "faqs": [
+        {
+          "q": "Can a pizza POS price half-and-half and specialty toppings correctly?",
+          "a": "Yes. Fractional topping pricing is built into the modifier engine, so a half-and-half or a specialty pie prices correctly at the register instead of being keyed by hand."
+        },
+        {
+          "q": "Do DoorDash, Uber Eats and Grubhub orders come into the POS?",
+          "a": "They route directly into the POS and land in the same ticket queue as phone and counter orders, so there is no tablet from every delivery app cluttering the counter."
+        },
+        {
+          "q": "How does the system handle delivery drivers?",
+          "a": "Delivery dispatch groups tickets by route with driver assignment, so a driver leaves with the right orders for the right run."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Half-and-half and specialty pricing entered wrong",
@@ -203,6 +245,20 @@
       "meta_description": "Counter-service POS for cafes and bakeries — fast modifiers, mobile ordering, and loyalty. Plans from $39.99/mo.",
       "headline": "Keep the Morning Line Moving",
       "subhead": "Drink modifiers, mobile orders, and a customer display that handles the tip prompt for you.",
+      "faqs": [
+        {
+          "q": "How much does a cafe POS system cost?",
+          "a": "EPAY Table Mobile, the plan suited to counter service and cafes, is $39.99 a month. Processing is a flat 2.3% + 5¢ or 0% with Consumer Choice, and installation and staff training are included."
+        },
+        {
+          "q": "Can the register handle complicated drink orders quickly?",
+          "a": "Nested modifiers ring a custom drink in three taps, so a detailed order does not hold up the line behind it."
+        },
+        {
+          "q": "Can regulars order ahead?",
+          "a": "Yes. Online ordering lets them order ahead and skip the line. Sales-by-daypart reporting is separate and shows what to bake and when, instead of guessing at day-old inventory."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Complicated drink orders slowing the register",
@@ -267,6 +323,20 @@
       "meta_description": "POS for hotel dining — room charge posting, multiple outlets, and consolidated reporting across the property.",
       "headline": "One System Across Every Outlet on the Property",
       "subhead": "Restaurant, bar, room service, and poolside all report up to the same place, with room charge posting built in.",
+      "faqs": [
+        {
+          "q": "Can a hotel restaurant POS post charges to a guest room?",
+          "a": "Yes. Charges post to the folio directly from the ticket, so room charges are not reconciled by hand at night audit."
+        },
+        {
+          "q": "How does reporting work across several outlets?",
+          "a": "Consolidated property reporting covers the whole property with a per-outlet breakdown, so each outlet is not reporting differently."
+        },
+        {
+          "q": "How long does it take to train seasonal staff?",
+          "a": "The interface is simple enough to learn during one shift, which is the point for a property that takes on seasonal staff every spring. Installation and staff training are included with every plan."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Room charges reconciled by hand at night audit",
@@ -332,6 +402,20 @@
       "meta_description": "Franchise POS with centralized menu control, multi-location reporting, and consistent pricing across every store.",
       "headline": "Push a Menu Change to Every Location at Once",
       "subhead": "Central control over pricing, menus, and permissions, with reporting that compares stores side by side.",
+      "faqs": [
+        {
+          "q": "How do you push a price change to every location at once?",
+          "a": "Catalog and pricing updates are pushed to every location from one dashboard, rather than rolled out store by store."
+        },
+        {
+          "q": "Can you compare performance between stores?",
+          "a": "Multi-location rollup reporting covers every site with per-store drilldown, so stores can be compared on the same figures."
+        },
+        {
+          "q": "How do you keep franchisee setups consistent?",
+          "a": "Locked templates keep the core setup identical everywhere, so operations do not drift between franchisees."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Price changes rolled out store by store",
@@ -397,6 +481,20 @@
       "meta_description": "C-store POS with age verification, fuel integration, high-SKU inventory, and 0% processing through cash discount.",
       "headline": "High SKU Count, High Volume, High Functioning Register",
       "subhead": "Scan, verify age, take payment, and move to the next customer. Inventory keeps itself honest in the background.",
+      "faqs": [
+        {
+          "q": "How does a convenience store POS handle age verification?",
+          "a": "ID scanning prompts and logs verification automatically, so an age check is not a manual step that slows the counter or risks a fine."
+        },
+        {
+          "q": "Can it manage thousands of SKUs?",
+          "a": "Real-time inventory covers every SKU with low-stock alerts and vendor tracking. The Retail plan, built for convenience and gas, is $74.99 a month."
+        },
+        {
+          "q": "How do you cut processing costs on thin margins?",
+          "a": "The Consumer Choice cash discount program takes your effective processing rate to 0%, with card-paying customers covering the processing cost. The alternative is a flat 2.3% + 5¢ on every card."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Manual age checks slowing the counter and risking fines",
@@ -460,6 +558,20 @@
       "meta_description": "Liquor store POS with case-break inventory, age verification, mix-and-match pricing, and flat 2.3% processing.",
       "headline": "Case, Bottle, and Six-Pack — Counted Correctly",
       "subhead": "Case-break inventory that actually reconciles, plus mix-and-match pricing and compliant age verification.",
+      "faqs": [
+        {
+          "q": "How does a liquor store POS handle breaking cases into singles?",
+          "a": "Case-break rules deduct the right units automatically, so selling singles out of a case does not wreck the inventory count."
+        },
+        {
+          "q": "Can it do mix-and-match six-pack pricing?",
+          "a": "Build-your-own pricing rules apply at the register, so mix-and-match pricing is not done by hand."
+        },
+        {
+          "q": "Is ID scanning required or optional?",
+          "a": "Scanning is required before the item can ring, and it is logged, which is what keeps an ID check from being a compliance risk."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Breaking cases into singles wrecking inventory counts",
@@ -522,6 +634,20 @@
       "meta_description": "Smoke shop POS with age verification, variant-heavy inventory, and payment processing that won't drop you.",
       "headline": "Processing That Won't Cut You Off in Month Three",
       "subhead": "We understand the vertical. Age verification, variant-heavy catalogs, and a processing relationship that sticks.",
+      "faqs": [
+        {
+          "q": "Will a processor drop a smoke shop account?",
+          "a": "It happens with processors that did not expect the category. EPAY POS places these accounts knowingly, with underwriting that expects a smoke shop or vape store."
+        },
+        {
+          "q": "How do you manage hundreds of flavor and nicotine variants?",
+          "a": "Variant matrices keep the catalog manageable, so each flavor and nicotine level is a real variant with its own count rather than one generic item."
+        },
+        {
+          "q": "How does age verification work?",
+          "a": "A required ID scan runs before the item rings, with a stored audit trail behind it."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Processors dropping the account without warning",
@@ -584,6 +710,20 @@
       "meta_description": "Grocery POS with scale integration, EBT, department reporting, and high-volume inventory management.",
       "headline": "Scales, Departments, and a Checkout Line That Keeps Moving",
       "subhead": "Weighted items, department-level reporting, and payment types your customers actually use — including EBT.",
+      "faqs": [
+        {
+          "q": "Does a grocery POS work with a scale?",
+          "a": "Yes. Direct scale integration prices weighed items at the register instead of having them rung in manually."
+        },
+        {
+          "q": "Can you see which departments carry the store?",
+          "a": "Department-level margin reporting shows it directly, rather than leaving departmental performance to guesswork."
+        },
+        {
+          "q": "Does it take EBT and WIC?",
+          "a": "EBT, WIC where applicable, and every card and wallet. The Retail plan, built for grocery, is $74.99 a month."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Weighed items rung in manually",
@@ -647,6 +787,20 @@
       "meta_description": "Retail POS for boutiques and specialty shops — inventory, promotions, e-commerce sync, and flat-rate processing.",
       "headline": "One Catalog, Whether They Buy in Store or Online",
       "subhead": "Inventory that stays in sync across your counter and your storefront, with promotions that run themselves.",
+      "faqs": [
+        {
+          "q": "Can one catalog cover the shop and the website?",
+          "a": "One catalog feeds both and counts update in real time, so online and in-store inventory do not drift apart."
+        },
+        {
+          "q": "How do you keep promotions consistent?",
+          "a": "Discount rules apply automatically at the register, so a promotion does not depend on which member of staff is on the counter."
+        },
+        {
+          "q": "Can you tell which products actually make money?",
+          "a": "Margin reporting breaks down by product, category and vendor."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Online and in-store inventory drifting apart",
@@ -712,6 +866,20 @@
       "meta_description": "POS built for quick service and fast casual — fast tickets, counter throughput, and delivery orders in the same queue as walk-ins.",
       "headline": "Move the Line Without Rushing the Order",
       "subhead": "Counter service lives or dies on throughput. The register has to be quicker than the queue, and the kitchen has to see the ticket the moment it rings.",
+      "faqs": [
+        {
+          "q": "How much does a quick service restaurant POS cost?",
+          "a": "EPAY Table Mobile, suited to counter service, is $39.99 a month, and processing is a flat 2.3% + 5¢ or 0% under Consumer Choice. Free installation, staff training and 24/7 support are included with every plan."
+        },
+        {
+          "q": "How do you stop the line backing up at lunch?",
+          "a": "The layout is built around your top sellers, with modifiers two taps deep instead of five, so the common order rings fast and is less likely to be rung wrong."
+        },
+        {
+          "q": "Do delivery app orders need a separate tablet?",
+          "a": "No. DoorDash, Uber Eats and Grubhub orders land in the same ticket queue as the counter, so delivery tablets do not pile up next to the register."
+        }
+      ],
       "pain_points": [
         {
           "problem": "The line backs up at lunch and orders get rung wrong.",
@@ -777,6 +945,20 @@
       "meta_description": "A handheld POS for food trucks and mobile kitchens — works on LTE, keeps taking orders when signal drops, and handles a cash-heavy day.",
       "headline": "A Register That Fits in the Window",
       "subhead": "You do not have counter space, a back office, or a guarantee of signal. The system has to be one device that works anywhere you park.",
+      "faqs": [
+        {
+          "q": "Does a food truck POS work without reliable Wi-Fi?",
+          "a": "The handheld runs on Wi-Fi or LTE, so losing one does not stop the window."
+        },
+        {
+          "q": "How do you reconcile cash and card at the end of the night?",
+          "a": "Drawer activity, till counts and payouts are logged as they happen rather than remembered afterwards, so the totals reconcile."
+        },
+        {
+          "q": "Can you run a different menu at each event?",
+          "a": "You can swap menus per event without rebuilding the catalog each time. The plan for a truck is EPAY Table Mobile at $39.99 a month."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Signal drops mid-service and the card reader stops.",
@@ -840,6 +1022,20 @@
       "meta_description": "POS for fine dining — coursing, seat-level ordering, quiet handhelds and tableside payment that does not interrupt the room.",
       "headline": "The Art Of Service, Perfected Behind The Scenes",
       "subhead": "In a dining room where pacing is the product, the technology has to disappear. Coursing, seat numbers and payment at the table, without a terminal parked in the middle of the room.",
+      "faqs": [
+        {
+          "q": "Can a fine dining POS fire courses on the kitchen's timing?",
+          "a": "Hold and fire by course means the kitchen sends when the table is actually ready, rather than courses arriving at the wrong moment."
+        },
+        {
+          "q": "How long does splitting a check for a large table take?",
+          "a": "Split by seat, item or percentage without restarting the ticket, so a check for eight is not a ten-minute job."
+        },
+        {
+          "q": "Can guests pay at the table?",
+          "a": "Payment at the table on a handheld, done in one trip, instead of the check being walked twice."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Courses arrive at the wrong moment.",
@@ -905,6 +1101,20 @@
       "meta_description": "POS for breweries and taprooms — tabs, pours by size, taplist changes mid-shift, and retail can sales on the same ticket.",
       "headline": "Tabs, Pours and a Taplist That Changes Weekly",
       "subhead": "A taproom is a bar, a retail counter and a production schedule at once. The catalog has to change as fast as the taplist.",
+      "faqs": [
+        {
+          "q": "How do you keep a changing taplist current on the POS?",
+          "a": "Edit the catalog from anywhere and the change is live on every terminal at once, so the menu is not out of date by Friday."
+        },
+        {
+          "q": "Can you track pour sizes and flights properly?",
+          "a": "Size-based pricing and flights as real items mean depletion actually tracks, rather than every pour being rung as one generic item."
+        },
+        {
+          "q": "Can merch and to-go cans go on the same ticket as the taproom?",
+          "a": "Yes. Retail inventory sits on the same ticket as the taproom, so merch and to-go cans are not rung on a separate system."
+        }
+      ],
       "pain_points": [
         {
           "problem": "The taplist changes and the menu is out of date by Friday.",
@@ -970,6 +1180,20 @@
       "meta_description": "POS for independent pharmacies — front-of-store retail, high SKU counts, age-restricted items and fast checkout beside the counter.",
       "headline": "The Front of the Store, Run Properly",
       "subhead": "The pharmacy counter has its own system. Everything in front of it — the aisles, the seasonal end caps, the age-restricted shelf — still needs a real retail POS.",
+      "faqs": [
+        {
+          "q": "How does a pharmacy POS handle front-of-store inventory?",
+          "a": "Real-time counts with low-stock alerts cover every SKU in the aisles, instead of front-of-store stock being counted by hand."
+        },
+        {
+          "q": "Does it prompt for age-restricted items?",
+          "a": "ID scanning and prompts run at the register on the items that need it, so compliance does not rely on staff remembering."
+        },
+        {
+          "q": "Can two registers end up with different prices?",
+          "a": "No. One catalog is pushed to every terminal at once."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Front-of-store inventory is counted by hand.",
@@ -1034,6 +1258,20 @@
       "meta_description": "POS for boutiques and apparel — size and color variants, one catalog across the shop floor and the online store, and inventory that stays honest.",
       "headline": "Size, Color and One Honest Stock Count",
       "subhead": "Apparel is the same product eight times over. The system has to know a medium in black is not a large in navy, on the shop floor and online at the same time.",
+      "faqs": [
+        {
+          "q": "How does a boutique POS handle sizes and colours?",
+          "a": "Size and colour are real variants, each with its own count, so stock does not go wrong the moment a variant is rung as one item."
+        },
+        {
+          "q": "Can the shop and the online store share stock?",
+          "a": "One catalog sits behind the counter and the storefront, so stock is shared and the website cannot sell something the shop already sold."
+        },
+        {
+          "q": "How are seasonal markdowns applied?",
+          "a": "Promotions and mix-and-match pricing apply at the register automatically, rather than being worked out with a calculator."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Variants are rung as one item and stock goes wrong immediately.",
@@ -1098,6 +1336,20 @@
       "meta_description": "POS for pet supply stores — bulk and weighted items, repeat customers on autoship, high SKU counts and vendor cost tracking.",
       "headline": "Bulk, Brands and Customers Who Come Back Monthly",
       "subhead": "Pet retail is heavy SKUs, heavy bags and regulars on a cycle. Knowing what a customer bought last month is worth more than a loyalty gimmick.",
+      "faqs": [
+        {
+          "q": "Can a pet supply POS price bulk and weighted items?",
+          "a": "Scale integration at the counter prices by weight, instead of bulk items being rung by eye."
+        },
+        {
+          "q": "Can you look up what a regular customer usually buys?",
+          "a": "Customer profiles hold purchase history, so a reorder is one lookup rather than someone remembering which food it was."
+        },
+        {
+          "q": "How do you catch a vendor cost increase?",
+          "a": "Purchase orders and vendor cost tracking make a cost change visible, so margins do not quietly slip."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Bulk and weighted items get rung by eye.",
@@ -1163,6 +1415,20 @@
       "meta_description": "A POS built for salons, nail bars and spas — appointments, services and retail on one ticket. Coming soon from EPAY POS.",
       "headline": "Appointments, Services and Retail on One Ticket",
       "subhead": "A chair is booked, a service is performed, product goes home with the client and someone gets tipped. That should be one transaction, not three systems.",
+      "faqs": [
+        {
+          "q": "Can a salon POS handle both bookings and payment?",
+          "a": "Appointments and checkout sit in the same place, so the ticket is already open when the client walks to the desk, rather than bookings living in one app and payment in another."
+        },
+        {
+          "q": "How are tips handled across a team?",
+          "a": "Tip handling and pooling run on the system, per staff member and per shift, instead of a spreadsheet at the end of the week."
+        },
+        {
+          "q": "Can you track retail product sales separately from services?",
+          "a": "Services and products ring on the same ticket, with real inventory on the retail lines, so you can see what sells off the shelf. The plan for a salon is EPAY Table Mobile at $39.99 a month."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Bookings live in one app and payment in another.",
@@ -1228,6 +1494,20 @@
       "meta_description": "POS and payments for auto repair, tyre and service shops — invoice by job, send a payment link, and take payment at the bay.",
       "headline": "Get Paid When the Job Is Done, Not When They Come Back",
       "subhead": "Repair work is quoted, approved and finished at different moments. The payment should not be the part that waits for the customer to walk back in.",
+      "faqs": [
+        {
+          "q": "How can a customer pay if they cannot collect the car yet?",
+          "a": "Send a payment link by text. They pay from wherever they are and collect the keys when it suits them."
+        },
+        {
+          "q": "Can you invoice parts and labour separately?",
+          "a": "Line-item invoicing runs off the same catalog, with parts costs tracked, instead of parts and labour being invoiced on paper."
+        },
+        {
+          "q": "Can you take payment at the bay?",
+          "a": "A handheld at the bay means payment happens where the work does, rather than at a desk nobody is standing at."
+        }
+      ],
       "pain_points": [
         {
           "problem": "The car is ready and the customer is not.",
@@ -1293,6 +1573,20 @@
       "meta_description": "Payments for HVAC, plumbing, electrical and contracting — invoice on site, send payment links, and take cards at the door.",
       "headline": "Take the Payment at the Door, Not Three Weeks Later",
       "subhead": "You finish the job in someone's kitchen. Chasing that invoice for a month is the worst part of the week, it does not have to be.",
+      "faqs": [
+        {
+          "q": "How do you get paid faster on a home services job?",
+          "a": "Send a payment link the moment the job is signed off, while you are still standing there, instead of an invoice going out and sitting unpaid."
+        },
+        {
+          "q": "Does the card terminal need Wi-Fi?",
+          "a": "No. It runs on LTE, so it works in a basement or a new build. The Terminal plan is $17.99 a month."
+        },
+        {
+          "q": "How do you track a deposit against a final balance?",
+          "a": "Both sit on the same customer record, so what is outstanding is never a guess."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Invoices go out and sit unpaid.",
@@ -1356,6 +1650,20 @@
       "meta_description": "Invoicing and card payments for professional and appointment-based businesses — payment links, recurring billing and next-day funding.",
       "headline": "Billing That Does Not Need a Bookkeeper",
       "subhead": "If the work is billed rather than rung up, the system has to be an invoice and a payment link before it is a register.",
+      "faqs": [
+        {
+          "q": "How do you stop clients paying by cheque weeks late?",
+          "a": "Put a payment link on the invoice. Most people pay the day they get it."
+        },
+        {
+          "q": "Is it safe to take a card payment over the phone?",
+          "a": "Take it properly on a terminal or through a payment link, so nothing is written down that should not be."
+        },
+        {
+          "q": "Can you see what is outstanding without a spreadsheet?",
+          "a": "Open and paid invoices appear in the same reporting as everything else. The Terminal plan, suited to professional services, is $17.99 a month."
+        }
+      ],
       "pain_points": [
         {
           "problem": "Clients pay by cheque, weeks late.",

@@ -1,9 +1,25 @@
 {
-  "_instructions": "Base features grouped by category. Each category maps to a page under Features & Payments. Adding a feature = adding one object to an items array — it will appear on the features page and anywhere that category is surfaced.",
+  "_instructions": "Base features grouped by category. Each category maps to a page under Features & Payments. Adding a feature = adding one object to an items array — it will appear on the features page and anywhere that category is surfaced. meta_title / meta_description: set these on the category that LEADS a page group (the first one in this list with that `page` value) — [slug].astro reads the lead category for the page title and description. Without them the title falls back to the category `name`, which is an internal nav label ('Front of House') rather than anything a merchant would type into a search box. Titles 60 characters or fewer, descriptions 70–155.",
   "categories": [
     {
       "id": "operations",
       "name": "Front of House",
+      "meta_title": "Restaurant POS Software Features | EPAY POS",
+      "meta_description": "Table and floor management, split checks, course firing, tip handling and inventory — built into every EPAY POS system, not sold as add-ons.",
+      "faqs": [
+        {
+          "q": "What features does a restaurant POS need?",
+          "a": "Table and floor management, split checks and seat-level ordering, course firing, modifier prompts for custom orders, and tip handling. On EPAY POS these are built into every system rather than priced as add-ons."
+        },
+        {
+          "q": "Can I split a check after the order has started?",
+          "a": "Yes — split by seat, item or percentage at any point in the ticket, without restarting it."
+        },
+        {
+          "q": "Does the POS handle inventory as well as orders?",
+          "a": "Yes. Real-time inventory, modifiers and combos, purchase orders and age verification are part of the same system as the register."
+        }
+      ],
       "page": "/epay-base-features",
       "items": [
         {
@@ -28,6 +44,22 @@
     {
       "id": "kitchen",
       "name": "Kitchen & Display",
+      "meta_title": "Kitchen Display System for Restaurants | EPAY POS",
+      "meta_description": "Replace paper tickets with a kitchen display screen. Orders route from the POS or a handheld straight to the line, with printer routing included.",
+      "faqs": [
+        {
+          "q": "What is a kitchen display system?",
+          "a": "A screen that replaces printed kitchen tickets. Orders route from the register or a handheld straight to the right station in real time, with timers and colour-coded statuses showing what is waiting and for how long."
+        },
+        {
+          "q": "Is a KDS better than printing paper tickets?",
+          "a": "A screen cannot jam, smudge or be lost, and routing is automatic by menu item — grill, fryer, prep, bar. Ticket timers also make it visible when something has been sitting under the pass."
+        },
+        {
+          "q": "Can I still use kitchen printers?",
+          "a": "Yes. Printer routing is supported alongside the display, so you can run screens, printers, or both."
+        }
+      ],
       "page": "/customer-kitchen-display",
       "items": [
         {
@@ -72,6 +104,22 @@
     {
       "id": "employees",
       "name": "Employee & Time",
+      "meta_title": "POS Employee Time Clock & Scheduling | EPAY POS",
+      "meta_description": "Clock in and out at the register, build schedules, set permissions by role and pull labor reports — included with every EPAY POS plan.",
+      "faqs": [
+        {
+          "q": "Can staff clock in and out on the POS?",
+          "a": "Yes. Clock in and out happens at the register, and the hours feed labor reporting without a separate time clock system."
+        },
+        {
+          "q": "Can I limit what staff can do on the register?",
+          "a": "Permissions are set by role, so access levels, voids and discounts can be restricted to the people who should have them."
+        },
+        {
+          "q": "Does it handle scheduling?",
+          "a": "Scheduling, break tracking and audit logs are part of the same employee tools, included with every plan."
+        }
+      ],
       "page": "/employee-time-management",
       "items": [
         {
@@ -96,6 +144,22 @@
     {
       "id": "analytics",
       "name": "Reporting & Analytics",
+      "meta_title": "POS Reporting & Sales Analytics | EPAY POS",
+      "meta_description": "See sales, labor and inventory from your phone. Real-time POS reporting, the EPAY mobile app and multi-location rollup for multi-store owners.",
+      "faqs": [
+        {
+          "q": "Can I see my sales from my phone?",
+          "a": "Yes. Real-time reporting runs on the EPAY mobile analytics app, so sales, labor and inventory are visible without being at the store."
+        },
+        {
+          "q": "What reports should an owner check?",
+          "a": "Sales by item and by daypart show what actually moves and when; labor reporting shows what it costs to run those hours; margin reporting shows which products and categories carry the business."
+        },
+        {
+          "q": "Does it roll up across multiple locations?",
+          "a": "Yes. Multi-location rollup reporting covers every site with per-store drilldown."
+        }
+      ],
       "page": "/analytics-app",
       "items": [
         {
@@ -116,6 +180,22 @@
     {
       "id": "online",
       "name": "Online & Delivery",
+      "meta_title": "Restaurant Online Ordering System | EPAY POS",
+      "meta_description": "Take orders on your own website instead of paying a third party per ticket. Online ordering, e-commerce buildout and invoicing, on the same catalog.",
+      "faqs": [
+        {
+          "q": "Can I take online orders on my own website?",
+          "a": "Yes. Online ordering runs on your own site off the same catalog as the register, so you are not paying a third party a commission on every ticket."
+        },
+        {
+          "q": "Do online orders come into the POS?",
+          "a": "They land in the same ticket queue as counter orders, so nothing is keyed twice."
+        },
+        {
+          "q": "Can I send invoices online?",
+          "a": "Online invoicing is part of the same tools, alongside e-commerce buildout."
+        }
+      ],
       "page": "/e-commerce-websites",
       "items": [
         {
@@ -136,6 +216,22 @@
     {
       "id": "integrations",
       "name": "Integrations",
+      "meta_title": "POS Integrations & Accounting Sync | EPAY POS",
+      "meta_description": "Connect EPAY POS to the tools you already run, including accounting exports, so sales data is not re-entered by hand at the end of the week.",
+      "faqs": [
+        {
+          "q": "Does EPAY POS integrate with accounting software?",
+          "a": "Accounting exports are supported, so sales data does not have to be re-entered by hand at the end of the week."
+        },
+        {
+          "q": "Can it connect to the tools I already use?",
+          "a": "The system is built to connect to what you already run rather than replace all of it. Tell us what you use and we will confirm what connects before you switch."
+        },
+        {
+          "q": "Do delivery apps count as integrations?",
+          "a": "DoorDash, Uber Eats and Grubhub route directly into the POS — that is covered on the delivery apps page."
+        }
+      ],
       "page": "/integrations",
       "items": [
         {
@@ -148,6 +244,22 @@
     {
       "id": "delivery",
       "name": "Delivery Apps",
+      "meta_title": "DoorDash, Uber Eats & Grubhub POS Integration | EPAY POS",
+      "meta_description": "DoorDash, Uber Eats and Grubhub orders land in one ticket queue with your in-house orders — no second tablet on the counter, no re-keying tickets.",
+      "faqs": [
+        {
+          "q": "Does EPAY POS integrate with DoorDash, Uber Eats and Grubhub?",
+          "a": "Yes. All three route directly into the POS and land in one ticket queue with your in-house orders."
+        },
+        {
+          "q": "Do I still need a tablet for each delivery app?",
+          "a": "No. That is the point of the integration — orders arrive on the POS instead of on a separate tablet per app sitting next to the register."
+        },
+        {
+          "q": "Do delivery orders show up in reporting?",
+          "a": "They are in the same ticket queue, so they appear in the same sales reporting as counter and online orders."
+        }
+      ],
       "page": "/grub-hub-doordash-uber-eats",
       "hero_image": "/img/features/grub-hub-doordash-uber-eats-hero.jpg",
       "items": [

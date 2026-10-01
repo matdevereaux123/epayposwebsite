@@ -59,7 +59,7 @@ Direct, plain, owner-to-owner. These are people running a restaurant at 11pm, no
 - Sentence case for headings. Active voice.
 - Never invent a statistic, a customer name, or a case study. If a number is needed and you don't have it, ask.
 
-Existing brand lines worth keeping: "Built for Speed. Designed for Growth." and the 20,000+ merchant count.
+Existing brand lines worth keeping: "Built for Speed. Designed for Growth." and the 10,000+ merchant count. (Matt confirmed 10,000+ on 2026-09-30; this line previously said 20,000+ and disagreed with `content/testimonials.json > stats.merchants`, which is what actually renders. The two now match — if one changes, change both.)
 
 ## SEO — non-negotiable
 

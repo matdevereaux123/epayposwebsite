@@ -1,14 +1,17 @@
 ---
 import Base from "../layouts/Base.astro";
 import LeadForm from "../components/LeadForm.astro";
-import { site, enquiry } from "../lib/content";
+import FaqBlock from "../components/FaqBlock.astro";
+import { site, enquiry, faqSchema } from "../lib/content";
 
 const copy = (site as any).page_copy.contact;
+const pageFaqSchema = faqSchema(copy.faqs);
 ---
 
 <Base
   title={`Contact EPAY POS | Troy, MI`}
   description="Talk to the EPAY POS team about point of sale and processing, or send a recent statement for a free line-by-line review."
+  schema={pageFaqSchema ?? undefined}
 >
   <section class="band band--deck">
     <div class="wrap grid2">
@@ -27,6 +30,8 @@ const copy = (site as any).page_copy.contact;
         source="Contact page" reason="other" />
     </div>
   </section>
+
+  <FaqBlock faqs={copy.faqs} band="surface" moreLabel="All pricing and FAQs" />
 </Base>
 
 <style>

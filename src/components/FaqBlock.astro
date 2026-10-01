@@ -1,0 +1,78 @@
+---
+// The FAQ band. Was copy-pasted into five pages with slightly different
+// wording; it lives here now so a page just passes its list.
+//
+// The schema is NOT emitted here — a page passes its own list through
+// faqSchema() to Base, because only the page knows whether its set is unique
+// to it or the shared subset from faq.json.
+import { headings } from "../lib/content";
+
+interface Props {
+  faqs: Array<{ q: string; a: string }>;
+  /** Shown above the heading. */
+  eyebrow?: string;
+  heading?: string;
+  /** Link out to the full list. Omit to hide the button. */
+  moreHref?: string;
+  moreLabel?: string;
+  band?: "dark" | "surface" | "light";
+}
+const {
+  faqs: list,
+  eyebrow = "Questions",
+  heading = (headings as any).shared.faq,
+  moreHref = "/pricing",
+  moreLabel = "Pricing and more FAQs",
+  band = "dark",
+} = Astro.props;
+---
+
+{list?.length > 0 && (
+  <section class={`band band--${band}`}>
+    <div class="wrap">
+      <p class="mono-label">{eyebrow}</p>
+      <h2>{heading}</h2>
+      <div class="faqs">
+        {list.map((faq) => (
+          <details class="faq">
+            <summary>{faq.q}</summary>
+            <p>{faq.a}</p>
+          </details>
+        ))}
+      </div>
+      {moreHref && (
+        <div class="actions">
+          <a class="btn btn--ghost" href={moreHref}>{moreLabel}</a>
+        </div>
+      )}
+    </div>
+  </section>
+)}
+
+<style>
+  .faqs { margin-top: 1.5rem; max-width: 760px; }
+  .faq { border-top: 1px solid var(--rule); }
+  .faq summary {
+    cursor: pointer;
+    padding: 1rem 2rem 1rem 0;
+    font-weight: 600;
+    list-style: none;
+    position: relative;
+  }
+  .faq summary:hover { background: var(--glass); }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: "+";
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.2s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .faq summary::after { transition: none; }
+  }
+  .faq[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+  .faq p { color: var(--text-muted); padding-bottom: 1rem; max-width: 68ch; }
+  .actions { margin-top: 1.5rem; }
+</style>

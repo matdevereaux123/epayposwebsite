@@ -1,5 +1,5 @@
 {
-  "_instructions": "Offer landing pages, generated at /offers/<slug>. Content taken verbatim where possible from the live standalone offer sites: consumerchoice.epaypos.net, epaybonussignup.epaypos.net and freestatementreview.netlify.app. Terms and eligibility are commercial claims — do not edit them without checking with whoever owns the offer.",
+  "_instructions": "Offer landing pages, generated at /offers/<slug>. Content taken verbatim where possible from the live standalone offer sites: consumerchoice.epaypos.net, epaybonussignup.epaypos.net and freestatementreview.netlify.app. Terms and eligibility are commercial claims — do not edit them without checking with whoever owns the offer. faqs: shown on the offer page and emitted as FAQPage schema. These target the questions people actually ask an AI assistant — 'will someone analyse my merchant statement', 'how does 0% processing work', 'can I get a free POS' — so keep the question wording close to how a merchant would phrase it, not to our internal programme names. Unique per offer; every answer must be supported by this entry's own lede, steps, eligibility or terms, or by a figure in pricing.json.",
   "_note_on_conflicts": "Those three sites all quote LEASE AT $49.99/mo for Table and Retail, as does the Wix products page. pricing.json currently uses $59.99 because that is what Matt said. Four sources against one — worth confirming. The bonus site also quotes 2.6% Interchange Plus for accounts under $50K/mo, which is a rate that does not exist anywhere in pricing.json.",
   "offers": [
     {
@@ -8,6 +8,20 @@
       "eyebrow": "$3,000 Switch Bonus",
       "heading": "Switch Your POS. Earn $3,000.",
       "lede": "Restaurants, bars and retail stores that switch an existing POS to EPAY get a $3,000 bonus — plus $0 Consumer Choice processing going forward.",
+      "faqs": [
+        {
+          "q": "How does the $3,000 POS switch bonus work?",
+          "a": "Restaurants, bars and retail stores switching an existing POS to EPAY get a $3,000 bonus paid at switch, plus $0 Consumer Choice processing going forward."
+        },
+        {
+          "q": "Do I qualify for the switch bonus?",
+          "a": "You qualify if you currently use another POS system — Toast, Clover, Square or similar — and are switching it to EPAY POS, and your business is a restaurant, bar/lounge or retail store with $50,000+ in monthly volume. Terms are subject to verification."
+        },
+        {
+          "q": "How long does switching take?",
+          "a": "You share your current POS and a recent statement, which takes about 2 minutes; EPAY confirms eligibility, builds your menu or catalog before install day, and handles the install, so there is no downtime on the switch."
+        }
+      ],
       "cta": "Claim my $3,000 bonus",
       "hero_image": "/img/offers/switch-bonus-hero.jpg",
       "checks": [
@@ -91,6 +105,24 @@
       "eyebrow": "0% Consumer Choice Program",
       "heading": "Stop Paying Processing Fees. Start Keeping 100% of Every Sale.",
       "lede": "The Consumer Choice Program shifts the processing cost to the transaction — so you pay $0, with no equipment cost to switch. Compliant with or without shelf price changes.",
+      "faqs": [
+        {
+          "q": "How does 0% credit card processing actually work?",
+          "a": "The Consumer Choice program shifts the processing cost to the transaction, so the card-paying customer covers it and the business pays $0 in processing. Both prices are shown, so the customer chooses."
+        },
+        {
+          "q": "Is a cash discount or dual pricing program legal?",
+          "a": "The program is run to be compliant with or without shelf price changes, according to your state's requirements. EPAY POS sets it up for the way your state handles it — this is not legal advice, and the terms are confirmed in writing."
+        },
+        {
+          "q": "What does it cost to switch to Consumer Choice?",
+          "a": "There is no equipment cost to switch. Qualifying merchants also get hardware placed at no upfront cost under the Free Placement program, with install and training included."
+        },
+        {
+          "q": "What if I would rather just pay one flat rate?",
+          "a": "Then flat rate is the other option: 2.3% + 5¢ on every card, no tiers. EPAY shows you both numbers against your actual statement before you choose."
+        }
+      ],
       "cta": "See my $0 rate",
       "hero_image": "/img/offers/consumer-choice-hero.jpg",
       "checks": [
@@ -154,6 +186,24 @@
       "eyebrow": "Free Statement Analysis",
       "heading": "See Exactly What You're Paying. For Free.",
       "lede": "Upload your last processing statement and get a real, line-by-line breakdown of your fees — no obligation, no sales pitch, just the truth about what you're paying.",
+      "faqs": [
+        {
+          "q": "Will you analyze my credit card processing statement for free?",
+          "a": "Yes. Send a recent processing statement and EPAY POS reads it line by line, including the fees on the back pages, and comes back with what you are actually paying. It is free, takes about 2 minutes to send, and carries no obligation."
+        },
+        {
+          "q": "What do I get back from a statement analysis?",
+          "a": "A real, line-by-line breakdown of your fees rather than a generic estimate — your effective rate, what each line item is, and what the same volume would cost on a flat 2.3% + 5¢ or on the 0% Consumer Choice program."
+        },
+        {
+          "q": "Do I have to switch processors to get the review?",
+          "a": "No. There is no obligation and no sales pitch. Your information is used only to prepare the review."
+        },
+        {
+          "q": "What is an effective rate and why does it matter?",
+          "a": "It is the total you paid divided by the total you processed, which is the only number that lets you compare two processors honestly. A quoted headline rate leaves out the per-item fees, monthly fees and back-page line items; the effective rate does not."
+        }
+      ],
       "cta": "Analyze my statement",
       "hero_image": "/img/offers/statement-review-hero.jpg",
       "checks": [
@@ -217,6 +267,20 @@
       "eyebrow": "Free Placement Program",
       "heading": "Get the Hardware Placed. Pay Nothing Upfront.",
       "lede": "Qualifying merchants get one or multiple EPAY systems at no upfront cost, along with the supplies and add-on devices to run them. Not a lease and not equipment financing.",
+      "faqs": [
+        {
+          "q": "Can I get a free POS system?",
+          "a": "Qualifying merchants get one or multiple EPAY systems at no upfront cost, along with the supplies and add-on devices to run them. It is a placement program — not a lease and not equipment financing."
+        },
+        {
+          "q": "What do I have to do to qualify for free placement?",
+          "a": "Qualification is based on processing volume: $50,000+ a month on any program, or $20,000+ a month on the Consumer Choice program. EPAY reviews recent statements to confirm, and eligibility is confirmed in writing."
+        },
+        {
+          "q": "Is installation and training included?",
+          "a": "Yes. Install and training are included, and there is no upfront equipment cost and no monthly lease."
+        }
+      ],
       "cta": "See if I qualify",
       "hero_image": "/img/offers/free-placement-hero.jpg",
       "checks": [
@@ -280,6 +344,20 @@
       "eyebrow": "Menu and catalog buildout",
       "heading": "Your Menu Is Built Before the Hardware Arrives.",
       "lede": "Our team organizes your products, categories and modifiers and prices them before install day. Menus, drink lists or retail inventories — we do the data entry so the system runs from the first shift.",
+      "faqs": [
+        {
+          "q": "Who builds the menu when I switch POS systems?",
+          "a": "EPAY POS does. The team organizes your products, categories and modifiers and prices them before install day, so the system runs from the first shift rather than being entered by your staff."
+        },
+        {
+          "q": "What do I need to send for the buildout?",
+          "a": "Whatever you already have — a PDF, a photo of the printed menu, or a spreadsheet. Menus, drink lists and retail catalogs are all covered."
+        },
+        {
+          "q": "Does the menu buildout cost extra?",
+          "a": "No. It is included with installation for new EPAY POS merchants, not sold as an add-on."
+        }
+      ],
       "cta": "Get my menu built",
       "hero_image": "/img/offers/menu-buildout-hero.jpg",
       "checks": [
@@ -343,6 +421,20 @@
       "eyebrow": "Flat rate processing",
       "heading": "One Rate on Every Card. No Tiers, No Surprises.",
       "lede": "A flat 2.3% + 5¢ on every transaction. No tiered buckets that quietly reprice your debit volume at the end of the month.",
+      "faqs": [
+        {
+          "q": "What is a flat rate for credit card processing?",
+          "a": "One rate on every card, with no tiered buckets. EPAY POS charges 2.3% + 5¢ per transaction, so debit volume is not quietly repriced into a higher tier at the end of the month."
+        },
+        {
+          "q": "How does flat rate compare to tiered pricing?",
+          "a": "A typical tiered processor quotes something like 2.9% + $0.30, and the tiers decide after the fact which transactions cost what. A flat rate is the same on every card, so the statement is predictable."
+        },
+        {
+          "q": "Are there extra fees on top of the flat rate?",
+          "a": "There is no monthly terminal rental on the flat rate program, and funding is next-day. The rate itself is 2.3% + 5¢ on every card, with no tiers that reprice volume after the fact."
+        }
+      ],
       "cta": "See my flat rate",
       "hero_image": "/img/offers/flat-rate-hero.jpg",
       "checks": [

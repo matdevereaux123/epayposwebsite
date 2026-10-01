@@ -31,7 +31,25 @@ const audience = product.id === "epay-retail" ? "retail" : "restaurant";
 const caps = capabilitiesFor(audience as any);
 const integs = integrationsFor(audience as any);
 
-const schema = {
+// A product's own FAQs (products.json) render on the page and are marked up
+// as FAQPage next to the Product schema. Written per product, so each page's
+// set is unique — the shared four-question subset stays unmarked, same rule
+// as the industry pages.
+const ownFaqs = product.faqs ?? null;
+const pageFaqs = ownFaqs ?? (faqs as any[]).slice(0, 4);
+const faqSchema = ownFaqs?.length
+  ? {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: ownFaqs.map((f: any) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    }
+  : null;
+
+const productSchema = {
   "@context": "https://schema.org",
   "@type": "Product",
   name: product.name,
@@ -48,6 +66,8 @@ const schema = {
       }
     : {}),
 };
+
+const schema = faqSchema ? [productSchema, faqSchema] : productSchema;
 
 import fs from "node:fs";
 import path from "node:path";
@@ -219,7 +239,7 @@ const galleryShots = (product.gallery ?? []).filter((shot: any) => onDisk(shot.f
       <p class="mono-label">Questions</p>
       <h2>{headings.shared.faq}</h2>
       <div class="faqs">
-        {faqs.slice(0, 4).map((faq: any) => (
+        {pageFaqs.map((faq: any) => (
           <details class="faq">
             <summary>{faq.q}</summary>
             <p>{faq.a}</p>

@@ -5,17 +5,21 @@
 // on epaypos.net. Nothing here is a capability we don't ship.
 
 import Base from "../layouts/Base.astro";
+import FaqBlock from "../components/FaqBlock.astro";
 import BatchLine from "../components/BatchLine.astro";
 import ImageSlot from "../components/ImageSlot.astro";
 import appsData from "../../content/software.json";
-import { site, pricing, faqs, headings } from "../lib/content";
+import { site, pricing, faqs, headings, faqSchema } from "../lib/content";
 
 const { eyebrow, heading, lede, hero_image, apps } = appsData as any;
+const pageFaqs = (appsData as any).faqs;
+const pageFaqSchema = faqSchema(pageFaqs);
 ---
 
 <Base
   title={`EPAY Software — built on the POS | ${site.brand.name}`}
   description="Loyalty, e-commerce, online ordering, reservations, gift cards and reporting — built on top of the EPAY POS and running off the same catalog and customers."
+  schema={pageFaqSchema ?? undefined}
 >
   <section class="band band--deck hero">
     <div class="wrap hero__grid">
@@ -71,20 +75,7 @@ const { eyebrow, heading, lede, hero_image, apps } = appsData as any;
     </div>
   </section>
 
-  <section class="band band--dark">
-    <div class="wrap">
-      <p class="mono-label">Questions</p>
-      <h2>{headings.shared.faq}</h2>
-      <div class="faqs">
-        {faqs.slice(0, 4).map((faq: any) => (
-          <details class="faq">
-            <summary>{faq.q}</summary>
-            <p>{faq.a}</p>
-          </details>
-        ))}
-      </div>
-    </div>
-  </section>
+  <FaqBlock faqs={pageFaqs} band="dark" />
 
   <section class="band band--dark cta">
     <div class="wrap">

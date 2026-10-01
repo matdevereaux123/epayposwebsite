@@ -3,6 +3,20 @@
   "eyebrow": "Finance",
   "heading": "Capital When the Business Needs It",
   "lede": "Funding for merchants who process with us. Tell us what you need it for and we'll come back with what's available.",
+  "faqs": [
+    {
+      "q": "Can I get a business loan through my payment processor?",
+      "a": "Funding is available to merchants who process with EPAY POS. Tell us what you need it for and we come back with what is available."
+    },
+    {
+      "q": "What can merchant funding be used for?",
+      "a": "Common uses are a new location — fit-out, deposit and equipment for a second site — kitchen equipment and repairs, buying inventory deeper ahead of a season, and bridging payroll or a slow stretch without putting it on a card."
+    },
+    {
+      "q": "Do I have to process with EPAY to qualify?",
+      "a": "Yes. This funding is for merchants already processing with us."
+    }
+  ],
   "hero_image": "/img/pages/capital-loans-hero.jpg",
   "_needs_from_matt": [
     "Funding amounts — minimum and maximum",

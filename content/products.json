@@ -1,5 +1,5 @@
 {
-  "_instructions": "Hardware lineup. Add a product by copying the shape of an existing entry. Images go in /public/img/products/.",
+  "_instructions": "Hardware lineup. Add a product by copying the shape of an existing entry. Images go in /public/img/products/. faqs: three per product, shown on the product page and emitted as FAQPage schema alongside the existing Product schema. Keep them unique per product — duplicated FAQPage markup is discarded by Google. Answers quote purchase and lease prices in prose, so if a price changes here or in pricing.json, grep these answers for the old figure; they do not update themselves.",
   "_note_on_lease_tier": "lease_tier picks which lease rate the system builder charges: 'small' or 'large', rates in pricing.json > hardware.lease. UNVERIFIED: Matt gave the two rates but not which units fall in which tier. Mini is assumed small, everything else large — the KDS is the debatable one. Correct here, not in the component.",
   "_note_on_bestseller": "Only EPAY Table is flagged Best Seller on the live page, so only it is marked here. Add others when you have the sales data — it is a factual claim.",
   "products": [
@@ -10,6 +10,20 @@
       "name": "EPAY Mini",
       "kicker": "Handheld",
       "summary": "Take orders and take payment anywhere on the floor.",
+      "faqs": [
+        {
+          "q": "How much does the EPAY Mini handheld cost?",
+          "a": "$399.99 to buy outright, or $19.99 a month on a lease, on top of your software plan. Qualifying merchants get hardware placed at no upfront cost and no monthly lease under the Free Placement program."
+        },
+        {
+          "q": "Does the EPAY Mini work away from Wi-Fi?",
+          "a": "It runs on Wi-Fi or LTE and has an all-day battery, so it works on a patio, at the curb or at an event, away from the counter."
+        },
+        {
+          "q": "Does it need a dock to print a receipt?",
+          "a": "No. The receipt printer is built in, so it prints on the spot without a docking station. It runs the same menu and tickets as the main register."
+        }
+      ],
       "body": "A fast, portable handheld that keeps service moving. Prints receipts on the spot, handles tableside payment, deliveries, curbside, and events.",
       "image": "/img/products/epay-mini.jpg",
       "best_for": [
@@ -51,6 +65,20 @@
       "name": "EPAY Table",
       "kicker": "Restaurant system",
       "summary": "Full restaurant control — floor, kitchen, and payments in one system.",
+      "faqs": [
+        {
+          "q": "How much does the EPAY Table POS cost?",
+          "a": "The hardware is $1,199.99 to buy or $59.99 a month on a lease, and the EPAY Table software plan is $69.99 a month. Hardware is placed free for merchants who qualify on volume."
+        },
+        {
+          "q": "Does EPAY Table handle split checks and seat-level ordering?",
+          "a": "Yes — split checks, merging tables and seat-level ordering are built in, along with course firing and menu routing to the kitchen."
+        },
+        {
+          "q": "Do takeout and delivery app orders go in the same queue?",
+          "a": "Dine-in, takeout and third-party orders all land in the same ticket queue, so nothing is keyed twice and nothing is tracked on a separate tablet."
+        }
+      ],
       "body": "Ordering, kitchen communication, table management, and payment flow through one place. Dine-in, takeout, and third-party orders all land in the same ticket queue.",
       "image": "/img/products/epay-table.jpg",
       "best_for": [
@@ -91,6 +119,20 @@
       "name": "EPAY Retail",
       "kicker": "Retail system",
       "summary": "Everything a store needs to run the counter and the back room.",
+      "faqs": [
+        {
+          "q": "How much does the EPAY Retail POS cost?",
+          "a": "$1,299.99 to buy or $59.99 a month on a lease, plus the Retail software plan at $74.99 a month. Free Placement covers the hardware for qualifying merchants."
+        },
+        {
+          "q": "Does it support a barcode scanner and a scale?",
+          "a": "Both are supported at the counter, with barcode lookup for high-volume SKU management and scale integration for items priced by weight."
+        },
+        {
+          "q": "Can it handle age verification on restricted items?",
+          "a": "Yes. Age verification and ID scanning run at the register on the items that need it, alongside promotions, mix-and-match pricing, purchase orders and vendor cost tracking."
+        }
+      ],
       "body": "Manage inventory, track sales, run promotions, and take every payment type. Built for high-SKU counts and fast checkout lines.",
       "image": "/img/products/epay-retail.jpg",
       "best_for": [
@@ -132,6 +174,20 @@
       "name": "Kitchen Display",
       "kicker": "KDS",
       "summary": "Replace paper tickets with a screen the line can actually read.",
+      "faqs": [
+        {
+          "q": "How much does a kitchen display system cost?",
+          "a": "$349.99 to buy, and it is free on a system lease. Qualifying merchants can also get hardware placed at no upfront cost under Free Placement."
+        },
+        {
+          "q": "How do orders reach the right station?",
+          "a": "Routing is automatic by menu item — grill, fryer, prep, bar — and orders arrive in real time from the register or a handheld."
+        },
+        {
+          "q": "Does it show how long a ticket has been waiting?",
+          "a": "Ticket timers and colour-coded statuses (new, in progress, completed) show what is waiting and for how long, so nothing sits under the pass."
+        }
+      ],
       "body": "Orders route straight from the register to the right station. Timers, bump bars, and course firing keep tickets moving in the right order.",
       "image": "/img/products/kds.png",
       "best_for": [
@@ -162,6 +218,20 @@
       "name": "EPAY Kiosk",
       "kicker": "Self-order",
       "summary": "Let customers order and pay themselves, straight into the same ticket queue.",
+      "faqs": [
+        {
+          "q": "How much does the EPAY Kiosk cost?",
+          "a": "$2,199.99 to buy. Hardware can also be placed at no upfront cost for merchants who qualify on processing volume under the Free Placement program."
+        },
+        {
+          "q": "Do kiosk orders go into the same system as the register?",
+          "a": "Yes. Orders arrive in the same queue as the register and the kitchen, running the same catalog and pricing, so nothing is keyed twice or tracked separately."
+        },
+        {
+          "q": "Can customers pay at the kiosk itself?",
+          "a": "The kiosk takes card payment at the screen and prints the customer's receipt there, without tying up a member of staff."
+        }
+      ],
       "body": "A customer-facing screen that takes the order and the payment without tying up a member of staff. Orders land in the same queue as the register and the kitchen, so nothing is keyed twice and nothing is tracked separately.",
       "image": "/img/store/kiosk.jpg",
       "best_for": [

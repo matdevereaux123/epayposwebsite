@@ -1,14 +1,19 @@
 ---
 import Base from "../layouts/Base.astro";
+import FaqBlock from "../components/FaqBlock.astro";
 import BatchLine from "../components/BatchLine.astro";
 import ImageSlot from "../components/ImageSlot.astro";
 import portal from "../../content/payment-portal.json";
-import { site, faqs, headings } from "../lib/content";
+import { site, faqs, headings, faqSchema } from "../lib/content";
 
 const p = portal as any;
+const pageFaqs = p.faqs;
+const pageFaqSchema = faqSchema(pageFaqs);
 ---
 
-<Base title={`EPAY Payment Portal | ${site.brand.name}`} description={p.lede}>
+<Base title={`EPAY Payment Portal | ${site.brand.name}`} description={p.lede}
+  schema={pageFaqSchema ?? undefined}
+>
   <section class="band band--deck hero">
     <div class="wrap hero__grid">
       <div>
@@ -49,20 +54,7 @@ const p = portal as any;
     </div>
   </section>
 
-  <section class="band band--dark">
-    <div class="wrap">
-      <p class="mono-label">Questions</p>
-      <h2>{headings.shared.faq}</h2>
-      <div class="faqs">
-        {faqs.slice(0, 4).map((faq: any) => (
-          <details class="faq">
-            <summary>{faq.q}</summary>
-            <p>{faq.a}</p>
-          </details>
-        ))}
-      </div>
-    </div>
-  </section>
+  <FaqBlock faqs={pageFaqs} band="dark" />
 
   <section class="band band--dark cta">
     <div class="wrap">

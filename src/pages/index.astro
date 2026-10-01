@@ -5,6 +5,7 @@ import LogoWall from "../components/LogoWall.astro";
 import ImageSlot from "../components/ImageSlot.astro";
 import VideoSlot from "../components/VideoSlot.astro";
 import HomePromos from "../components/HomePromos.astro";
+import Testimonials from "../components/Testimonials.astro";
 import LeadForm from "../components/LeadForm.astro";
 import StatementAnalyzer from "../components/StatementAnalyzer.astro";
 import {
@@ -227,8 +228,10 @@ const terminalPlan = planById(terminalCard.plan_id);
     </div>
   </section>
 
-  <!-- NOTE: no testimonial section. testimonials.json is intentionally empty.
-       Once there are three real merchant quotes, add the section here. -->
+  {/* Social proof. Testimonials.astro renders nothing until there are three
+      real entries in content/testimonials.json, which still ships empty — so
+      this is a no-op today and switches itself on when Matt adds quotes. */}
+  <Testimonials />
 
   <HomePromos />
 
