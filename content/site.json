@@ -584,11 +584,11 @@
   ],
   "_note_on_slugs": "Two slugs are misspelled on the live site (/liqour-stores, /pizzeria-s). They stay as-is because they have ranking history. Display labels are corrected; URLs are not.",
   "social": {
-    "instagram": "https://www.instagram.com/envision.processing/",
+    "instagram": "https://www.instagram.com/epaysystems/",
     "facebook": "https://www.facebook.com/envisionprocessing/",
     "linkedin": "https://www.linkedin.com/company/envision-processing/",
     "youtube": "https://www.youtube.com/channel/UCrmjAr9xLfwZURmpvzJaxtA",
-    "tiktok": "https://www.tiktok.com/@envisionprocess"
+    "tiktok": "https://www.tiktok.com/@epaysystems"
   },
   "apps": {
     "ios": "https://apps.apple.com/us/app/epay-pos/id6708242210",
